@@ -14,6 +14,15 @@ import { CompanyProfileComponent } from './companies/company-profile/company-pro
 import { CompanyRegisterComponent } from './companies/company-register/company-register.component';
 import { UserRegisterComponent } from './users/user-register/user-register.component';
 
+const config = {
+    apiKey: 'AIzaSyBABKKZen_4awGglx5ILfCgvUpPeKwL5WI',
+    authDomain: 'seekers-uts.firebaseapp.com',
+    databaseURL: 'https://seekers-uts.firebaseio.com',
+    projectId: 'seekers-uts',
+    storageBucket: 'seekers-uts.appspot.com',
+    messagingSenderId: '844981083345'
+};
+
 const appRoutes: Routes = [
   { path: 'company/login', component: CompanyLoginComponent },
   { path: 'company/register', component: CompanyRegisterComponent },
@@ -48,7 +57,7 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
-    AngularFireModule.initializeApp(environment.firebase, 'Seekers'),
+    AngularFireModule.initializeApp(config, 'Seekers'),
     AngularFireDatabaseModule,
     AngularFireAuthModule
   ],
