@@ -4,10 +4,10 @@
 /*
  * General styles
  */
- body, html {
+ body, html, ::ng-deep {
   height: 100%;
   background-repeat: no-repeat;
-  background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33));
+  background-image: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33)) !important;
 }
 
 .card-container.card {
