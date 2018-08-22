@@ -5,7 +5,6 @@ import { AppComponent } from './app.component';
 import { UserLoginComponent } from './users/user-login/user-login.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { AuthService } from './services/auth.service';
-import { environment } from '../environments/environment';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -13,6 +12,7 @@ import { CompanyLoginComponent } from './companies/company-login/company-login.c
 import { CompanyProfileComponent } from './companies/company-profile/company-profile.component';
 import { CompanyRegisterComponent } from './companies/company-register/company-register.component';
 import { UserRegisterComponent } from './users/user-register/user-register.component';
+import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 
 const config = {
     apiKey: 'AIzaSyBABKKZen_4awGglx5ILfCgvUpPeKwL5WI',
@@ -30,6 +30,7 @@ const appRoutes: Routes = [
   { path: 'user/login', component: UserLoginComponent },
   { path: 'user/register', component: UserRegisterComponent },
   { path: 'user/:id/profile', component: UserLoginComponent },
+  { path: 'forgot-password', component: ForgetPasswordComponent},
   /*{
     path: 'heroes', component: HeroListComponent,
     data: { title: 'Heroes List' }
@@ -49,7 +50,8 @@ const appRoutes: Routes = [
     CompanyLoginComponent,
     CompanyProfileComponent,
     CompanyRegisterComponent,
-    UserRegisterComponent
+    UserRegisterComponent,
+    ForgetPasswordComponent,
   ],
   imports: [
     BrowserModule,
