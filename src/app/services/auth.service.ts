@@ -103,6 +103,16 @@ export class AuthService {
       }
     });
   }
+  signUpUser(user) {
+    return firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch(function(error) {
+      console.log(error);
+    });
+  }
+  signInWithEmail(user) {
+    return firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error) {
+      console.log(error);
+    });
+  }
   signInWithTwitter() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.TwitterAuthProvider()
