@@ -28,3 +28,7 @@ To run this app, using a command promt navigate inside the app folder and run 'n
 * All components related to users must be generated inside 'users' folder, same for companies and services.
 * Use NgForm instead of FormGroup when posting data because NgForm will get automatically attached to any tags you have in your view.
 * Given it is still in the development phase, console.log must of the results and mainly the errors.
+* All class names must start with capital letters.
+* Maximum lines of code is 500 per file.
+* Variable name must not exceed 15 characters.
+* Separate functions with an empty line.
