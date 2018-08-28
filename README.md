@@ -32,3 +32,7 @@ To run this app, using a command promt navigate inside the app folder and run 'n
 * Maximum lines of code is 500 per file.
 * Variable name must not exceed 15 characters.
 * Separate functions with an empty line.
+* Refactor your code as much as you can until you use the least number of lines possible.
+* Never initialize a firebase instance outside the firebase service.
+* This is the main colour of the app rgb(12, 97, 33).
+* Write documentation over each function, and if necessarily over each line of code that is confusing.
