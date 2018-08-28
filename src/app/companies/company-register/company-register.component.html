@@ -4,10 +4,10 @@
       <h2>Company Registeration</h2>
     </div>
     <br>
-    <form class="form-signin">
+    <form class="form-signin" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
       <span id="reauth-email" class="reauth-email"></span>
-      <input type="text" id="company-name" class="form-control" placeholder="Company Name" required autofocus>
-      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required>
+      <input type="text" id="company-name" name="name" #name="ngModel" [(ngModel)]="company.name" class="form-control" placeholder="Company Name" required autofocus>
+      <input type="email" id="inputEmail" email="name" #email="ngModel" [(ngModel)]="company.email" class="form-control" placeholder="Email address" required>
       <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
       <input type="password" id="inputCPassword" class="form-control" placeholder="Confirm Password" required>
       <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Register</button>

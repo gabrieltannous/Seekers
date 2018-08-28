@@ -3,7 +3,6 @@ import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user';
 import { NgForm } from '@angular/forms';
 import { FirebaseService } from '../../services/firebase.service';
-import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-user-register',
@@ -24,7 +23,7 @@ export class UserRegisterComponent implements OnInit {
   }
 
   register(user: NgForm) {
-    this.authService.signUpUser(user.value)
+    this.authService.signUpEmail(user.value)
     .then(res => {
       this.firebaseService.addUser(user.value);
       window.location.href = '/user/login';

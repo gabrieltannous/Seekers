@@ -28,7 +28,7 @@ export class UserLoginComponent implements OnInit {
 
   signin(user: NgForm) {
     console.log(user.value);
-    this.authServ.signInWithEmail(user.value)
+    this.authServ.signInEmail(user.value)
     .then(res => {
       console.log('welcome ' + res);
       this.loggedIn = true;

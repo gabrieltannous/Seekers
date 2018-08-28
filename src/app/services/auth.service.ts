@@ -103,12 +103,12 @@ export class AuthService {
       }
     });
   }
-  signUpUser(user) {
+  signUpEmail(user) {
     return firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch(function(error) {
       console.log(error);
     });
   }
-  signInWithEmail(user) {
+  signInEmail(user) {
     return firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error) {
       console.log(error);
     });
