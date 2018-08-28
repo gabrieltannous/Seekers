@@ -5,7 +5,10 @@ import { AppComponent } from './app.component';
 import { UserLoginComponent } from './users/user-login/user-login.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
 import { AuthService } from './services/auth.service';
+import { FormsModule } from '@angular/forms';
+import { HttpModule } from '@angular/http';
 import { AngularFireModule } from 'angularfire2';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
 import { CompanyLoginComponent } from './companies/company-login/company-login.component';
@@ -13,17 +16,11 @@ import { CompanyProfileComponent } from './companies/company-profile/company-pro
 import { CompanyRegisterComponent } from './companies/company-register/company-register.component';
 import { UserRegisterComponent } from './users/user-register/user-register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
-
-const config = {
-    apiKey: 'AIzaSyBABKKZen_4awGglx5ILfCgvUpPeKwL5WI',
-    authDomain: 'seekers-uts.firebaseapp.com',
-    databaseURL: 'https://seekers-uts.firebaseio.com',
-    projectId: 'seekers-uts',
-    storageBucket: 'seekers-uts.appspot.com',
-    messagingSenderId: '844981083345'
-};
+import { environment } from '../environments/environment';
+import { HomeComponent } from './home/home.component';
 
 const appRoutes: Routes = [
+  { path: '', redirectTo: 'user/login', pathMatch: 'full' },
   { path: 'company/login', component: CompanyLoginComponent },
   { path: 'company/register', component: CompanyRegisterComponent },
   { path: 'company/:id/profile', component: CompanyProfileComponent },
@@ -31,6 +28,7 @@ const appRoutes: Routes = [
   { path: 'user/register', component: UserRegisterComponent },
   { path: 'user/:id/profile', component: UserLoginComponent },
   { path: 'forgot-password', component: ForgetPasswordComponent},
+  { path: 'home', component: HomeComponent},
   /*{
     path: 'heroes', component: HeroListComponent,
     data: { title: 'Heroes List' }
@@ -52,6 +50,7 @@ const appRoutes: Routes = [
     CompanyRegisterComponent,
     UserRegisterComponent,
     ForgetPasswordComponent,
+    HomeComponent,
   ],
   imports: [
     BrowserModule,
@@ -59,8 +58,11 @@ const appRoutes: Routes = [
       appRoutes,
       { enableTracing: true } // <-- debugging purposes only
     ),
-    AngularFireModule.initializeApp(config, 'Seekers'),
+    FormsModule,
+    HttpModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
+    AngularFirestoreModule,
     AngularFireAuthModule
   ],
   providers: [AuthService],
