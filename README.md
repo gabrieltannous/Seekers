@@ -36,3 +36,7 @@ To run this app, using a command promt navigate inside the app folder and run 'n
 * Never initialize a firebase instance outside the firebase service.
 * This is the main colour of the app rgb(12, 97, 33).
 * Write documentation over each function, and if necessarily over each line of code that is confusing.
+* Use bootstrap classes.
+* All authentication functions must be placed in /services/auth.service.ts, and all database functions must be placed in /services/firebase.service.ts.
+* Never write same code twice.
+* All classes must be placed in the modules folder.
