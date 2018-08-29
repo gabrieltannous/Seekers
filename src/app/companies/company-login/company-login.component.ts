@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-login',
@@ -13,7 +14,7 @@ export class CompanyLoginComponent implements OnInit {
   company = new Company();
   loggedIn: boolean;
 
-  constructor(private authServ: AuthService) {
+  constructor(private authServ: AuthService, private route: Router) {
     if (this.authServ.isLoggedIn()) {
       this.loggedIn = true;
     }
@@ -31,7 +32,7 @@ export class CompanyLoginComponent implements OnInit {
     .then(res => {
       console.log('welcome ' + res);
       this.loggedIn = true;
-      window.location.href = '/home';
+      this.route.navigate(['/home']);
     }, err => {
       console.log(err);
     });
