@@ -152,3 +152,65 @@ export class AuthService {
 //     this.router.navigate(['/'])
 //   }
 // }
+<<<<<<< HEAD
+=======
+
+import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
+import { AngularFireAuth } from 'angularfire2/auth';
+import * as firebase from 'firebase/app';
+import { Observable } from 'rxjs';
+
+@Injectable()
+export class AuthService {
+  private user: Observable<firebase.User>;
+  private userDetails: firebase.User = null;
+
+  constructor(private _firebaseAuth: AngularFireAuth, private router: Router) {
+    this.user = _firebaseAuth.authState;
+    this.user.subscribe(user => { // get user info of the current session
+      if (user) {
+        this.userDetails = user;
+        console.log(this.userDetails);
+      } else {
+        this.userDetails = null;
+      }
+    });
+  }
+  signUpEmail(user) {
+    return firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch(function(error) {
+      console.log(error);
+    });
+  }
+  signInEmail(user) {
+    return firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error) {
+      console.log(error);
+    });
+  }
+  signInWithTwitter() {
+    return this._firebaseAuth.auth.signInWithPopup(
+      new firebase.auth.TwitterAuthProvider()
+    );
+  }
+  signInWithFacebook() {
+    return this._firebaseAuth.auth.signInWithPopup(
+      new firebase.auth.FacebookAuthProvider()
+    );
+  }
+  signInWithGoogle() {
+    return this._firebaseAuth.auth.signInWithPopup(
+      new firebase.auth.GoogleAuthProvider()
+    );
+  }
+  isLoggedIn() { //check if the user is currently logged in
+    if (this.userDetails == null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  logout() { // log out the user and return to homepage
+    this._firebaseAuth.auth.signOut().then(res => this.router.navigate(['/']));
+  }
+}
+>>>>>>> 51d4f11839334db8427db809d1757baff730500e

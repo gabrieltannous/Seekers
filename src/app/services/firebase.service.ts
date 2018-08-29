@@ -16,7 +16,7 @@ export class FirebaseService {
       this.users = db.collection('/users').valueChanges();
   }
 
-  addCompany(company) {
+  addCompany(company) { // add a new company to database
     this.db.collection('companies').add({
       name: company.name,
       email: company.email
@@ -29,7 +29,7 @@ export class FirebaseService {
     });
   }
 
-  addUser(user) {
+  addUser(user) { // add a new user to database
     this.db.collection('users').add({
       fname: user.fname,
       lname: user.lname,
@@ -43,7 +43,7 @@ export class FirebaseService {
     });
   }
 
-  getCompany(id) {
+  getCompany(id) { // get company info
     this.db.collection('companies').ref.get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
           if (doc.id === id) {
@@ -53,7 +53,7 @@ export class FirebaseService {
     });
   }
 
-  getUser(id) {
+  getUser(id) { // get user info
     this.db.collection('users').ref.get().then((querySnapshot) => {
       querySnapshot.forEach((doc) => {
           if (doc.id === id) {
@@ -74,7 +74,7 @@ export class FirebaseService {
     });
   }
 
-  updateCompany(company) {
+  updateCompany(company) { // update company info
     const washingtonRef = this.db.collection('companies').doc(company.id);
 
     // Set the "capital" field of the city 'DC'
@@ -90,7 +90,7 @@ export class FirebaseService {
     });
   }
 
-  updateUser(user) {
+  updateUser(user) { // update user info
     const washingtonRef = this.db.collection('users').doc(user.id);
 
     // Set the "capital" field of the city 'DC'
@@ -107,12 +107,11 @@ export class FirebaseService {
     });
   }
 
-  deleteCopmany(id) {
+  deleteCopmany(id) { // delete a company -- admin function
     this.db.collection('companies').doc(id).delete();
   }
 
-  deleteUser(id) {
-    // const user = firebase.auth().currentUser;
+deleteUser(id) { // delete a user -- admin function
     this.db.collection('users').doc(id).delete();
     // user.delete().then(function() {
     //   // delete collection

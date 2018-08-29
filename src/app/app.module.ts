@@ -60,7 +60,7 @@ const appRoutes: Routes = [
     ),
     FormsModule,
     HttpModule,
-    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts
     AngularFireDatabaseModule,
     AngularFirestoreModule,
     AngularFireAuthModule
