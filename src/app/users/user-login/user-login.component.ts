@@ -15,18 +15,18 @@ export class UserLoginComponent implements OnInit {
   loggedIn: boolean;
 
   constructor(private authServ: AuthService) {
-    if (this.authServ.isLoggedIn()) {
+    if (this.authServ.isLoggedIn()) { //check if the user is currently logged in
       this.loggedIn = true;
     }
   }
 
   ngOnInit() {
-    if (this.authServ.isLoggedIn()) {
+    if (this.authServ.isLoggedIn()) { 
       this.loggedIn = true;
     }
   }
 
-  signin(user: NgForm) {
+  signin(user: NgForm) { // log user in
     console.log(user.value);
     this.authServ.signInEmail(user.value)
     .then(res => {
@@ -38,7 +38,7 @@ export class UserLoginComponent implements OnInit {
     });
   }
 
-  logout() {
+  logout() { //log user out
     this.authServ.logout();
     this.loggedIn = false;
   }

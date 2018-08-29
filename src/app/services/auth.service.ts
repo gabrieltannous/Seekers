@@ -94,7 +94,7 @@ export class AuthService {
 
   constructor(private _firebaseAuth: AngularFireAuth, private router: Router) {
     this.user = _firebaseAuth.authState;
-    this.user.subscribe(user => {
+    this.user.subscribe(user => { // get user info of the current session
       if (user) {
         this.userDetails = user;
         console.log(this.userDetails);
@@ -128,14 +128,14 @@ export class AuthService {
       new firebase.auth.GoogleAuthProvider()
     );
   }
-  isLoggedIn() {
+  isLoggedIn() { //check if the user is currently logged in
     if (this.userDetails == null) {
       return false;
     } else {
       return true;
     }
   }
-  logout() {
+  logout() { // log out the user and return to homepage
     this._firebaseAuth.auth.signOut().then(res => this.router.navigate(['/']));
   }
 }
