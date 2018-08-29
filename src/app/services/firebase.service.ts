@@ -17,7 +17,7 @@ export class FirebaseService {
   }
 
   addCompany(company) { // add a new company to database
-    this.db.collection('companies').add({
+    return this.db.collection('companies').add({
       name: company.name,
       email: company.email
     })
@@ -29,8 +29,9 @@ export class FirebaseService {
     });
   }
 
-  addUser(user) { // add a new user to database
-    this.db.collection('users').add({
+  addUser(user) { // add a new user to
+    console.log('user is ' + user);
+    return this.db.collection('users').add({
       fname: user.fname,
       lname: user.lname,
       email: user.email
@@ -44,57 +45,49 @@ export class FirebaseService {
   }
 
   getCompany(id) { // get company info
-    this.db.collection('companies').ref.get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-          if (doc.id === id) {
-            return doc;
-          }
-      });
+    this.db.collection('companies').doc(id).ref.get().then(function(doc) {
+      if (doc.exists) {
+          return doc;
+      } else {
+          return null;
+      }
+    }).catch(function(error) {
+        console.log('Error getting document:', error);
+        return null;
     });
   }
 
   getUser(id) { // get user info
-    this.db.collection('users').ref.get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-          if (doc.id === id) {
-            return doc;
-          }
-      });
-    });
-  }
-
-  getProfile() {
-    const user = firebase.auth().currentUser;
-    this.db.collection('users').ref.get().then((querySnapshot) => {
-      querySnapshot.forEach((doc) => {
-          if (doc.id === user.uid) {
-            return doc;
-          }
-      });
+    this.db.collection('users').doc(id).ref.get().then(function(doc) {
+      if (doc.exists) {
+          return doc;
+      } else {
+          return null;
+      }
+    }).catch(function(error) {
+        console.log('Error getting document:', error);
+        return null;
     });
   }
 
   updateCompany(company) { // update company info
-    const washingtonRef = this.db.collection('companies').doc(company.id);
+    const companyRef = this.db.collection('companies').doc(company.id);
 
-    // Set the "capital" field of the city 'DC'
-    return washingtonRef.update({
+    return companyRef.update({
         name: company.name
     })
     .then(function() {
         console.log('Document successfully updated!');
     })
     .catch(function(error) {
-        // The document probably doesn't exist.
         console.error('Error updating document: ', error);
     });
   }
 
   updateUser(user) { // update user info
-    const washingtonRef = this.db.collection('users').doc(user.id);
+    const userRef = this.db.collection('users').doc(user.id);
 
-    // Set the "capital" field of the city 'DC'
-    return washingtonRef.update({
+    return userRef.update({
         fname: user.fname,
         lname: user.lname
     })
@@ -102,22 +95,16 @@ export class FirebaseService {
         console.log('Document successfully updated!');
     })
     .catch(function(error) {
-        // The document probably doesn't exist.
         console.error('Error updating document: ', error);
     });
   }
 
   deleteCopmany(id) { // delete a company -- admin function
-    this.db.collection('companies').doc(id).delete();
+    return this.db.collection('companies').doc(id).delete();
   }
 
-deleteUser(id) { // delete a user -- admin function
-    this.db.collection('users').doc(id).delete();
-    // user.delete().then(function() {
-    //   // delete collection
-    // }).catch(function(error) {
-    //   // An error happened.
-    // });
+  deleteUser(id) { // delete a user -- admin function
+    return this.db.collection('users').doc(id).delete();
   }
 
 }

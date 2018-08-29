@@ -3,54 +3,96 @@ import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
+import { FirebaseService } from './firebase.service';
 
 @Injectable()
 export class AuthService {
   private user: Observable<firebase.User>;
-  private userDetails: firebase.User = null;
+  private authState: firebase.User = null;
 
-  constructor(private _firebaseAuth: AngularFireAuth, private router: Router) {
+  constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private fireServ: FirebaseService) {
     this.user = _firebaseAuth.authState;
-    this.user.subscribe(user => {
-      if (user) {
-        this.userDetails = user;
-        console.log(this.userDetails);
+    this.user.subscribe(auth => { // get user info of the current session
+      if (auth) {
+        this.authState = auth;
       } else {
-        this.userDetails = null;
+        this.authState = null;
       }
     });
   }
+
+  get authenticated(): boolean {
+    return this.user !== null;
+  }
+
+  get currentUser(): any {
+    return this.isLoggedIn ? this.authState : null;
+  }
+
+  isLoggedIn() { // check if the user is currently logged in
+    return !(this.authState == null);
+  }
+
+  isUser() {
+    console.log(this.currentUserId);
+    console.log(this.fireServ.getUser(this.currentUserId));
+    return (this.fireServ.getUser(this.currentUserId) !== null);
+  }
+
+  logout() { // log out the user and return to homepage
+    this._firebaseAuth.auth.signOut().then(res => this.router.navigate(['/']));
+  }
+
+  get currentUserId(): string {
+    return this.authenticated ? this.authState.uid : '';
+  }
+
+  get currentUserAnonymous(): boolean {
+    return this.authenticated ? this.authState.isAnonymous : false;
+  }
+
+  get currentUserDisplayName(): string {
+    if (!this.authenticated) {
+      return 'GUEST';
+    } else if (this.currentUserAnonymous) {
+      return 'ANONYMOUS';
+    } else {
+      return this.authState.displayName || 'PAUTH USER';
+    }
+  }
+
   signUpEmail(user) {
     return firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
-    .then(user.sendEmailVerification().then(function() {
-      // Email sent.
-    }).catch(function(error) {
-      // An error happened.
-    }))
     .catch(function(error) {
       console.log(error);
     });
   }
+
   signInEmail(user) {
-    return firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error) {
+    return firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .catch(function(error) {
       console.log(error);
     });
   }
+
   signInWithTwitter() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.TwitterAuthProvider()
     );
   }
+
   signInWithFacebook() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.FacebookAuthProvider()
     );
   }
+
   signInWithGoogle() {
     return this._firebaseAuth.auth.signInWithPopup(
       new firebase.auth.GoogleAuthProvider()
     );
   }
+
   resetPassword(email) {
     return this._firebaseAuth.auth.sendPasswordResetEmail(email).then(function() {
       // Email sent.
@@ -58,159 +100,5 @@ export class AuthService {
       // An error happened.
     });
   }
-  isLoggedIn() {
-    if (this.userDetails == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-  logout() {
-    this._firebaseAuth.auth.signOut().then(res => this.router.navigate(['/']));
-  }
 }
 
-// import { Injectable } from '@angular/core';
-// // import { AngularFireDatabase, FirebaseAuthState, AuthProviders, AuthMethods, AngularFire } from 'angularfire2';
-// import { AngularFireAuth } from 'angularfire2/auth';
-// import { Router } from '@angular/router';
-// import * as firebase from 'firebase/app';
-// import { Observable } from 'rxjs';
-
-// @Injectable({
-//   providedIn: 'root'
-// })
-// export class AuthService {
-
-//   authState: FirebaseAuthState = null;
-//   private user: Observable<firebase.User>;
-
-//   constructor(private _firebaseAuth: AngularFireAuth, private af: AngularFire, private db: AngularFireDatabase, private router: Router) {
-//     this.user = _firebaseAuth.authState;
-//     af.auth.subscribe((auth) => {
-//       this.authState = auth;
-//     });
-//    }
-
-//    get authenticated(): boolean {
-//      return this.authState !== null;
-//    }
-
-//    get currentUser(): any {
-//      return this.authenticated ? this.authState.auth : null;
-//    }
-
-//    get currentUserId(): string {
-//      return this.authenticated ? this.authState.uid : '';
-//    }
-
-//    get currentUserAnonymous(): boolean {
-//      return this.authenticated ? this.authState.anonymous : false;
-//    }
-
-//    get currentUserDisplayName(): string {
-//      if (!this.authenticated) {
-//        return 'GUEST';
-//      }
-//      else if (this.currentUserAnonymous) {
-//        return 'ANONYMOUS';
-//       }
-//      else {
-//        return this.authState.auth.displayName || 'PAUTH USER';
-//     }
-//    }
-
-//    googleLogin(): firebase.Promis<FirebaseAuthState> {
-//      return this.socialSignIn(AuthProviders.Google);
-//    }
-
-//    signInWithGoogle() {
-//     return this._firebaseAuth.auth.signInWithPopup(
-//       new firebase.auth.GoogleAuthProvider()
-//     );
-//   }
-
-//    private socialSignIn(provider: number): firebase.Promise<FirebaseAuthState> {
-//      return this.af.auth.login({provider, method: AuthMethods.Popup})
-//             .then(() => this.updateUserData())
-//             .catch(error => console.log(error));
-//    }
-
-//    private updateUserData(): void {
-//      let path = `users/${this.currentUserId}`;
-//      let data = {
-//        name: this.currentUser.displayName,
-//        email: this.currentUser.email,
-//      }
-
-//      this.db.object(path).update(data)
-//      .catch(error => console.log(error));
-//    }
-
-//    signOut(): void {
-//     this.af.auth.logout();
-//     this.router.navigate(['/'])
-//   }
-// }
-<<<<<<< HEAD
-=======
-
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { AngularFireAuth } from 'angularfire2/auth';
-import * as firebase from 'firebase/app';
-import { Observable } from 'rxjs';
-
-@Injectable()
-export class AuthService {
-  private user: Observable<firebase.User>;
-  private userDetails: firebase.User = null;
-
-  constructor(private _firebaseAuth: AngularFireAuth, private router: Router) {
-    this.user = _firebaseAuth.authState;
-    this.user.subscribe(user => { // get user info of the current session
-      if (user) {
-        this.userDetails = user;
-        console.log(this.userDetails);
-      } else {
-        this.userDetails = null;
-      }
-    });
-  }
-  signUpEmail(user) {
-    return firebase.auth().createUserWithEmailAndPassword(user.email, user.password).catch(function(error) {
-      console.log(error);
-    });
-  }
-  signInEmail(user) {
-    return firebase.auth().signInWithEmailAndPassword(user.email, user.password).catch(function(error) {
-      console.log(error);
-    });
-  }
-  signInWithTwitter() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.TwitterAuthProvider()
-    );
-  }
-  signInWithFacebook() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.FacebookAuthProvider()
-    );
-  }
-  signInWithGoogle() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.GoogleAuthProvider()
-    );
-  }
-  isLoggedIn() { //check if the user is currently logged in
-    if (this.userDetails == null) {
-      return false;
-    } else {
-      return true;
-    }
-  }
-  logout() { // log out the user and return to homepage
-    this._firebaseAuth.auth.signOut().then(res => this.router.navigate(['/']));
-  }
-}
->>>>>>> 51d4f11839334db8427db809d1757baff730500e

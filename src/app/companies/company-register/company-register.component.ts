@@ -7,8 +7,9 @@ import { FirebaseService } from '../../services/firebase.service';
 @Component({
   selector: 'app-company-register',
   templateUrl: './company-register.component.html',
-  styleUrls: ['./company-register.component.css']
+  styleUrls: ['./company-register.component.css', '../../app.component.css']
 })
+
 export class CompanyRegisterComponent implements OnInit {
 
   company = new Company();
@@ -16,7 +17,7 @@ export class CompanyRegisterComponent implements OnInit {
   successMessage: string;
 
   constructor( private authService: AuthService, private firebaseService: FirebaseService) {
-   }
+  }
 
   ngOnInit() {
 

@@ -6,7 +6,7 @@ import { Company } from '../../models/company';
 @Component({
   selector: 'app-company-login',
   templateUrl: './company-login.component.html',
-  styleUrls: ['./company-login.component.css']
+  styleUrls: ['./company-login.component.css', '../../app.component.css']
 })
 export class CompanyLoginComponent implements OnInit {
 

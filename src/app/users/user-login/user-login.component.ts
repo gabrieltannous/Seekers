@@ -2,11 +2,12 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css'],
+  styleUrls: ['./user-login.component.css', '../../app.component.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class UserLoginComponent implements OnInit {
@@ -14,16 +15,11 @@ export class UserLoginComponent implements OnInit {
   user = new User();
   loggedIn: boolean;
 
-  constructor(private authServ: AuthService) {
-    if (this.authServ.isLoggedIn()) { //check if the user is currently logged in
-      this.loggedIn = true;
-    }
+  constructor(private authServ: AuthService, private router: Router) {
   }
 
   ngOnInit() {
-    if (this.authServ.isLoggedIn()) { 
-      this.loggedIn = true;
-    }
+    this.loggedIn = this.authServ.isLoggedIn();
   }
 
   signin(user: NgForm) { // log user in
@@ -32,13 +28,14 @@ export class UserLoginComponent implements OnInit {
     .then(res => {
       console.log('welcome ' + res);
       this.loggedIn = true;
-      window.location.href = '/home';
+      this.router.navigate(['/home']);
+      console.log('passed navigation');
     }, err => {
       console.log(err);
     });
   }
 
-  logout() { //log user out
+  logout() { // log user out
     this.authServ.logout();
     this.loggedIn = false;
   }

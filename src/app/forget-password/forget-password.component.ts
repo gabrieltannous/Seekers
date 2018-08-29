@@ -5,11 +5,11 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-forget-password',
   templateUrl: './forget-password.component.html',
-  styleUrls: ['./forget-password.component.css']
+  styleUrls: ['./forget-password.component.css', '../app.component.css']
 })
 export class ForgetPasswordComponent implements OnInit {
 
-  email: string;
+  Email: string;
   mailSent: boolean;
 
   constructor(private authState: AuthService) {
