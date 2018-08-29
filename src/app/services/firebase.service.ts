@@ -63,6 +63,17 @@ export class FirebaseService {
     });
   }
 
+  getProfile() {
+    const user = firebase.auth().currentUser;
+    this.db.collection('users').ref.get().then((querySnapshot) => {
+      querySnapshot.forEach((doc) => {
+          if (doc.id === user.uid) {
+            return doc;
+          }
+      });
+    });
+  }
+
   updateCompany(company) {
     const washingtonRef = this.db.collection('companies').doc(company.id);
 
@@ -101,7 +112,13 @@ export class FirebaseService {
   }
 
   deleteUser(id) {
+    // const user = firebase.auth().currentUser;
     this.db.collection('users').doc(id).delete();
+    // user.delete().then(function() {
+    //   // delete collection
+    // }).catch(function(error) {
+    //   // An error happened.
+    // });
   }
 
 }
