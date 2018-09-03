@@ -30,8 +30,8 @@ export class FirebaseService {
   }
 
   addUser(user) { // add a new user to
-    console.log('user is ' + user);
     return this.db.collection('users').add({
+      uid: user.uid,
       fname: user.fname,
       lname: user.lname,
       email: user.email
@@ -42,6 +42,20 @@ export class FirebaseService {
     .catch(function(error) {
         console.error('Error adding document: ', error);
     });
+  }
+
+  addGoogleUser(user) { // add a new user to
+    return this.db.collection('users').doc(user.uid).set({
+        displayName: user.displayName,
+        email: user.email,
+        photo: user.photoURL
+      })
+      .then(res => {
+          console.log(res);
+      })
+      .catch(err => {
+          console.error(err);
+      });
   }
 
   getCompany(id) { // get company info

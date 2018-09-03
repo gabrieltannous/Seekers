@@ -88,8 +88,14 @@ export class AuthService {
   }
 
   signInWithGoogle() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.GoogleAuthProvider()
+    return this._firebaseAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    .then(
+      res => {
+        console.log(res.user);
+        this.fireServ.addGoogleUser(res.user);
+      }, err => {
+        console.log(err);
+      }
     );
   }
 

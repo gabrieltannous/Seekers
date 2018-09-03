@@ -35,6 +35,18 @@ export class UserLoginComponent implements OnInit {
     });
   }
 
+  googleLogin() {
+    this.spinnerService.show();
+    this.authServ.signInWithGoogle()
+    .then(res => {
+      this.spinnerService.hide();
+      this.loggedIn = true;
+      this.router.navigate(['/home']);
+    }, err => {
+      console.log(err);
+    });
+  }
+
   logout() { // log user out
     this.authServ.logout();
     this.loggedIn = false;
