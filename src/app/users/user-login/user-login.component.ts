@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Component({
   selector: 'app-user-login',
@@ -15,7 +16,7 @@ export class UserLoginComponent implements OnInit {
   user = new User();
   loggedIn: boolean;
 
-  constructor(private authServ: AuthService, private router: Router) {
+  constructor(private authServ: AuthService, private router: Router, private spinnerService: Ng4LoadingSpinnerService) {
   }
 
   ngOnInit() {
@@ -23,13 +24,12 @@ export class UserLoginComponent implements OnInit {
   }
 
   signin(user: NgForm) { // log user in
-    console.log(user.value);
+    this.spinnerService.show();
     this.authServ.signInEmail(user.value)
     .then(res => {
-      console.log('welcome ' + res);
+      this.spinnerService.hide();
       this.loggedIn = true;
       this.router.navigate(['/home']);
-      console.log('passed navigation');
     }, err => {
       console.log(err);
     });
@@ -39,5 +39,4 @@ export class UserLoginComponent implements OnInit {
     this.authServ.logout();
     this.loggedIn = false;
   }
-
 }

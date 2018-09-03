@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
 import { NgForm } from '@angular/forms';
 import { FirebaseService } from '../../services/firebase.service';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Component({
   selector: 'app-company-register',
@@ -16,7 +17,7 @@ export class CompanyRegisterComponent implements OnInit {
   errorMessage: string;
   successMessage: string;
 
-  constructor( private authService: AuthService, private firebaseService: FirebaseService) {
+  constructor( private authService: AuthService, private firebaseService: FirebaseService, private loader: Ng4LoadingSpinnerService) {
   }
 
   ngOnInit() {
@@ -24,9 +25,11 @@ export class CompanyRegisterComponent implements OnInit {
   }
 
   register(company: NgForm) {
+    this.loader.show();
     this.authService.signUpEmail(company.value)
     .then(res => {
       this.firebaseService.addCompany(company.value);
+      this.loader.hide();
       window.location.href = '/company/login';
     }, err => {
       console.log(err);

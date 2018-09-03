@@ -4,6 +4,7 @@ import { User } from '../../models/user';
 import { NgForm } from '@angular/forms';
 import { FirebaseService } from '../../services/firebase.service';
 import { Router } from '@angular/router';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Component({
   selector: 'app-user-register',
@@ -16,18 +17,21 @@ export class UserRegisterComponent implements OnInit {
   errorMessage: string;
   successMessage: string;
 
-  constructor( private authService: AuthService, private firebaseService: FirebaseService, private route: Router) {
-   }
+  constructor(private authService: AuthService, private firebaseService: FirebaseService,
+    private route: Router, private loader: Ng4LoadingSpinnerService) {
+
+    }
 
   ngOnInit() {
 
   }
 
   register(user: NgForm) {
+    this.loader.show();
     this.authService.signUpEmail(user.value)
     .then(res => {
-      console.log(res);
       this.firebaseService.addUser(user.value);
+      this.loader.hide();
       this.route.navigate(['/user/login']);
       // window.location.href = '/user/login';
     }, err => {

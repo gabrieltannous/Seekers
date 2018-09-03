@@ -3,6 +3,7 @@ import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
 import { Router } from '@angular/router';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Component({
   selector: 'app-company-login',
@@ -14,24 +15,20 @@ export class CompanyLoginComponent implements OnInit {
   company = new Company();
   loggedIn: boolean;
 
-  constructor(private authServ: AuthService, private route: Router) {
-    if (this.authServ.isLoggedIn()) {
-      this.loggedIn = true;
-    }
+  constructor(private authServ: AuthService, private route: Router, private loader: Ng4LoadingSpinnerService) {
+
   }
 
   ngOnInit() {
-    if (this.authServ.isLoggedIn()) {
-      this.loggedIn = true;
-    }
+    this.loggedIn = this.authServ.isLoggedIn();
   }
 
   signin(company: NgForm) {
-    console.log(company.value);
+    this.loader.show();
     this.authServ.signInEmail(company.value)
     .then(res => {
-      console.log('welcome ' + res);
       this.loggedIn = true;
+      this.loader.hide();
       this.route.navigate(['/home']);
     }, err => {
       console.log(err);

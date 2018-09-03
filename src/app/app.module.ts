@@ -19,6 +19,7 @@ import { CompanyRegisterComponent } from './companies/company-register/company-r
 import { UserRegisterComponent } from './users/user-register/user-register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { HomeComponent } from './home/home.component';
+import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 
 @NgModule({
   declarations: [
@@ -37,6 +38,7 @@ import { HomeComponent } from './home/home.component';
     FormsModule,
     HttpModule,
     routing,
+    Ng4LoadingSpinnerModule.forRoot(),
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts
     AngularFireDatabaseModule,
     AngularFirestoreModule,
