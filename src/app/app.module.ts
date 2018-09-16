@@ -20,6 +20,11 @@ import { UserRegisterComponent } from './users/user-register/user-register.compo
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { HomeComponent } from './home/home.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
+import { MainNavComponent } from './main-nav/main-nav.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
+import { CompanyJobsComponent } from './companies/company-jobs/company-jobs.component';
+import { UserJobsComponent } from './users/user-jobs/user-jobs.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +36,10 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
     CompanyProfileComponent,
     CompanyRegisterComponent,
     HomeComponent,
-    ForgetPasswordComponent
+    ForgetPasswordComponent,
+    MainNavComponent,
+    CompanyJobsComponent,
+    UserJobsComponent
   ],
   imports: [
     BrowserModule,
@@ -42,7 +50,13 @@ import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts
     AngularFireDatabaseModule,
     AngularFirestoreModule,
-    AngularFireAuthModule
+    AngularFireAuthModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   providers: [
     AuthService,

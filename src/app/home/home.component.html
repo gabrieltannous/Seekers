@@ -1,10 +1,38 @@
-<div class="container">
-  <div class="row">
-    <button *ngIf="!isUser" class="btn btn-info" data-toggle="modal" data-target="#myModal">Post</button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <h2>Seekers</h2>
+  <div class="collapse in navbar-collapse" id="navbarText">
+    <ul *ngIf="isUser" class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="btn btn-outline-secondary" routerLink="/user/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-outline-secondary" routerLink="/user/profile">Applied Jobs</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-outline-secondary" routerLink="/user/profile">Search</a>
+      </li>
+    </ul>
+    <ul *ngIf="!isUser" class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="btn btn-outline-secondary" routerLink="/company/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="btn btn-outline-info" data-toggle="modal" data-target="#myModal">My Jobs</a>
+      </li>
+    </ul>
   </div>
+
+  <div class="form-inline">
+    <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+  </div>
+</nav>
+
+<div class="container">
   <div *ngIf="jobs?.length > 0" class="row">
     <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
-      <div class="card-header"><h4>{{item.title}}</h4></div>
+      <div class="card-header">
+        <h4>{{item.title}}</h4>
+      </div>
       <div class="card-body">
         <h5 class="card-title">{{item.type}}</h5>
         <p class="card-text">${{item.salary}}</p>
@@ -12,8 +40,6 @@
       </div>
     </div>
   </div>
-
-
 
   <!-- Modal -->
   <div class="modal fade" id="myModal" role="dialog">

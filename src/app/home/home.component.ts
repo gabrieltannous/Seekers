@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
 import { Job } from '../models/job';
@@ -9,13 +9,12 @@ import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/fires
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
-  styleUrls: ['./home.component.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
 
   job = new Job();
-  isUser = true;
+  isUser: boolean;
   showIt: boolean;
   jobsCollection: AngularFirestoreCollection<Job>;
   jobs: any[];
@@ -42,6 +41,10 @@ export class HomeComponent implements OnInit {
 
   apply(item) {
     console.log(item);
+  }
+
+  logout() {
+    this.authState.logout();
   }
 
 }

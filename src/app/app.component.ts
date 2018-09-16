@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { FirebaseService } from './services/firebase.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,7 @@ import { FirebaseService } from './services/firebase.service';
 export class AppComponent implements OnInit {
 
   isUser = false;
-  isCompany = false;
+  isCompany: boolean;
   isAuth: boolean;
 
   constructor(private authState: AuthService) {
