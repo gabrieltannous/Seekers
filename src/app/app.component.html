@@ -1,2 +1,23 @@
-<ng4-loading-spinner> </ng4-loading-spinner>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <h2>Seekers</h2>
+  <div class="collapse in navbar-collapse" id="navbarText">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/login">Company Login</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/login">User Login</a>
+      </li>
+      <li *ngIf="isAuth" class="nav-item">
+        <a class="btn btn-outline-secondary" *ngIf="isUser" routerLink="/user/login" routerLinkActive="active">Profile</a>
+        <a class="btn btn-outline-secondary" *ngIf="isCompany" routerLink="/company/login" routerLinkActive="active">Profile</a>
+      </li>
+    </ul>
+  </div>
+  <div class="form-inline">
+    <button class="btn btn-outline-danger my-2 my-sm-0" *ngIf="isAuth" (click)="logout()">Logout</button>
+  </div>
+</nav>
+
+<ng4-loading-spinner [threshold]="10" [timeout]="20000" [zIndex]="9999"></ng4-loading-spinner>
 <router-outlet></router-outlet>

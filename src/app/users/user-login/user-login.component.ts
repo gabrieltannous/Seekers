@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
@@ -8,15 +8,17 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css', '../../app.component.css'],
+  styleUrls: ['./user-login.component.css', '../../auth.css'],
   encapsulation: ViewEncapsulation.None
 })
 export class UserLoginComponent implements OnInit {
 
   user = new User();
   loggedIn: boolean;
+  wrongAuth: boolean;
 
-  constructor(private authServ: AuthService, private router: Router, private spinnerService: Ng4LoadingSpinnerService) {
+  constructor(private authServ: AuthService, private router: Router,
+    private loader: Ng4LoadingSpinnerService, private elementRef: ElementRef) {
   }
 
   ngOnInit() {
@@ -24,22 +26,24 @@ export class UserLoginComponent implements OnInit {
   }
 
   signin(user: NgForm) { // log user in
-    this.spinnerService.show();
+    this.loader.show();
     this.authServ.signInEmail(user.value)
     .then(res => {
-      this.spinnerService.hide();
-      this.loggedIn = true;
+      this.wrongAuth = !this.authServ.isLoggedIn();
       this.router.navigate(['/home']);
     }, err => {
-      console.log(err);
+      this.wrongAuth = true;
+    })
+    .catch(error => {
+      console.log(error);
+      this.wrongAuth = true;
     });
   }
 
-  googleLogin() {
-    this.spinnerService.show();
+  async googleLogin() {
+    this.loader.show();
     this.authServ.signInWithGoogle()
     .then(res => {
-      this.spinnerService.hide();
       this.loggedIn = true;
       this.router.navigate(['/home']);
     }, err => {

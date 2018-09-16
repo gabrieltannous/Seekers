@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { User } from '../../models/user';
 import { NgForm } from '@angular/forms';
@@ -9,7 +9,8 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 @Component({
   selector: 'app-user-register',
   templateUrl: './user-register.component.html',
-  styleUrls: ['./user-register.component.css', '../../app.component.css']
+  styleUrls: ['./user-register.component.css', '../../auth.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class UserRegisterComponent implements OnInit {
 
@@ -28,16 +29,9 @@ export class UserRegisterComponent implements OnInit {
 
   register(user: NgForm) {
     this.loader.show();
-    this.authService.signUpEmail(user.value)
-    .then(res => {
-      this.firebaseService.addUser(user.value);
-      this.loader.hide();
-      this.route.navigate(['/user/login']);
-      // window.location.href = '/user/login';
-    }, err => {
+    this.authService.signUpEmailUser(user.value)
+    .catch(err => {
       console.log(err);
-      this.errorMessage = err.message;
-      this.successMessage = '';
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
@@ -8,7 +8,8 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 @Component({
   selector: 'app-company-login',
   templateUrl: './company-login.component.html',
-  styleUrls: ['./company-login.component.css', '../../app.component.css']
+  styleUrls: ['./company-login.component.css', '../../auth.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class CompanyLoginComponent implements OnInit {
 

@@ -1,17 +1,47 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <h2>Seekers</h2>
-  <div class="collapse in navbar-collapse" id="navbarText">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link" *ngIf="isUser" routerLink="/user/login" routerLinkActive="active">Profile</a>
-        <a class="nav-link" *ngIf="!isUser" routerLink="/company/login" routerLinkActive="active">Profile</a>
-      </li>
-    </ul>
+<div class="container">
+  <div class="row">
+    <button *ngIf="!isUser" class="btn btn-info" data-toggle="modal" data-target="#myModal">Post</button>
   </div>
-  <div class="form-inline">
-    <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+  <div *ngIf="jobs?.length > 0" class="row">
+    <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
+      <div class="card-header"><h4>{{item.title}}</h4></div>
+      <div class="card-body">
+        <h5 class="card-title">{{item.type}}</h5>
+        <p class="card-text">${{item.salary}}</p>
+        <button class="btn btn-primary" (click)="apply(item)">Apply</button>
+      </div>
+    </div>
   </div>
-</nav>
-<p>
-  home works!
-</p>
+
+
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Create a Job</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        <form class="form-signin" #jobForm="ngForm" (ngSubmit)="addJob(jobForm)">
+          <div class="modal-body">
+            <input type="text" name="title" #title="ngModel" [(ngModel)]="job.title" class="form-control" placeholder="Job Title"
+              required autofocus>
+            <input type="text" name="type" #type="ngModel" [(ngModel)]="job.type" class="form-control" placeholder="Job Type"
+              required>
+            <input type="number" name="salary" #salary="ngModel" [(ngModel)]="job.salary" class="form-control"
+              placeholder="Job Salary" required>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button type="submit" data-dismiss="modal" class="btn btn-success">Add Job</button>
+          </div>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+</div>

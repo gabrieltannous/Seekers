@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
-import * as firebase from 'firebase/app';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,78 +9,110 @@ export class FirebaseService {
 
   public companies: Observable<any[]>;
   public users: Observable<any[]>;
+  public itemsCollection: AngularFirestoreCollection<any>;
+  public jobs: Observable<any[]>;
+  itemDoc: AngularFirestoreDocument<any>;
 
   constructor(private db: AngularFirestore) {
       this.companies = db.collection('/companies').valueChanges();
       this.users = db.collection('/users').valueChanges();
+      this.jobs = db.collection('jobs').valueChanges();
   }
 
   addCompany(company) { // add a new company to database
-    return this.db.collection('companies').add({
+    return this.db.collection('companies').doc(company.uid).set({
       name: company.name,
       email: company.email
     })
-    .then(function(docRef) {
-        console.log('Document written with ID: ', docRef.id);
+    .then(res => {
+      console.log(res);
     })
-    .catch(function(error) {
-        console.error('Error adding document: ', error);
+    .catch(err => {
+      console.error(err);
     });
   }
 
   addUser(user) { // add a new user to
-    return this.db.collection('users').add({
-      uid: user.uid,
-      fname: user.fname,
-      lname: user.lname,
+    return this.db.collection('users').doc(user.uid).set({
+      fullName: user.fname + ' ' + user.lname,
       email: user.email
     })
-    .then(function(docRef) {
-        console.log('Document written with ID: ', docRef.id);
+    .then(res => {
+      console.log(res);
     })
-    .catch(function(error) {
-        console.error('Error adding document: ', error);
+    .catch(err => {
+      console.error(err);
     });
   }
 
   addGoogleUser(user) { // add a new user to
     return this.db.collection('users').doc(user.uid).set({
-        displayName: user.displayName,
-        email: user.email,
-        photo: user.photoURL
-      })
-      .then(res => {
-          console.log(res);
-      })
-      .catch(err => {
-          console.error(err);
-      });
-  }
-
-  getCompany(id) { // get company info
-    this.db.collection('companies').doc(id).ref.get().then(function(doc) {
-      if (doc.exists) {
-          return doc;
-      } else {
-          return null;
-      }
-    }).catch(function(error) {
-        console.log('Error getting document:', error);
-        return null;
+      fullName: user.displayName,
+      email: user.email,
+      photo: user.photoURL
+    })
+    .catch(err => {
+        console.error(err);
     });
   }
 
-  getUser(id) { // get user info
-    this.db.collection('users').doc(id).ref.get().then(function(doc) {
-      if (doc.exists) {
-          return doc;
-      } else {
-          return null;
+  addJob(job) { // add a new user to
+    return this.db.collection('jobs').add({
+      title: job.title,
+      companyId: job.companyId,
+      type: job.type,
+      salary: job.salary
+    })
+    .then(res => {
+      console.log(res);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+  }
+
+  async getCompany(id): Promise<Object> { // get company info
+    let company;
+    await this.db.collection('companies').doc(id).ref.get()
+    .then(res => {
+      if (res.data != null) {
+        company = res.data();
+      }
+    }).catch(err => {
+      console.log(err);
+    });
+    console.log('company is ' + company);
+    return company;
+  }
+
+  async getUser(id): Promise<Object> { // get user info
+    let user;
+    await this.db.collection('users').doc(id).ref.get()
+    .then(res => {
+      if (res.data != null) {
+        user = res;
       }
     }).catch(function(error) {
-        console.log('Error getting document:', error);
-        return null;
+      console.log('Error getting document:', error);
+      user = null;
     });
+    return user.data();
+  }
+
+  async getCounter(id): Promise<number> { // get user info
+    let counter;
+    console.log('inside');
+    await this.db.collection('counter').doc(id).ref.get().then(doc => {
+      counter = doc.data().count;
+    }).catch(function(error) {
+        console.log('Error getting document:', error);
+    });
+    console.log('counter inside is' + counter);
+    return counter;
+  }
+
+  getJobs() {
+    return this.db.collection('jobs').valueChanges(); /* , ref => ref.where('expenseId', '==', true)); */;
   }
 
   updateCompany(company) { // update company info

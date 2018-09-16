@@ -4,13 +4,15 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { Observable } from 'rxjs';
 import { FirebaseService } from './firebase.service';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Injectable()
 export class AuthService {
   private user: Observable<firebase.User>;
   private authState: firebase.User = null;
 
-  constructor(private _firebaseAuth: AngularFireAuth, private router: Router, private fireServ: FirebaseService) {
+  constructor(private _firebaseAuth: AngularFireAuth, private route: Router, private fireServ: FirebaseService,
+    private loader: Ng4LoadingSpinnerService) {
     this.user = _firebaseAuth.authState;
     this.user.subscribe(auth => { // get user info of the current session
       if (auth) {
@@ -29,18 +31,22 @@ export class AuthService {
     return this.isLoggedIn ? this.authState : null;
   }
 
-  isLoggedIn() { // check if the user is currently logged in
+  isLoggedIn(): boolean { // check if the user is currently logged in
     return !(this.authState == null);
   }
 
-  isUser() {
-    console.log(this.currentUserId);
-    console.log(this.fireServ.getUser(this.currentUserId));
-    return (this.fireServ.getUser(this.currentUserId) !== null);
+  async isUser(): Promise<boolean> {
+    const user = await this.fireServ.getUser(this.currentUserId);
+    return (user !== undefined);
+  }
+
+  async isCompany(): Promise<boolean> {
+    const company = await this.fireServ.getCompany(this.currentUserId);
+    return (company !== undefined);
   }
 
   logout() { // log out the user and return to homepage
-    this._firebaseAuth.auth.signOut().then(res => this.router.navigate(['/']));
+    this._firebaseAuth.auth.signOut().then(res => this.route.navigate(['/']));
   }
 
   get currentUserId(): string {
@@ -61,30 +67,37 @@ export class AuthService {
     }
   }
 
-  signUpEmail(user) {
+  signUpEmailUser(user) {
     return firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
-    .catch(function(error) {
-      console.log(error);
+    .then(res => {
+      user.uid = res.user.uid;
+      this.fireServ.addUser(user);
+      this.signInEmail(user).then(
+        nav => {
+          this.loader.hide();
+          this.route.navigate(['/home']);
+      });
+    });
+  }
+
+  signUpEmailCompany(company) {
+    return firebase.auth().createUserWithEmailAndPassword(company.email, company.password)
+    .then(res => {
+      company.uid = res.user.uid;
+      this.fireServ.addCompany(company);
+      this.signInEmail(company).then(
+        nav => {
+          this.loader.hide();
+          this.route.navigate(['/home']);
+      });
     });
   }
 
   signInEmail(user) {
     return firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-    .catch(function(error) {
+    .catch(error => {
       console.log(error);
     });
-  }
-
-  signInWithTwitter() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.TwitterAuthProvider()
-    );
-  }
-
-  signInWithFacebook() {
-    return this._firebaseAuth.auth.signInWithPopup(
-      new firebase.auth.FacebookAuthProvider()
-    );
   }
 
   signInWithGoogle() {
