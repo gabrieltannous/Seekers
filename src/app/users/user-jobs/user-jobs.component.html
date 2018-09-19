@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-    <h2>Seekers</h2>
+  <h2><a id="logo" routerLink="/home">Seekers</a></h2>
     <div class="collapse in navbar-collapse" id="navbarText">
       <ul class="navbar-nav mr-auto">
         <li class="nav-item">
@@ -18,3 +18,22 @@
       <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
     </div>
   </nav>
+
+  <div class="container">
+      <table class="table table-striped table-dark">
+          <thead>
+            <tr>
+              <th scope="col">First</th>
+              <th scope="col">Last</th>
+              <th scope="col">Handle</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let item of appliedJobs">
+            <tr *ngIf="item.applied">
+              <td>{{item.title}}</td>
+              <td>{{item.type}}</td>
+              <td>{{item.salary}}</td>
+            </tr>
+          </tbody>
+        </table>
+  </div>

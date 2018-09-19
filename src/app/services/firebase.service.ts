@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { Job } from '../models/job';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +12,43 @@ export class FirebaseService {
   public companies: Observable<any[]>;
   public users: Observable<any[]>;
   public itemsCollection: AngularFirestoreCollection<any>;
-  public jobs: Observable<any[]>;
+  public jobs: any[];
+  public Appliedjobs: any[];
   itemDoc: AngularFirestoreDocument<any>;
 
-  constructor(private db: AngularFirestore) {
-      this.companies = db.collection('/companies').valueChanges();
-      this.users = db.collection('/users').valueChanges();
-      this.jobs = db.collection('jobs').valueChanges();
+  constructor(private db: AngularFirestore, private loader: Ng4LoadingSpinnerService) {
+      this.companies = db.collection('companies').valueChanges();
+      this.users = db.collection('users').valueChanges();
+      this.loadJobs(db);
+  }
+
+  private loadJobs(db: AngularFirestore) {
+    db.collection('jobs').snapshotChanges().subscribe(items => {
+      this.jobs = items.map(a => {
+        const id = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        return { id, ...data };
+      });
+    });
+  }
+
+  getTheJobs(): any[] {
+    return this.jobs;
+  }
+
+  getAppliedJobs(user): any[] {
+    this.jobs.map(c => {
+      this.haveApplied(c.id, user.uid).valueChanges().subscribe(
+        res => {
+          if (res.length === 1) {
+            c.applied = true;
+          } else {
+            c.applied = false;
+          }
+        }
+      );
+    });
+    return this.jobs;
   }
 
   addCompany(company) { // add a new company to database
@@ -83,7 +113,6 @@ export class FirebaseService {
     }).catch(err => {
       console.log(err);
     });
-    console.log('company is ' + company);
     return company;
   }
 
