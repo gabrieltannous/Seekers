@@ -36,7 +36,8 @@
       <div class="card-body">
         <h5 class="card-title">{{item.type}}</h5>
         <p class="card-text">${{item.salary}}</p>
-        <button class="btn btn-primary" (click)="apply(item)">Apply</button>
+          <button class="btn btn-primary" *ngIf="!item.applied" (click)="apply(item)">Apply</button>
+          <button class="btn btn-success" disabled *ngIf="item.applied">Applied</button>
       </div>
     </div>
   </div>

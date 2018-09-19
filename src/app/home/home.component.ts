@@ -5,6 +5,7 @@ import { Job } from '../models/job';
 import { NgForm } from '@angular/forms';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -15,22 +16,37 @@ export class HomeComponent implements OnInit {
 
   job = new Job();
   isUser: boolean;
-  showIt: boolean;
   jobsCollection: AngularFirestoreCollection<Job>;
   jobs: any[];
+  applied: boolean;
 
   constructor(private authState: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService, public afs: AngularFirestore) {
+      this.loader.show();
+      this.authState.isUser().then(res => { this.isUser = res; });
+      this.fireServ.getJobs().snapshotChanges().subscribe(items => {
+        this.jobs = items.map(a => {
+          const id = a.payload.doc.id;
+          const data = a.payload.doc.data();
+          return { id, ...data };
+        });
+        this.jobs.map(c => {
+          this.fireServ.haveApplied(c.id, this.authState.currentUserId).valueChanges().subscribe(
+            res => {
+              if (res.length === 1) {
+                c.applied = true;
+              } else {
+                c.applied = false;
+              }
+            }
+          );
+        });
+        this.loader.hide();
+      });
   }
 
   ngOnInit() {
-    this.loader.show();
-    this.authState.isUser().then(res => { this.isUser = res; });
-    this.showIt = false;
-    this.fireServ.getJobs().subscribe(items => {
-      this.jobs = items;
-      this.loader.hide();
-    });
+
   }
 
   addJob(jobForm: NgForm) {
@@ -39,8 +55,9 @@ export class HomeComponent implements OnInit {
     this.fireServ.addJob(jobForm.value);
   }
 
-  apply(item) {
-    console.log(item);
+  apply(job) {
+    this.fireServ.apply(job.id, this.authState.currentUserId);
+    job.applied = true;
   }
 
   logout() {

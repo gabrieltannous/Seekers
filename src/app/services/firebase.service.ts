@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
+import { Job } from '../models/job';
 
 @Injectable({
   providedIn: 'root'
@@ -99,20 +101,21 @@ export class FirebaseService {
     return user.data();
   }
 
-  async getCounter(id): Promise<number> { // get user info
-    let counter;
-    console.log('inside');
-    await this.db.collection('counter').doc(id).ref.get().then(doc => {
-      counter = doc.data().count;
-    }).catch(function(error) {
-        console.log('Error getting document:', error);
-    });
-    console.log('counter inside is' + counter);
-    return counter;
+  getJobs() {
+    return this.db.collection<Job>('jobs'); /* , ref => ref.where('expenseId', '==', true)); */
   }
 
-  getJobs() {
-    return this.db.collection('jobs').valueChanges(); /* , ref => ref.where('expenseId', '==', true)); */;
+  haveApplied(jobId: string, userId: string) {
+    // let applied;
+    return this.db.collection('applied', ref => ref.where('user', '==', userId) && ref.where('job', '==', jobId));
+    // .valueChanges().subscribe(
+    //   res => {
+    //     applied = res.length;
+    //     console.log(res.length);
+    //   }
+    // );
+    // console.log('length is ' + applied);
+    // return (applied === 0 ? false : true);
   }
 
   updateCompany(company) { // update company info
@@ -141,6 +144,13 @@ export class FirebaseService {
     })
     .catch(function(error) {
         console.error('Error updating document: ', error);
+    });
+  }
+
+  apply(jobId, userId) {
+    this.db.collection('applied').add({
+      job : jobId,
+      user : userId
     });
   }
 

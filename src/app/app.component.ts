@@ -9,22 +9,22 @@ import { Observable } from 'rxjs';
   styleUrls: ['./app.component.css']
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent {
 
-  isUser = false;
-  isCompany: boolean;
-  isAuth: boolean;
+  // isUser = false;
+  // isCompany: boolean;
+  // isAuth: boolean;
 
-  constructor(private authState: AuthService) {
-    console.log('inside cons');
-  }
+  // constructor(private authState: AuthService) {
+  //   console.log('inside cons');
+  // }
 
-  ngOnInit() {
-    this.isAuth = this.authState.isLoggedIn();
-    console.log('inside init');
-  }
+  // ngOnInit() {
+  //   this.isAuth = this.authState.isLoggedIn();
+  //   console.log('inside init');
+  // }
 
-  logout() {
-    this.authState.logout();
-  }
+  // logout() {
+  //   this.authState.logout();
+  // }
 }
