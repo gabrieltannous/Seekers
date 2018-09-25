@@ -3,6 +3,7 @@ import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument 
 import { Observable } from 'rxjs';
 import { Job } from '../models/job';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { User } from '../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -116,7 +117,7 @@ export class FirebaseService {
     return company;
   }
 
-  async getUser(id): Promise<Object> { // get user info
+  async getUser(id): Promise<User> { // get user info
     let user;
     await this.db.collection('users').doc(id).ref.get()
     .then(res => {
@@ -148,7 +149,7 @@ export class FirebaseService {
   }
 
   updateCompany(company) { // update company info
-    const companyRef = this.db.collection('companies').doc(company.id);
+    const companyRef = this.db.collection('companies').doc(company.$key);
 
     return companyRef.update({
         name: company.name
@@ -162,11 +163,10 @@ export class FirebaseService {
   }
 
   updateUser(user) { // update user info
-    const userRef = this.db.collection('users').doc(user.id);
+    const userRef = this.db.collection('users').doc(user.$key);
 
     return userRef.update({
-        fname: user.fname,
-        lname: user.lname
+        fullName: user.fullName
     })
     .then(function() {
         console.log('Document successfully updated!');

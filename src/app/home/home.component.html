@@ -1,29 +1,33 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <h2><a id="logo" routerLink="/home">Seekers</a></h2>
-  <div class="collapse in navbar-collapse" id="navbarText">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul *ngIf="isUser" class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="btn btn-outline-secondary" routerLink="/user/profile">Profile</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/profile">Profile</a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-outline-secondary" routerLink="/user/jobs">Applied Jobs</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/jobs">Applied Jobs</a>
       </li>
       <li class="nav-item">
-        <a class="btn btn-outline-secondary" routerLink="/user/profile">Search</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/profile">Search</a>
       </li>
     </ul>
     <ul *ngIf="isCompany" class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="btn btn-outline-secondary" routerLink="/company/profile">Profile</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/profile">Profile</a>
       </li>
       <li class="nav-item">
-          <a class="btn btn-outline-secondary" routerLink="/company/jobs">My Jobs</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/jobs">My Jobs</a>
       </li>
     </ul>
-  </div>
-
-  <div class="form-inline">
-    <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+    <form class="form-inline my-2 my-lg-0">
+      <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+    </form>
   </div>
 </nav>
 
@@ -37,8 +41,8 @@
       <div class="card-body">
         <h5 class="card-title">{{item.type}}</h5>
         <p class="card-text">${{item.salary}}</p>
-          <button class="btn btn-primary" *ngIf="!item.applied" (click)="apply(item)">Apply</button>
-          <button class="btn btn-success" disabled *ngIf="item.applied">Applied</button>
+        <button class="btn btn-primary" *ngIf="!item.applied" (click)="apply(item)">Apply</button>
+        <button class="btn btn-success" disabled *ngIf="item.applied">Applied</button>
       </div>
     </div>
   </div>
@@ -71,7 +75,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" data-dismiss="modal" class="btn btn-success">Add Job</button>
+            <button type="submit" class="btn btn-success">Add Job</button>
           </div>
         </form>
       </div>

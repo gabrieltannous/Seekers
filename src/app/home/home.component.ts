@@ -23,27 +23,27 @@ export class HomeComponent implements OnInit {
       this.loader.show();
       this.authState.isUser().then(res => { this.isUser = res; });
       this.authState.isCompany().then(res => { this.isCompany = res; });
-      // this.fireServ.getJobs().snapshotChanges().subscribe(items => {
-      //   this.jobs = items.map(a => {
-      //     const id = a.payload.doc.id;
-      //     const data = a.payload.doc.data();
-      //     return { id, ...data };
-      //   });
-      //   this.jobs.map(c => {
-      //     this.fireServ.haveApplied(c.id, this.authState.currentUserId).valueChanges().subscribe(
-      //       res => {
-      //         if (res.length === 1) {
-      //           c.applied = true;
-      //         } else {
-      //           c.applied = false;
-      //         }
-      //       }
-      //     );
-      //   });
-      //   this.loader.hide();
-      // });
-      this.jobs = this.fireServ.getAppliedJobs(this.authState.currentUser);
-      this.loader.hide();
+      this.fireServ.getJobs().snapshotChanges().subscribe(items => {
+        this.jobs = items.map(a => {
+          const id = a.payload.doc.id;
+          const data = a.payload.doc.data();
+          return { id, ...data };
+        });
+        this.jobs.map(c => {
+          this.fireServ.haveApplied(c.id, this.authState.currentUserId).valueChanges().subscribe(
+            res => {
+              if (res.length === 1) {
+                c.applied = true;
+              } else {
+                c.applied = false;
+              }
+            }
+          );
+        });
+        this.loader.hide();
+      });
+      // this.jobs = this.fireServ.getAppliedJobs(this.authState.currentUser);
+      // this.loader.hide();
   }
 
   ngOnInit() {

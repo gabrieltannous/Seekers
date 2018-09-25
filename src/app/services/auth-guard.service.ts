@@ -30,7 +30,6 @@ export class AuthGuard implements CanActivate {
            return false;
          }
       }
-      console.log(roles[0] + ' ' + this.isUser + this.isCompany);
       return true;
     }
     this.router.navigate(['/user/login']);

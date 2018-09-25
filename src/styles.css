@@ -6,3 +6,13 @@
 #logo:hover {
   text-decoration: none;
 }
+
+.form-inline .btn-outline-danger {
+  width: 100%;
+}
+
+@media screen and (max-width: 992px) {
+  .nav-item {
+    margin-top: 10px;
+  }
+}

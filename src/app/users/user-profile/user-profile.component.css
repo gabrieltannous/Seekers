@@ -1,0 +1,19 @@
+.snippet {
+  background-color: rgba(255, 255, 255, 0.5);
+  margin-top: 20px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.img-circle {
+  border-radius: 100%;
+}
+
+.card {
+  padding: 0px !important;
+  margin-top: 0px !important;
+}
+
+.container {
+  margin: 20px auto;
+}

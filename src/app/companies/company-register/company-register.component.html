@@ -1,6 +1,11 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
   <h2>Seekers</h2>
-  <div class="collapse in navbar-collapse" id="navbarText">
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/company/login">Company Login</a>
@@ -20,9 +25,12 @@
     <br>
     <form class="form-signin" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
       <span id="reauth-email" class="reauth-email"></span>
-      <input type="text" id="company-name" name="name" #name="ngModel" [(ngModel)]="company.name" class="form-control" placeholder="Company Name" required autofocus>
-      <input type="email" id="inputEmail" name="email" #email="ngModel" [(ngModel)]="company.email" class="form-control" placeholder="Email address" required>
-      <input type="password" id="inputPassword" name="password" #password="ngModel" [(ngModel)]="company.password" class="form-control" placeholder="Password" required>
+      <input type="text" id="company-name" name="name" #name="ngModel" [(ngModel)]="company.name" class="form-control"
+        placeholder="Company Name" required autofocus>
+      <input type="email" id="inputEmail" name="email" #email="ngModel" [(ngModel)]="company.email" class="form-control"
+        placeholder="Email address" required>
+      <input type="password" id="inputPassword" name="password" #password="ngModel" [(ngModel)]="company.password"
+        class="form-control" placeholder="Password" required>
       <input type="password" id="inputCPassword" class="form-control" placeholder="Confirm Password" required>
       <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Register</button>
     </form>
