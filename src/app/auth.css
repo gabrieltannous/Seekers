@@ -6,8 +6,7 @@
  */
 body {
   height: 100%;
-  background: #ff0;
-  /* background: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33)) no-repeat center center fixed !important; */
+  background: linear-gradient(rgb(104, 145, 162), rgb(12, 97, 33)) no-repeat center center fixed !important;
 }
 
 .card-container.card {
