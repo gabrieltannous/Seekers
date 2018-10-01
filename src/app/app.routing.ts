@@ -8,6 +8,7 @@ import { CompanyRegisterComponent } from './companies/company-register/company-r
 import { CompanyJobsComponent } from './companies/company-jobs/company-jobs.component';
 import { UserRegisterComponent } from './users/user-register/user-register.component';
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
+import { JobAppliersComponent } from './companies/job-appliers/job-appliers.component';
 import { HomeComponent } from './home/home.component';
 import { AuthGuard } from './services/auth-guard.service';
 
@@ -16,6 +17,8 @@ const appRoutes: Routes = [
   { path: 'company/login', component: CompanyLoginComponent},
   { path: 'company/register', component: CompanyRegisterComponent },
   { path: 'company/profile', component: CompanyProfileComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
+  { path: 'company/job-appliers/:id/all-applicants',
+  component: JobAppliersComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/jobs', component: CompanyJobsComponent, canActivate: [AuthGuard], data: {roles: ['company']}  },
   { path: 'user/login', component: UserLoginComponent },
   { path: 'user/register', component: UserRegisterComponent },

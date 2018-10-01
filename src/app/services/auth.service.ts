@@ -19,10 +19,6 @@ export class AuthService {
         this.authState = auth;
         this.route.navigate(['/home']);
       } else {
-        if (localStorage.getItem('user') != null) {
-          console.log(localStorage.getItem('user'));
-          //  this.signInEmail(localStorage.getItem('user').valueOf['email'], localStorage.getItem('user').valueOf['email'];)
-        }
         this.authState = null;
         this.loader.hide();
       }
@@ -52,9 +48,6 @@ export class AuthService {
   }
 
   logout() { // log out the user and return to homepage
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    localStorage.removeItem('company');
     this._firebaseAuth.auth.signOut().then(res => this.route.navigate(['/']));
   }
 
@@ -121,14 +114,15 @@ export class AuthService {
       }, err => {
         console.log(err);
       }
-    );
+    ).catch(err => {
+      console.log(err);
+    });
   }
 
   resetPassword(email) {
-    return this._firebaseAuth.auth.sendPasswordResetEmail(email).then(function() {
-      // Email sent.
-    }).catch(function(error) {
-      // An error happened.
+    return this._firebaseAuth.auth.sendPasswordResetEmail(email)
+    .catch(err => {
+      console.log(err);
     });
   }
 }

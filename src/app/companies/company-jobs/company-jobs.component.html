@@ -27,6 +27,7 @@
         <th scope="col">Title</th>
         <th scope="col">Job Type</th>
         <th scope="col">Salary</th>
+        <th></th>
       </tr>
     </thead>
     <tbody *ngFor="let item of companyJobs">
@@ -34,6 +35,7 @@
         <td>{{item.title}}</td>
         <td>{{item.type}}</td>
         <td>{{item.salary}}</td>
+        <td><a [routerLink]="['/company/job-appliers', item.id, 'all-applicants']">See Applicants</a></td>
       </tr>
     </tbody>
   </table>

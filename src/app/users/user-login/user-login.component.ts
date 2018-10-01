@@ -14,7 +14,6 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 export class UserLoginComponent implements OnInit {
 
   user = new User();
-  loggedIn: boolean;
   wrongAuth: boolean;
 
   constructor(private authServ: AuthService, private router: Router,
@@ -22,7 +21,6 @@ export class UserLoginComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loggedIn = this.authServ.isLoggedIn();
   }
 
   signin(user: NgForm) { // log user in
@@ -41,10 +39,8 @@ export class UserLoginComponent implements OnInit {
   }
 
   async googleLogin() {
-    this.loader.show();
     this.authServ.signInWithGoogle()
     .then(res => {
-      this.loggedIn = true;
       this.router.navigate(['/home']);
     }, err => {
       console.log(err);
@@ -53,6 +49,5 @@ export class UserLoginComponent implements OnInit {
 
   logout() { // log user out
     this.authServ.logout();
-    this.loggedIn = false;
   }
 }

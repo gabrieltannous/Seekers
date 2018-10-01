@@ -15,6 +15,7 @@ export class CompanyJobsComponent implements OnInit {
   constructor(private authState: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService) {
       this.companyJobs = this.fireServ.getCompanyJobs(this.authState.currentUser);
+      console.log(this.companyJobs);
     }
 
   ngOnInit() {

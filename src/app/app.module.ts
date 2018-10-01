@@ -25,6 +25,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
 import { CompanyJobsComponent } from './companies/company-jobs/company-jobs.component';
 import { UserJobsComponent } from './users/user-jobs/user-jobs.component';
+import { JobAppliersComponent } from './companies/job-appliers/job-appliers.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { UserJobsComponent } from './users/user-jobs/user-jobs.component';
     ForgetPasswordComponent,
     MainNavComponent,
     CompanyJobsComponent,
-    UserJobsComponent
+    UserJobsComponent,
+    JobAppliersComponent
   ],
   imports: [
     BrowserModule,

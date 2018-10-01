@@ -1,10 +1,11 @@
 import { Injectable } from '@angular/core';
-import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument } from 'angularfire2/firestore';
+import { AngularFirestore, AngularFirestoreCollection, AngularFirestoreDocument, DocumentChangeAction } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import { Job } from '../models/job';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { User } from '../models/user';
 import { Company } from '../models/company';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,19 @@ export class FirebaseService {
     return this.jobs;
   }
 
+  haveApplied(jobId: string, userId: string) {
+    // let applied;
+    return this.db.collection('applied', ref => ref.where('job', '==', jobId) .where('user', '==', userId));
+    // .valueChanges().subscribe(
+    //   res => {
+    //     applied = res.length;
+    //     console.log(res.length);
+    //   }
+    // );
+    // console.log('length is ' + applied);
+    // return (applied === 0 ? false : true);
+  }
+
   getCompanyJobs(company): any[] {
     this.jobs.map(c => {
       this.companyJobs(company.uid).valueChanges().subscribe(
@@ -70,6 +84,55 @@ export class FirebaseService {
 
   companyJobs(cmpId) {
     return this.db.collection('jobs', ref => ref.where('companyId', '==', cmpId));
+  }
+
+  /*async getApplicants(jobId): Promise<any[]> {
+    let applicants;
+    await this.db.collection('applied', ref => ref.where('job', '==', jobId)).valueChanges().subscribe(
+      res => {
+        applicants = res.map(async b => {
+          let user;
+          let id;
+          await this.db.collection('users').doc(b['user']).ref.get().then(
+            res2 => {
+              id = res2.id;
+              user = res2.data();
+            }
+          );
+          return {id, ...user};
+        });
+        return applicants;
+      }
+    );
+    console.log(applicants);
+    return applicants;
+  }*/
+
+  getApplicants(jobId): Observable<any[]> {
+    return this.db.collection('applied', ref => ref.where('job', '==', jobId))
+      .snapshotChanges()
+      .pipe(
+        map((actions: DocumentChangeAction<any>[]) => {
+          return actions.map((a: DocumentChangeAction<any>) => {
+            const data: Object = a.payload.doc.data() as any;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          });
+        }),
+      );
+  }
+
+  async getApplicants2(userid): Promise<any> { // get company info
+    let company;
+    await this.db.collection('users').doc(userid).ref.get()
+    .then(res => {
+      if (res.data != null) {
+        company = res.data();
+      }
+    }).catch(err => {
+      console.log(err);
+    });
+    return company;
   }
 
   addCompany(company) { // add a new company to database
@@ -153,21 +216,6 @@ export class FirebaseService {
 
   getJobs() {
     return this.db.collection<Job>('jobs'); /* , ref => ref.where('expenseId', '==', true)); */
-  }
-
-  haveApplied(jobId: string, userId: string) {
-    // let applied;
-    console.log(jobId);
-    console.log(userId);
-    return this.db.collection('applied', ref => ref.where('user', '==', userId) && ref.where('job', '==', jobId));
-    // .valueChanges().subscribe(
-    //   res => {
-    //     applied = res.length;
-    //     console.log(res.length);
-    //   }
-    // );
-    // console.log('length is ' + applied);
-    // return (applied === 0 ? false : true);
   }
 
   updateCompany(company) { // update company info
