@@ -17,8 +17,14 @@ export class AuthService {
     this.user.subscribe(auth => { // get user info of the current session
       if (auth) {
         this.authState = auth;
+        this.route.navigate(['/home']);
       } else {
+        if (localStorage.getItem('user') != null) {
+          console.log(localStorage.getItem('user'));
+          //  this.signInEmail(localStorage.getItem('user').valueOf['email'], localStorage.getItem('user').valueOf['email'];)
+        }
         this.authState = null;
+        this.loader.hide();
       }
     });
   }
@@ -46,6 +52,9 @@ export class AuthService {
   }
 
   logout() { // log out the user and return to homepage
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    localStorage.removeItem('company');
     this._firebaseAuth.auth.signOut().then(res => this.route.navigate(['/']));
   }
 
@@ -95,6 +104,9 @@ export class AuthService {
 
   signInEmail(user) {
     return firebase.auth().signInWithEmailAndPassword(user.email, user.password)
+    .then(res => {
+      localStorage.setItem('token', JSON.stringify(user));
+    })
     .catch(error => {
       console.log(error);
     });

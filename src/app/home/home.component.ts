@@ -20,7 +20,6 @@ export class HomeComponent implements OnInit {
 
   constructor(private authState: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService) {
-      this.loader.show();
       this.authState.isUser().then(res => { this.isUser = res; });
       this.authState.isCompany().then(res => { this.isCompany = res; });
       this.fireServ.getJobs().snapshotChanges().subscribe(items => {
@@ -37,16 +36,18 @@ export class HomeComponent implements OnInit {
               } else {
                 c.applied = false;
               }
+        this.loader.hide();
             }
           );
         });
-        this.loader.hide();
       });
       // this.jobs = this.fireServ.getAppliedJobs(this.authState.currentUser);
       // this.loader.hide();
   }
 
   ngOnInit() {
+    this.loader.show();
+    console.log(this.authState.isLoggedIn());
   }
 
   addJob(jobForm: NgForm) {

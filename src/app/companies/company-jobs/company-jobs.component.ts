@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../../services/auth.service';
+import { FirebaseService } from '../../services/firebase.service';
+import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 
 @Component({
   selector: 'app-company-jobs',
@@ -7,9 +10,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CompanyJobsComponent implements OnInit {
 
-  constructor() { }
+  companyJobs: any[];
+
+  constructor(private authState: AuthService, private fireServ: FirebaseService,
+    public loader: Ng4LoadingSpinnerService) {
+      this.companyJobs = this.fireServ.getCompanyJobs(this.authState.currentUser);
+    }
 
   ngOnInit() {
+  }
+
+  logout() {
+    this.authState.logout();
   }
 
 }

@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Job } from '../models/job';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { User } from '../models/user';
+import { Company } from '../models/company';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +51,25 @@ export class FirebaseService {
       );
     });
     return this.jobs;
+  }
+
+  getCompanyJobs(company): any[] {
+    this.jobs.map(c => {
+      this.companyJobs(company.uid).valueChanges().subscribe(
+        res => {
+          if (res.length === 1) {
+            c.applied = true;
+          } else {
+            c.applied = false;
+          }
+        }
+      );
+    });
+    return this.jobs;
+  }
+
+  companyJobs(cmpId) {
+    return this.db.collection('jobs', ref => ref.where('companyId', '==', cmpId));
   }
 
   addCompany(company) { // add a new company to database
@@ -104,7 +124,7 @@ export class FirebaseService {
     });
   }
 
-  async getCompany(id): Promise<Object> { // get company info
+  async getCompany(id): Promise<Company> { // get company info
     let company;
     await this.db.collection('companies').doc(id).ref.get()
     .then(res => {
@@ -137,6 +157,8 @@ export class FirebaseService {
 
   haveApplied(jobId: string, userId: string) {
     // let applied;
+    console.log(jobId);
+    console.log(userId);
     return this.db.collection('applied', ref => ref.where('user', '==', userId) && ref.where('job', '==', jobId));
     // .valueChanges().subscribe(
     //   res => {
