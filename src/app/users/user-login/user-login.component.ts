@@ -1,53 +1,49 @@
-import { Component, OnInit, ViewEncapsulation, ElementRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { User } from '../../models/user';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.css', '../../auth.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./user-login.component.css']
 })
 export class UserLoginComponent implements OnInit {
 
   user = new User();
-  wrongAuth: boolean;
+  errorMessage: string = null;
 
-  constructor(private authServ: AuthService, private router: Router,
-    private loader: Ng4LoadingSpinnerService, private elementRef: ElementRef) {
-  }
+  constructor(private authServ: AuthService, private route: Router,
+    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService) {
+    }
 
   ngOnInit() {
+    this.loader.hide();
   }
 
   signin(user: NgForm) { // log user in
     this.loader.show();
-    this.authServ.signInEmail(user.value)
-    .then(res => {
-      this.wrongAuth = !this.authServ.isLoggedIn();
-      this.router.navigate(['/home']);
-    }, err => {
-      this.wrongAuth = true;
-    })
-    .catch(error => {
-      console.log(error);
-      this.wrongAuth = true;
+    this.fireServ.getUserByEmail(user.value.email).subscribe(res => {
+      if (res.length === 0) {
+        this.loader.hide();
+        this.errorMessage = 'Account does not exist';
+      } else {
+        this.authServ.signInEmail(user.value).then(
+          () => {
+            this.route.navigate(['/home']);
+          })
+          .catch(err => {
+            this.loader.hide();
+            this.errorMessage = err.message;
+          });
+      }
     });
   }
 
-  async googleLogin() {
-    this.authServ.signInWithGoogle()
-    .then(res => {
-      this.router.navigate(['/home']);
-    }, err => {
-      console.log(err);
-    });
-  }
-
-  logout() { // log user out
-    this.authServ.logout();
+  googleLogin() {
+    this.authServ.signInWithGoogle();
   }
 }

@@ -6,6 +6,8 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { User } from '../models/user';
 import { Company } from '../models/company';
 import { map } from 'rxjs/operators';
+import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
+import { Admin } from '../models/admin';
 
 @Injectable({
   providedIn: 'root'
@@ -15,133 +17,151 @@ export class FirebaseService {
   public companies: Observable<any[]>;
   public users: Observable<any[]>;
   public itemsCollection: AngularFirestoreCollection<any>;
-  public jobs: any[];
   public Appliedjobs: any[];
+  public ref: AngularFireStorageReference;
+  public task: AngularFireUploadTask;
   itemDoc: AngularFirestoreDocument<any>;
 
-  constructor(private db: AngularFirestore, private loader: Ng4LoadingSpinnerService) {
+  constructor(private db: AngularFirestore, private loader: Ng4LoadingSpinnerService, private afStorage: AngularFireStorage) {
       this.companies = db.collection('companies').valueChanges();
       this.users = db.collection('users').valueChanges();
-      this.loadJobs(db);
   }
 
-  private loadJobs(db: AngularFirestore) {
-    db.collection('jobs').snapshotChanges().subscribe(items => {
-      this.jobs = items.map(a => {
-        const id = a.payload.doc.id;
-        const data = a.payload.doc.data();
-        return { id, ...data };
+  upload(event, name) {
+    return this.afStorage.upload(name, event.target.files[0]);
+  }
+
+  async getUserJobs(userId) {
+    const jobs = new Array();
+    await this.db.collection('jobs').snapshotChanges().subscribe(
+    async res => {
+      await res.map(async a => {
+        const $key = a.payload.doc.id;
+        const jobData = a.payload.doc.data();
+        let applied;
+        await this.db.collection('applied', ref => ref.where('job', '==', $key) .where('user', '==', userId)).snapshotChanges().subscribe(
+          doc => {
+            if (doc.length === 1) {
+              applied = true;
+            } else {
+              applied = false;
+            }
+            jobs.push({$key, ...jobData, applied});
+        });
       });
     });
+    return jobs;
   }
 
-  getTheJobs(): any[] {
-    return this.jobs;
-  }
-
-  getAppliedJobs(user): any[] {
-    this.jobs.map(c => {
-      this.haveApplied(c.id, user.uid).valueChanges().subscribe(
-        res => {
-          if (res.length === 1) {
-            c.applied = true;
-          } else {
-            c.applied = false;
-          }
-        }
-      );
+  async getCompanyJobs(companyId): Promise<any[]> {
+    const jobs = new Array();
+    await this.db.collection('jobs', ref => ref.where('companyId', '==', companyId)).snapshotChanges().subscribe(
+    res => {
+      res.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        jobs.push({$key, ...data});
+      });
     });
-    return this.jobs;
+    return jobs;
   }
 
-  haveApplied(jobId: string, userId: string) {
-    // let applied;
-    return this.db.collection('applied', ref => ref.where('job', '==', jobId) .where('user', '==', userId));
-    // .valueChanges().subscribe(
-    //   res => {
-    //     applied = res.length;
-    //     console.log(res.length);
-    //   }
-    // );
-    // console.log('length is ' + applied);
-    // return (applied === 0 ? false : true);
-  }
-
-  getCompanyJobs(company): any[] {
-    this.jobs.map(c => {
-      this.companyJobs(company.uid).valueChanges().subscribe(
-        res => {
-          if (res.length === 1) {
-            c.applied = true;
-          } else {
-            c.applied = false;
-          }
-        }
-      );
-    });
-    return this.jobs;
-  }
-
-  companyJobs(cmpId) {
-    return this.db.collection('jobs', ref => ref.where('companyId', '==', cmpId));
-  }
-
-  /*async getApplicants(jobId): Promise<any[]> {
-    let applicants;
-    await this.db.collection('applied', ref => ref.where('job', '==', jobId)).valueChanges().subscribe(
-      res => {
-        applicants = res.map(async b => {
-          let user;
-          let id;
-          await this.db.collection('users').doc(b['user']).ref.get().then(
-            res2 => {
-              id = res2.id;
-              user = res2.data();
+  // Get the jobs that the user have applied to
+  async getUserAppliedJobs(userId) {
+    const jobs = new Array();
+    await this.db.collection('jobs').snapshotChanges().subscribe(
+    async res => {
+      await res.map(async a => {
+        const $key = a.payload.doc.id;
+        const jobData = a.payload.doc.data();
+        let applied;
+        await this.db.collection('applied', ref => ref.where('job', '==', $key) .where('user', '==', userId)).snapshotChanges().subscribe(
+          doc => {
+            if (doc.length === 1) {
+              applied = true;
+              jobs.push({$key, ...jobData, applied});
+            } else {
+              applied = false;
             }
-          );
-          return {id, ...user};
         });
-        return applicants;
-      }
-    );
-    console.log(applicants);
-    return applicants;
-  }*/
-
-  getApplicants(jobId): Observable<any[]> {
-    return this.db.collection('applied', ref => ref.where('job', '==', jobId))
-      .snapshotChanges()
-      .pipe(
-        map((actions: DocumentChangeAction<any>[]) => {
-          return actions.map((a: DocumentChangeAction<any>) => {
-            const data: Object = a.payload.doc.data() as any;
-            const id = a.payload.doc.id;
-            return { id, ...data };
-          });
-        }),
-      );
+      });
+    });
+    return jobs;
   }
 
-  async getApplicants2(userid): Promise<any> { // get company info
-    let company;
-    await this.db.collection('users').doc(userid).ref.get()
-    .then(res => {
-      if (res.data != null) {
-        company = res.data();
-      }
-    }).catch(err => {
-      console.log(err);
+  // Get job applicants
+  async getApplicants(jobId): Promise<any[]> {
+    const applicants = new Array();
+    await this.db.collection('applied', ref => ref.where('job', '==', jobId)).snapshotChanges().subscribe(
+    async res => {
+      await res.map(async a => {
+        const userId = a.payload.doc.data()['user'];
+        await this.db.collection('users').doc(userId).ref.get().then(
+          async doc => {
+            const $key = doc.id;
+            applicants.push({$key, ...doc.data()});
+          }
+        );
+      });
     });
-    return company;
+    return applicants;
+  }
+
+  // Get all users - for admin
+  async getAllUsers(): Promise<User[]> {
+    const users = new Array();
+    await this.db.collection('users').snapshotChanges().subscribe(items => {
+      items.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        users.push({ $key, ...data });
+      });
+    });
+    return users;
+  }
+
+  // Get all companies - for admin
+  async getAllCompanies(): Promise<Company[]> {
+    const companies = new Array();
+    await this.db.collection('companies').snapshotChanges().subscribe(items => {
+      items.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        companies.push({ $key, ...data });
+      });
+    });
+    return companies;
+  }
+
+  // Get all jobs - for admin
+  async getAllJobs(): Promise<Job[]> {
+    const jobs = new Array();
+    await this.db.collection('jobs').snapshotChanges().subscribe(items => {
+      items.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        jobs.push({ $key, ...data });
+      });
+    });
+    return jobs;
+  }
+
+  // Check if user exist in database
+  getUserByEmail(email) {
+    return this.db.collection('users' , ref => ref.where('email', '==', email)).snapshotChanges();
+  }
+
+  // Check if company exist in database
+  getCompanyByEmail(email) {
+    return this.db.collection('companies' , ref => ref.where('email', '==', email)).snapshotChanges();
   }
 
   addCompany(company) { // add a new company to database
     return this.db.collection('companies').doc(company.uid).set({
       name: company.name,
-      email: company.email
-    })
-    .then(res => {
-      console.log(res);
+      email: company.email,
+      address: '',
+      phone: ''
     })
     .catch(err => {
       console.error(err);
@@ -151,10 +171,12 @@ export class FirebaseService {
   addUser(user) { // add a new user to
     return this.db.collection('users').doc(user.uid).set({
       fullName: user.fname + ' ' + user.lname,
-      email: user.email
-    })
-    .then(res => {
-      console.log(res);
+      email: user.email,
+      mobile: '',
+      phone: '',
+      resume: '',
+      address: '',
+      photo: ''
     })
     .catch(err => {
       console.error(err);
@@ -165,7 +187,11 @@ export class FirebaseService {
     return this.db.collection('users').doc(user.uid).set({
       fullName: user.displayName,
       email: user.email,
-      photo: user.photoURL
+      photo: user.photoURL,
+      mobile: '',
+      phone: '',
+      resume: '',
+      address: '',
     })
     .catch(err => {
         console.error(err);
@@ -179,8 +205,17 @@ export class FirebaseService {
       type: job.type,
       salary: job.salary
     })
-    .then(res => {
-      console.log(res);
+    .catch(err => {
+      console.error(err);
+    });
+  }
+
+  setInterview(interview) { // add a new user to
+    return this.db.collection('interviews').add({
+      companyId: interview.companyId,
+      userId: interview.userId,
+      jobId: interview.jobId,
+      date: interview.date
     })
     .catch(err => {
       console.error(err);
@@ -191,11 +226,13 @@ export class FirebaseService {
     let company;
     await this.db.collection('companies').doc(id).ref.get()
     .then(res => {
-      if (res.data != null) {
-        company = res.data();
+      if (res.exists) {
+        const $key = res.id;
+        company = {$key, ...res.data()};
       }
-    }).catch(err => {
-      console.log(err);
+    })
+    .catch(err => {
+      console.error(err);
     });
     return company;
   }
@@ -204,28 +241,42 @@ export class FirebaseService {
     let user;
     await this.db.collection('users').doc(id).ref.get()
     .then(res => {
-      if (res.data != null) {
-        user = res;
+      if (res.exists) {
+        const $key = res.id;
+        user = {$key, ...res.data()};
       }
-    }).catch(function(error) {
-      console.log('Error getting document:', error);
+    })
+    .catch(err => {
+      console.error(err);
       user = null;
     });
-    return user.data();
+    return user;
   }
 
-  getJobs() {
-    return this.db.collection<Job>('jobs'); /* , ref => ref.where('expenseId', '==', true)); */
+  async getAdmin(id): Promise<Admin> { // get user info
+    let admin;
+    await this.db.collection('admins').doc(id).ref.get()
+    .then(res => {
+      if (res.exists) {
+        const $key = res.id;
+        admin = {$key, ...res.data()};
+      }
+    })
+    .catch(err => {
+      console.error(err);
+      admin = null;
+    });
+    return admin;
   }
 
   updateCompany(company) { // update company info
     const companyRef = this.db.collection('companies').doc(company.$key);
 
     return companyRef.update({
-        name: company.name
-    })
-    .then(function() {
-        console.log('Document successfully updated!');
+        name: company.name,
+        phone: (company.phone == null ? '' : company.phone),
+        address: (company.address == null ? '' : company.address),
+        website: (company.website == null ? '' : company.website)
     })
     .catch(function(error) {
         console.error('Error updating document: ', error);
@@ -236,10 +287,25 @@ export class FirebaseService {
     const userRef = this.db.collection('users').doc(user.$key);
 
     return userRef.update({
-        fullName: user.fullName
+        fullName: user.fullName,
+        mobile: (user.mobile == null ? '' : user.mobile),
+        phone: (user.phone == null ? '' : user.phone),
+        address: (user.address == null ? '' : user.address),
+        resume: (user.resume == null ? '' : user.resume),
+        photo: (user.photo == null ? '' : user.photo)
     })
-    .then(function() {
-        console.log('Document successfully updated!');
+    .catch(function(error) {
+        console.error('Error updating document: ', error);
+    });
+  }
+
+  updateJob(job) { // update job info
+    const jobRef = this.db.collection('jobs').doc(job.$key);
+
+    return jobRef.update({
+        title: (job.title == null ? '' : job.title),
+        type: (job.type == null ? '' : job.type),
+        salary: (job.salary == null ? '' : job.salary),
     })
     .catch(function(error) {
         console.error('Error updating document: ', error);
@@ -261,4 +327,11 @@ export class FirebaseService {
     return this.db.collection('users').doc(id).delete();
   }
 
+  deleteJob(id) { // delete a job -- admin function
+    return this.db.collection('jobs').doc(id).delete();
+  }
+
+  deleteApply(id) { // delete an apply -- admin function
+    return this.db.collection('applies').doc(id).delete();
+  }
 }

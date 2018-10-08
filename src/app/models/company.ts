@@ -4,4 +4,7 @@ export class Company {
     public email: string;
     public phone: string;
     public password: string;
+    public cpassword: string;
+    public address: string;
+    public website: string;
 }

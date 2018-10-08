@@ -12,20 +12,27 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 export class ForgetPasswordComponent implements OnInit {
 
   Email: string;
-  mailSent: boolean;
+  successMessage: string = null;
+  errorMessage: string = null;
 
-  constructor(private authState: AuthService, private route: Router, private loader: Ng4LoadingSpinnerService) {
+  constructor(private authServ: AuthService, private route: Router, private loader: Ng4LoadingSpinnerService) {
   }
 
   ngOnInit() {
-    this.mailSent = false;
+    this.loader.hide();
   }
 
   resetPassword(resetForm: NgForm) {
     this.loader.show();
-    this.authState.resetPassword(resetForm.value.email).then(res => {
+    this.authServ.resetPassword(resetForm.value.email).then(res => {
+      this.successMessage = 'A reset link has been sent. Please check your email.';
+      this.errorMessage = null;
       this.loader.hide();
-      this.route.navigate(['/home']);
+    })
+    .catch(err => {
+      this.successMessage = null;
+      this.errorMessage = err.message;
+      this.loader.hide();
     });
   }
 

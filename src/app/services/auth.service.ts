@@ -2,39 +2,47 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
-import { Observable } from 'rxjs';
 import { FirebaseService } from './firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { first } from 'rxjs/operators';
 
 @Injectable()
 export class AuthService {
-  private user: Observable<firebase.User>;
-  private authState: firebase.User = null;
+  authState: any = null;
 
-  constructor(private _firebaseAuth: AngularFireAuth, private route: Router, private fireServ: FirebaseService,
+  constructor(private afAuth: AngularFireAuth, private route: Router, private fireServ: FirebaseService,
     private loader: Ng4LoadingSpinnerService) {
-    this.user = _firebaseAuth.authState;
-    this.user.subscribe(auth => { // get user info of the current session
-      if (auth) {
+      this.loader.show();
+      this.afAuth.authState.subscribe(auth => {
         this.authState = auth;
-        this.route.navigate(['/home']);
-      } else {
-        this.authState = null;
-        this.loader.hide();
-      }
-    });
+      });
+  }
+
+  isLoggedIn() {
+    return this.afAuth.authState.pipe(first()).toPromise();
   }
 
   get authenticated(): boolean {
-    return this.user !== null;
+    return this.authState !== null;
   }
 
   get currentUser(): any {
-    return this.isLoggedIn ? this.authState : null;
+    return this.authenticated ? this.authState : null;
   }
 
-  isLoggedIn(): boolean { // check if the user is currently logged in
-    return !(this.authState == null);
+  // Returns current user observable
+  get currentUserObservable(): any {
+    return this.afAuth.authState;
+  }
+
+  // Returns current user UID
+  get currentUserId(): string {
+    return this.authenticated ? this.authState.uid : '';
+  }
+
+  // Returns current user display name or Guest
+  get currentUserDisplayName(): string {
+    return this.authState['displayName'];
   }
 
   async isUser(): Promise<boolean> {
@@ -47,30 +55,16 @@ export class AuthService {
     return (company !== undefined);
   }
 
-  logout() { // log out the user and return to homepage
-    this._firebaseAuth.auth.signOut().then(res => this.route.navigate(['/']));
+  isAdmin(): boolean {
+    return (this.currentUser.email === 'admin@admin.com');
   }
 
-  get currentUserId(): string {
-    return this.authenticated ? this.authState.uid : '';
-  }
-
-  get currentUserAnonymous(): boolean {
-    return this.authenticated ? this.authState.isAnonymous : false;
-  }
-
-  get currentUserDisplayName(): string {
-    if (!this.authenticated) {
-      return 'GUEST';
-    } else if (this.currentUserAnonymous) {
-      return 'ANONYMOUS';
-    } else {
-      return this.authState.displayName || 'PAUTH USER';
-    }
+  isAdminEmail(email): boolean {
+    return (email === 'admin@admin.com');
   }
 
   signUpEmailUser(user) {
-    return firebase.auth().createUserWithEmailAndPassword(user.email, user.password)
+    return this.afAuth.auth.createUserWithEmailAndPassword(user.email, user.password)
     .then(res => {
       user.uid = res.user.uid;
       this.fireServ.addUser(user);
@@ -83,7 +77,7 @@ export class AuthService {
   }
 
   signUpEmailCompany(company) {
-    return firebase.auth().createUserWithEmailAndPassword(company.email, company.password)
+    return this.afAuth.auth.createUserWithEmailAndPassword(company.email, company.password)
     .then(res => {
       company.uid = res.user.uid;
       this.fireServ.addCompany(company);
@@ -96,34 +90,39 @@ export class AuthService {
   }
 
   signInEmail(user) {
-    return firebase.auth().signInWithEmailAndPassword(user.email, user.password)
-    .then(res => {
-      localStorage.setItem('token', JSON.stringify(user));
-    })
-    .catch(error => {
-      console.log(error);
-    });
+    return this.afAuth.auth.signInWithEmailAndPassword(user.email, user.password);
   }
 
   signInWithGoogle() {
-    return this._firebaseAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
+    return this.afAuth.auth.signInWithPopup(new firebase.auth.GoogleAuthProvider())
     .then(
       res => {
-        console.log(res.user);
-        this.fireServ.addGoogleUser(res.user);
-      }, err => {
-        console.log(err);
+        this.loader.show();
+        this.fireServ.getUser(res.user.uid).then(
+          user => {
+            if (user === undefined) {
+              this.fireServ.addGoogleUser(res.user).then(
+                () => {
+                  this.route.navigate(['/home']);
+                });
+            } else {
+                  this.route.navigate(['/home']);
+            }
+          });
       }
     ).catch(err => {
-      console.log(err);
+      this.loader.hide();
+      console.error(err);
     });
   }
 
   resetPassword(email) {
-    return this._firebaseAuth.auth.sendPasswordResetEmail(email)
-    .catch(err => {
-      console.log(err);
-    });
+    return this.afAuth.auth.sendPasswordResetEmail(email);
   }
+
+  logout() { // log out the user and return to homepage
+    return this.afAuth.auth.signOut();
+  }
+
 }
 

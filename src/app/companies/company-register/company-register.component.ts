@@ -17,22 +17,26 @@ export class CompanyRegisterComponent implements OnInit {
 
   company = new Company();
   errorMessage: string;
-  successMessage: string;
 
   constructor( private authService: AuthService, private firebaseService: FirebaseService,
     private loader: Ng4LoadingSpinnerService, private route: Router) {
   }
 
   ngOnInit() {
-
+    this.loader.hide();
   }
 
   register(company: NgForm) {
-    this.loader.show();
-    this.authService.signUpEmailCompany(company.value)
-    .catch(err => {
-      console.log(err);
-    });
+    if (company.value.password === company.value.cpassword) {
+      this.loader.show();
+      this.authService.signUpEmailCompany(company.value)
+      .catch(err => {
+        this.loader.hide();
+        this.errorMessage = err.message;
+      });
+    } else {
+      this.errorMessage = 'Passwords do not match';
+    }
   }
 
 }

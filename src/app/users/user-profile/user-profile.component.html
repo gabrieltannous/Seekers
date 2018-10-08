@@ -28,20 +28,14 @@
     <div class="col-sm-3">
       <!--left col-->
       <div class="text-center">
-        <img *ngIf="user.photo == null" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
-        <img *ngIf="user.photo != null" src="{{user.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
+        <img *ngIf="user.photo == ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+          alt="avatar">
+        <img *ngIf="user.photo != ''" src="{{user.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
         <h6>Upload a different photo...</h6>
-        <input type="file" class="text-center center-block file-upload">
+        <input type="file" name="resume" id="resume" class="text-center center-block file-upload" (change)="upload($event, 'photo')"
+          accept=".png, .jpeg, .jpg">
       </div>
       <hr><br>
-      <div class="card">
-        <div class="card-header">
-          Website <i class="fa fa-link fa-1x"></i>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item"><a href="http://bootnipets.com">bootnipets.com</a></li>
-        </ul>
-      </div>
       <ul class="list-group">
         <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
         <li class="list-group-item text-right"><span class="pull-left"><strong>Shares</strong></span> 125</li>
@@ -56,7 +50,8 @@
         <div class="tab-pane active" id="home">
           <hr>
           <div *ngIf="updated" class="alert alert-success">
-            <strong>Success!</strong> Profile has been updated</div>
+            <strong>Success!</strong> Profile has been updated
+          </div>
           <form class="row form" #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)" id="profileForm">
             <input type="hidden" class="form-control" name="$key" #$key="ngModel" [(ngModel)]="user.$key" />
             <div class="form-group col-sm-6">
@@ -64,7 +59,7 @@
                 <h4>Full name</h4>
               </label>
               <input type="text" class="form-control" name="fullName" #fullName="ngModel" [(ngModel)]="user.fullName"
-                placeholder="Please enter your full name" title="Please enter your full name" />
+                placeholder="Full Name" title="Please enter your full name" />
             </div>
 
             <div class="form-group col-sm-6">
@@ -72,45 +67,44 @@
                 <h4>Phone</h4>
               </label>
               <input type="text" class="form-control" name="phone" #phone="ngModel" [(ngModel)]="user.phone" id="phone"
-                placeholder="enter phone" title="enter your phone number if any.">
+                placeholder="Phone Number" title="enter your phone number if any.">
             </div>
 
             <div class="form-group col-sm-6">
               <label for="mobile">
                 <h4>Mobile</h4>
               </label>
-              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="enter mobile number" title="enter your mobile number if any.">
+              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Mobile Number" title="enter your mobile number if any.">
             </div>
             <div class="form-group col-sm-6">
               <label for="email">
                 <h4>Email</h4>
               </label>
               <input type="email" class="form-control" value="{{user.email}}" name="email" id="email" disabled
-                placeholder="you@email.com" title="enter your email.">
+                placeholder="you@email.com" title="Please enter your email">
             </div>
             <div class="form-group col-sm-6">
               <label for="email">
-                <h4>Location</h4>
+                <h4>Address</h4>
               </label>
-              <input type="email" class="form-control" id="location" placeholder="somewhere" title="enter a location">
+              <input type="email" class="form-control" id="address" placeholder="Address" title="Please enter your address">
             </div>
             <div class="form-group col-sm-6">
               <label for="resume">
                 <h4>Resume</h4>
               </label>
               <br>
-              <input type="file" name="resume" id="resume">
+              <input type="file" name="resume" id="resume" (change)="upload($event, 'resume')" accept=".pdf, .doc, .docx" />
             </div>
-            <div class="form-group col-sm-6">
+            <div *ngIf="user.resume !== ''" class="form-group col-sm-6">
               <label for="password2">
                 <h4>Resume Uploaded</h4>
               </label>
               <br>
-              <a>No Resume Uploaded</a>
+              <a class="btn btn-info" href="{{user.resume}}">Download resume</a>
             </div>
             <div class="form-group col-sm-12">
               <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
-              <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
             </div>
           </form>
         </div>

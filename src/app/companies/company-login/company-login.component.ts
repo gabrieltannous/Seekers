@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-company-login',
@@ -14,31 +15,33 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 export class CompanyLoginComponent implements OnInit {
 
   company = new Company();
-  loggedIn: boolean;
+  errorMessage: string = null;
 
-  constructor(private authServ: AuthService, private route: Router, private loader: Ng4LoadingSpinnerService) {
+  constructor(private authServ: AuthService, private route: Router,
+    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService) {
 
   }
 
   ngOnInit() {
-    this.loggedIn = this.authServ.isLoggedIn();
+    this.loader.hide();
   }
 
   signin(company: NgForm) {
     this.loader.show();
-    this.authServ.signInEmail(company.value)
-    .then(res => {
-      this.loggedIn = true;
-      this.loader.hide();
-      this.route.navigate(['/home']);
-    }, err => {
-      console.log(err);
+    this.fireServ.getCompanyByEmail(company.value.email).subscribe(res => {
+      if (res.length === 0) {
+        this.loader.hide();
+        this.errorMessage = 'User does not exist';
+      } else {
+        this.authServ.signInEmail(company.value).then(
+          () => {
+            this.route.navigate(['/home']);
+          })
+          .catch(err => {
+            this.loader.hide();
+            this.errorMessage = err.errorMessage;
+          });
+      }
     });
   }
-
-  logout() {
-    this.authServ.logout();
-    this.loggedIn = false;
-  }
-
 }

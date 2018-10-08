@@ -3,6 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-user-jobs',
@@ -13,16 +14,20 @@ export class UserJobsComponent implements OnInit {
 
   appliedJobs: any[];
 
-  constructor(private authState: AuthService, private fireServ: FirebaseService,
-    public loader: Ng4LoadingSpinnerService) {
-      this.appliedJobs = this.fireServ.getAppliedJobs(this.authState.currentUser);
+  constructor(private authServ: AuthService, private fireServ: FirebaseService,
+    public loader: Ng4LoadingSpinnerService, private route: Router) {
+      this.fireServ.getUserAppliedJobs(this.authServ.currentUserId).then(result => {
+        this.appliedJobs = result;
+        this.loader.hide();
+      });
     }
 
   ngOnInit() {
+    this.loader.hide();
   }
 
   logout() {
-    this.authState.logout();
+    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
   }
 
 }

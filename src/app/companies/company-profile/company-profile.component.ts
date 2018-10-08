@@ -4,6 +4,7 @@ import { AuthService } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NgForm } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-company-profile',
@@ -13,13 +14,15 @@ import { NgForm } from '@angular/forms';
 export class CompanyProfileComponent implements OnInit {
 
   company: Company = new Company();
-  $: any;
   updated: boolean;
 
-  constructor(private authState: AuthService, public fireServ: FirebaseService, private loader: Ng4LoadingSpinnerService) {
+  constructor(private authServ: AuthService, public fireServ: FirebaseService,
+    private loader: Ng4LoadingSpinnerService, private route: Router) {
     this.updated = false;
-    this.fireServ.getCompany(this.authState.currentUserId).then(
-      res => { this.company = res; this.company.$key = this.authState.currentUserId;
+    this.fireServ.getCompany(this.authServ.currentUserId).then(
+      res => {
+        this.company = res;
+        this.loader.hide();
     });
   }
 
@@ -30,7 +33,6 @@ export class CompanyProfileComponent implements OnInit {
     this.loader.show();
     this.fireServ.updateCompany(profileForm.value).then(
       res => {
-        console.log(res);
         this.loader.hide();
         this.updated = true;
       }
@@ -38,7 +40,7 @@ export class CompanyProfileComponent implements OnInit {
   }
 
   logout() {
-    this.authState.logout();
+    this.authServ.logout().then(() => this.route.navigate(['/company/login']));
   }
 
 }

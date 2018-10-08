@@ -1,38 +1,58 @@
 import { AuthService } from './auth.service';
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { Router, CanActivate, ActivatedRouteSnapshot} from '@angular/router';
 
 @Injectable()
-
 export class AuthGuard implements CanActivate {
   isUser: boolean;
   isCompany: boolean;
 
-  constructor(private router: Router, private authService: AuthService) { }
+  constructor(private route: Router, private authServ: AuthService) {}
 
-  async canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-    if ( this.authService.isLoggedIn() ) {
-      const roles = route.data['roles'] as Array<string>;
-      if ( roles[0] === 'user' ) {
-        await this.authService.isUser().then(res => { this.isUser = res; });
-        if (this.isUser) {
-         return true;
-        } else {
-          this.router.navigate(['/home']);
-          return false;
-        }
-      } else if ( roles[0] === 'company' ) {
-        await this.authService.isCompany().then(res => { this.isCompany = res; });
-        if (this.isCompany) {
+  canActivate(route: ActivatedRouteSnapshot) {
+    return this.authServ.isLoggedIn().then(async auth => {
+      if (auth === null) {
+        if (route.data['roles'] === undefined) {
           return true;
-         } else {
-           this.router.navigate(['/home']);
-           return false;
-         }
+        }
+        this.route.navigate(['/user/login']);
+      } else {
+        if (route.data['roles'] !== undefined) {
+          const roleUser = (route.data['roles'].indexOf('user') !== -1);
+          const roleCompany = (route.data['roles'].indexOf('company') !== -1);
+          const roleAdmin = (route.data['roles'].indexOf('admin') !== -1);
+
+          await this.authServ.isUser().then(res => {
+            this.isUser = res;
+          });
+
+          await this.authServ.isCompany().then(res => {
+            this.isCompany = res;
+          });
+
+          if (roleUser && roleCompany && (this.isUser || this.isCompany)) {
+            return true;
+          } else if (roleUser && this.isUser) {
+              return true;
+          } else if (roleCompany && this.isCompany) {
+              return true;
+          } else if (roleAdmin && this.authServ.isAdmin()) {
+              return true;
+          }
+
+          if ((roleUser && this.isCompany) || (roleCompany && this.isUser) || (roleAdmin && (this.isCompany || this.isUser))) {
+            this.route.navigate(['/home']);
+          } else if ((roleUser || roleCompany) && this.authServ.isAdmin()) {
+            this.route.navigate(['/admin/dashboard']);
+          }
+        } else {
+          if (this.authServ.isAdmin()) {
+            this.route.navigate(['/admin/dashboard']);
+          } else {
+            this.route.navigate(['/home']);
+          }
+        }
       }
-      return true;
-    }
-    this.router.navigate(['/user/login']);
-    return false;
+    });
   }
 }

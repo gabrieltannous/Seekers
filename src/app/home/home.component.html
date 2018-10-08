@@ -32,30 +32,41 @@
 </nav>
 
 <div class="container">
-  <!--User interface-->
-  <div *ngIf="jobs?.length > 0 && isUser" class="row">
-    <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
-      <div class="card-header">
-        <h4>{{item.title}}</h4>
-      </div>
-      <div class="card-body">
-        <h5 class="card-title">{{item.type}}</h5>
-        <p class="card-text">${{item.salary}}</p>
-        <button class="btn btn-primary" *ngIf="!item.applied" (click)="apply(item)">Apply</button>
-        <button class="btn btn-success" disabled *ngIf="item.applied">Applied</button>
+  <h2 class="text-center">Welcome to Seekers!</h2>
+</div>
+
+<!--User interface-->
+<div *ngIf="isUser">
+  <div class="container">
+  <h3 class="text-center">Jobs</h3>
+  <div *ngIf="jobs?.length > 0" class="row">
+      <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
+        <div class="card-header">
+          <h4>{{item.title}}</h4>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{item.type}}</h5>
+          <p class="card-text">${{item.salary}}</p>
+          <button class="btn btn-primary" *ngIf="!item.applied" (click)="apply(item)">Apply</button>
+          <button class="btn btn-success" disabled *ngIf="item.applied">Applied</button>
+        </div>
       </div>
     </div>
   </div>
+</div>
 
-  <!--Company interface-->
-  <div *ngIf="isCompany" class="row">
-    <div class="col-md-4">
-      <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Create Job</button>
+<!--Company interface-->
+<div *ngIf="isCompany">
+  <div class="container">
+    <div class="row">
+      <div class="col-md-4">
+        <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">Create Job</button>
+      </div>
     </div>
   </div>
 
   <!-- Modal -->
-  <div *ngIf="isCompany" class="modal fade" id="myModal" role="dialog">
+  <div class="modal fade" id="myModal" role="dialog">
     <div class="modal-dialog">
 
       <!-- Modal content-->

@@ -1,0 +1,21 @@
+<div class="container">
+  <div class="card card-container">
+    <div class="col-xs-12 text-center">
+      <h2>Admin Login</h2>
+    </div>
+    <br>
+    <img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
+    <p id="profile-name" class="profile-name-card"></p>
+    <form class="form-signin" #signInForm="ngForm" (ngSubmit)="login(signInForm)">
+      <span id="reauth-email" class="reauth-email"></span>
+      <input type="email" id="inputEmail" name="email" #email="ngModel" [(ngModel)]="admin.email" class="form-control"
+        placeholder="Email address" required autofocus>
+      <input type="password" id="inputPassword" class="form-control" name="password" #password="ngModel" [(ngModel)]="admin.password"
+        placeholder="Password" required>
+        <div *ngIf="errorMessage !== null" class="alert alert-danger">
+          <strong>Error!</strong> {{errorMessage}}
+        </div>
+      <button class="btn btn-lg btn-primary btn-block btn-signin" type="submit">Sign in</button>
+    </form>
+  </div>
+</div>

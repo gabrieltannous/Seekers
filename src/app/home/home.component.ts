@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FirebaseService } from '../services/firebase.service';
 import { Job } from '../models/job';
 import { NgForm } from '@angular/forms';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-home',
@@ -18,51 +19,52 @@ export class HomeComponent implements OnInit {
   jobs: any[];
   applied: boolean;
 
-  constructor(private authState: AuthService, private fireServ: FirebaseService,
-    public loader: Ng4LoadingSpinnerService) {
-      this.authState.isUser().then(res => { this.isUser = res; });
-      this.authState.isCompany().then(res => { this.isCompany = res; });
-      this.fireServ.getJobs().snapshotChanges().subscribe(items => {
-        this.jobs = items.map(a => {
-          const id = a.payload.doc.id;
-          const data = a.payload.doc.data();
-          return { id, ...data };
-        });
-        this.jobs.map(c => {
-          this.fireServ.haveApplied(c.id, this.authState.currentUserId).valueChanges().subscribe(
-            res => {
-              if (res.length === 1) {
-                c.applied = true;
-              } else {
-                c.applied = false;
-              }
-        this.loader.hide();
-            }
-          );
-        });
+  constructor(private authServ: AuthService, private fireServ: FirebaseService,
+    public loader: Ng4LoadingSpinnerService, private route: Router) {
+      this.loader.show();
+      this.authServ.isUser().then(res => {
+        this.isUser = res;
+        if (this.isUser) {
+          this.updateJobs();
+        }
       });
-      // this.jobs = this.fireServ.getAppliedJobs(this.authState.currentUser);
-      // this.loader.hide();
+
+      this.authServ.isCompany().then(res => {
+        this.isCompany = res;
+        if (this.isCompany) {
+          this.loader.hide();
+        }
+      });
   }
 
   ngOnInit() {
-    this.loader.show();
-    console.log(this.authState.isLoggedIn());
+  }
+
+  updateJobs() {
+    this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
+      this.jobs = result;
+      this.loader.hide();
+    });
   }
 
   addJob(jobForm: NgForm) {
-    console.log('inside');
-    jobForm.value.companyId = this.authState.currentUserId;
-    this.fireServ.addJob(jobForm.value);
+    if (this.authServ.isCompany()) {
+      jobForm.value.companyId = this.authServ.currentUserId;
+      this.fireServ.addJob(jobForm.value);
+    }
   }
 
   apply(job) {
-    this.fireServ.apply(job.id, this.authState.currentUserId);
-    job.applied = true;
+    this.fireServ.apply(job.$key, this.authServ.currentUserId);
+    this.updateJobs();
   }
 
   logout() {
-    this.authState.logout();
+    if (this.isUser) {
+      this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    } else {
+      this.authServ.logout().then(() => this.route.navigate(['/company/login']));
+    }
   }
 
 }

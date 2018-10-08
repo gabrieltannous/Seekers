@@ -1,5 +1,6 @@
 .card {
   padding: 0px !important;
+  margin: 15px auto;
 }
 
 .container {
@@ -7,4 +8,9 @@
   margin: 20px auto;
   padding: 20px;
   border-radius: 10px;
+}
+
+h3 {
+  text-decoration: underline;
+  text-underline-position: under;
 }

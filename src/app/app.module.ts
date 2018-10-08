@@ -6,6 +6,7 @@ import { AuthGuard } from './services/auth-guard.service';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { AngularFireModule } from 'angularfire2';
+import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireDatabaseModule } from 'angularfire2/database';
 import { AngularFireAuthModule } from 'angularfire2/auth';
@@ -20,12 +21,15 @@ import { UserRegisterComponent } from './users/user-register/user-register.compo
 import { ForgetPasswordComponent } from './forget-password/forget-password.component';
 import { HomeComponent } from './home/home.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
-import { MainNavComponent } from './main-nav/main-nav.component';
 import { LayoutModule } from '@angular/cdk/layout';
-import { MatToolbarModule, MatButtonModule, MatSidenavModule, MatIconModule, MatListModule } from '@angular/material';
 import { CompanyJobsComponent } from './companies/company-jobs/company-jobs.component';
 import { UserJobsComponent } from './users/user-jobs/user-jobs.component';
-import { JobAppliersComponent } from './companies/job-appliers/job-appliers.component';
+import { JobApplicantsComponent } from './companies/job-applicants/job-applicants.component';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
+import { UsersComponent } from './admin/users/users.component';
+import { CompaniesComponent } from './admin/companies/companies.component';
+import { JobsComponent } from './admin/jobs/jobs.component';
+import { LoginComponent } from './admin/login/login.component';
 
 @NgModule({
   declarations: [
@@ -38,27 +42,27 @@ import { JobAppliersComponent } from './companies/job-appliers/job-appliers.comp
     CompanyRegisterComponent,
     HomeComponent,
     ForgetPasswordComponent,
-    MainNavComponent,
     CompanyJobsComponent,
     UserJobsComponent,
-    JobAppliersComponent
+    JobApplicantsComponent,
+    DashboardComponent,
+    UsersComponent,
+    CompaniesComponent,
+    JobsComponent,
+    LoginComponent
   ],
   imports: [
+    AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts
     BrowserModule,
     FormsModule,
     HttpModule,
     routing,
     Ng4LoadingSpinnerModule.forRoot(),
-    AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts
+    AngularFireStorageModule,
     AngularFireDatabaseModule,
     AngularFirestoreModule,
     AngularFireAuthModule,
-    LayoutModule,
-    MatToolbarModule,
-    MatButtonModule,
-    MatSidenavModule,
-    MatIconModule,
-    MatListModule
+    LayoutModule
   ],
   providers: [
     AuthService,
