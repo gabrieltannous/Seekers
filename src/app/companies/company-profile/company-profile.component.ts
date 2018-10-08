@@ -15,6 +15,9 @@ export class CompanyProfileComponent implements OnInit {
 
   company: Company = new Company();
   updated: boolean;
+  numberOfJobs: number;
+  numberOfApplicants: number;
+  numberOfInterviews: number;
 
   constructor(private authServ: AuthService, public fireServ: FirebaseService,
     private loader: Ng4LoadingSpinnerService, private route: Router) {

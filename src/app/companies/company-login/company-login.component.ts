@@ -39,7 +39,7 @@ export class CompanyLoginComponent implements OnInit {
           })
           .catch(err => {
             this.loader.hide();
-            this.errorMessage = err.errorMessage;
+            this.errorMessage = err.message;
           });
       }
     });

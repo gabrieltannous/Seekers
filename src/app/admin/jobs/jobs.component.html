@@ -30,8 +30,8 @@
 
 <div class="container">
   <div class="table-responsive">
-    <table class="table table-stripped table-light">
-      <thead>
+    <table class="table table-hover table-striped table-light">
+      <thead class="thead-light">
         <tr>
           <th>Title</th>
           <th>Type</th>
@@ -44,8 +44,8 @@
           <td>{{item.title}}</td>
           <td>{{item.type}}</td>
           <td>{{item.salary}}</td>
-          <td><a class="btn btn-outline-primary" (click)="fillModal(item)" data-toggle="modal" data-target="#editModal">Edit</a>&nbsp;
-            <a class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal" (click)="fillModal(item)">Delete</a></td>
+          <td><button class="btn btn-primary" (click)="fillModal(item)" data-toggle="modal" data-target="#editModal">Edit</button>&nbsp;
+            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" (click)="fillModal(item)">Delete</button></td>
         </tr>
       </tbody>
     </table>

@@ -8,6 +8,7 @@ import { Company } from '../models/company';
 import { map } from 'rxjs/operators';
 import { AngularFireStorage, AngularFireStorageReference, AngularFireUploadTask } from 'angularfire2/storage';
 import { Admin } from '../models/admin';
+import { Interview } from '../models/interview';
 
 @Injectable({
   providedIn: 'root'
@@ -67,7 +68,7 @@ export class FirebaseService {
   }
 
   // Get the jobs that the user have applied to
-  async getUserAppliedJobs(userId) {
+  async getUserAppliedJobs(userId): Promise<any[]> {
     const jobs = new Array();
     await this.db.collection('jobs').snapshotChanges().subscribe(
     async res => {
@@ -146,6 +147,57 @@ export class FirebaseService {
     return jobs;
   }
 
+  // Get all jobs - for admin
+  async getAllInterviews(): Promise<Interview[]> {
+    const interviews = new Array();
+    await this.db.collection('interview').snapshotChanges().subscribe(items => {
+      items.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        interviews.push({ $key, ...data });
+      });
+    });
+    return interviews;
+  }
+
+  // Get user interviews
+  async getUserInterviews(userId): Promise<any[]> {
+    const interviews = new Array();
+    await this.db.collection('interviews', ref => ref.where('userId', '==', userId)).snapshotChanges().subscribe(
+    async res => {
+      await res.map(async a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        await this.db.collection('companies').doc(data['companyId']).ref.get().then(
+          async doc => {
+            data['company'] = doc.data();
+            interviews.push({$key, ...data});
+          }
+        );
+      });
+    });
+    return interviews;
+  }
+
+  // Get company interviews
+  async getCompanyInterviews(companyId): Promise<any[]> {
+    const interviews = new Array();
+    await this.db.collection('interviews', ref => ref.where('companyId', '==', companyId)).snapshotChanges().subscribe(
+    async res => {
+      await res.map(async a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        await this.db.collection('users').doc(data['userId']).ref.get().then(
+          async doc => {
+            data['user'] = doc.data();
+            interviews.push({$key, ...data});
+          }
+        );
+      });
+    });
+    return interviews;
+  }
+
   // Check if user exist in database
   getUserByEmail(email) {
     return this.db.collection('users' , ref => ref.where('email', '==', email)).snapshotChanges();
@@ -156,12 +208,47 @@ export class FirebaseService {
     return this.db.collection('companies' , ref => ref.where('email', '==', email)).snapshotChanges();
   }
 
+  getUsersCount() {
+    return this.db.collection('users').ref.get().then(
+      res => {
+        return res.size;
+      }
+    );
+  }
+
+  getCompaniesCount() {
+    return this.db.collection('companies').ref.get().then(
+      res => {
+        return res.size;
+      }
+    );
+  }
+
+  getJobsCount() {
+    return this.db.collection('jobs').ref.get().then(
+      res => {
+        return res.size;
+      }
+    );
+  }
+
+  getInterviewsCount() {
+    return this.db.collection('interviews').ref.get().then(
+      res => {
+        return res.size;
+      }
+    );
+  }
+
   addCompany(company) { // add a new company to database
     return this.db.collection('companies').doc(company.uid).set({
       name: company.name,
       email: company.email,
       address: '',
-      phone: ''
+      phone: '',
+      addrses: '',
+      website: '',
+      photo: ''
     })
     .catch(err => {
       console.error(err);
@@ -215,7 +302,8 @@ export class FirebaseService {
       companyId: interview.companyId,
       userId: interview.userId,
       jobId: interview.jobId,
-      date: interview.date
+      date: interview.date,
+      decision: ''
     })
     .catch(err => {
       console.error(err);
@@ -312,6 +400,21 @@ export class FirebaseService {
     });
   }
 
+  updateInterview(interview) { // update job info
+    const interviewRef = this.db.collection('interviews').doc(interview.$key);
+
+    return interviewRef.update({
+        companyId: (interview.companyId == null ? '' : interview.companyId),
+        userId: (interview.userId == null ? '' : interview.userId),
+        jobId: (interview.jobId == null ? '' : interview.jobId),
+        date: (interview.date == null ? '' : interview.date),
+        decision: (interview.decision == null ? '' : interview.decision)
+    })
+    .catch(function(error) {
+        console.error('Error updating document: ', error);
+    });
+  }
+
   apply(jobId, userId) {
     this.db.collection('applied').add({
       job : jobId,
@@ -329,6 +432,10 @@ export class FirebaseService {
 
   deleteJob(id) { // delete a job -- admin function
     return this.db.collection('jobs').doc(id).delete();
+  }
+
+  deleteInterview(id) { // delete an apply -- admin function
+    return this.db.collection('interviews').doc(id).delete();
   }
 
   deleteApply(id) { // delete an apply -- admin function

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
+import { FirebaseService } from '../../services/firebase.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,7 +11,18 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent implements OnInit {
 
-  constructor(private loader: Ng4LoadingSpinnerService, private authServ: AuthService, private route: Router) { }
+  nbOfUsers: number;
+  nbOfCompanies: number;
+  nbOfJobs: number;
+  nbOfInterviews: number;
+
+  constructor(private loader: Ng4LoadingSpinnerService, private authServ: AuthService,
+    private route: Router, private fireServ: FirebaseService) {
+    this.fireServ.getUsersCount().then(res => this.nbOfUsers = res);
+    this.fireServ.getCompaniesCount().then(res => this.nbOfCompanies = res);
+    this.fireServ.getInterviewsCount().then(res => this.nbOfInterviews = res);
+    this.fireServ.getJobsCount().then(res => this.nbOfJobs = res);
+  }
 
   ngOnInit() {
     this.loader.hide();

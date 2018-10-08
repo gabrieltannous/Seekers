@@ -10,10 +10,10 @@
       <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/company/profile">Profile</a>
       </li>
-      <li class="nav-item active active">
+      <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/company/jobs">My Jobs</a>
       </li>
-      <li class="nav-item">
+      <li class="nav-item active">
         <a class="nav-link btn btn-outline-secondary" routerLink="/company/interviews">Interviews</a>
       </li>
     </ul>
@@ -24,28 +24,30 @@
 </nav>
 
 <div class="container">
-  <h2 class="text-center">My Jobs</h2>
+  <h2 class="text-center">Interviews</h2>
 </div>
-
-<div class="container">
+<div *ngIf="interviews.length === 0" class="container">
+  <h3 class="text-center">You don't have any interview :(</h3>
+</div>
+<div *ngIf="interviews.length !== 0" class="container">
   <div class="table-responsive">
-    <table class="table table-hover table-striped table-light">
-      <thead class="thead-light">
-        <tr>
-          <th scope="col">Title</th>
-          <th scope="col">Job Type</th>
-          <th scope="col">Salary</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody *ngFor="let item of companyJobs">
-        <tr>
-          <td>{{item.title}}</td>
-          <td>{{item.type}}</td>
-          <td>{{item.salary}}</td>
-          <td><button class="btn btn-success" [routerLink]="['/company/job-applicants', item.$key, 'all-applicants']">See Applicants</button></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+  <table class="table table-hover table-striped table-light">
+    <thead class="thead-light">
+      <tr>
+        <th scope="col">User</th>
+        <th scope="col">Date</th>
+        <th scope="col"></th>
+      </tr>
+    </thead>
+    <tbody *ngFor="let item of interviews">
+      <tr>
+        <td>{{item.user.fullName}}</td>
+        <td>{{item.date}}</td>
+          <td *ngIf="item.decision === ''"><button class="btn btn-secondary" disabled>No Decision Yet</button></td>
+          <td *ngIf="item.decision === 'accepted'"><button class="btn btn-success" disabled>Accepted</button></td>
+          <td *ngIf="item.decision === 'declined'"><button class="btn btn-danger" disabled>Declined</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
 </div>

@@ -14,7 +14,10 @@
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/jobs">Applied Jobs</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link btn btn-outline-secondary" routerLink="/user/search">Search</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/search">Search Jobs</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
@@ -28,7 +31,7 @@
     <div class="col-sm-3">
       <!--left col-->
       <div class="text-center">
-        <img *ngIf="user.photo == ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+        <img *ngIf="user.photo === '' || user.photo === null" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
           alt="avatar">
         <img *ngIf="user.photo != ''" src="{{user.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
         <h6>Upload a different photo...</h6>
@@ -38,10 +41,7 @@
       <hr><br>
       <ul class="list-group">
         <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Shares</strong></span> 125</li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Likes</strong></span> 13</li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Posts</strong></span> 37</li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Followers</strong></span> 78</li>
+        <li class="list-group-item text-right"><span class="pull-left"><strong>Applies</strong></span> {{numberOfApplies}}</li>
       </ul>
     </div>
     <!--/col-3-->
@@ -49,11 +49,15 @@
       <div class="tab-content">
         <div class="tab-pane active" id="home">
           <hr>
-          <div *ngIf="updated" class="alert alert-success">
-            <strong>Success!</strong> Profile has been updated
+          <div *ngIf="successMessage !== null" class="alert alert-success">
+            <strong>Success!</strong> {{successMessage}}
+          </div>
+          <div *ngIf="errorMessage !== null" class="alert alert-danger">
+            <strong>Error!</strong> {{errorMessage}}
           </div>
           <form class="row form" #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)" id="profileForm">
             <input type="hidden" class="form-control" name="$key" #$key="ngModel" [(ngModel)]="user.$key" />
+            <input type="hidden" class="form-control" name="photo" #photo="ngModel" [(ngModel)]="user.photo" />
             <div class="form-group col-sm-6">
               <label for="fullName">
                 <h4>Full name</h4>

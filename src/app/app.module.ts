@@ -30,6 +30,9 @@ import { UsersComponent } from './admin/users/users.component';
 import { CompaniesComponent } from './admin/companies/companies.component';
 import { JobsComponent } from './admin/jobs/jobs.component';
 import { LoginComponent } from './admin/login/login.component';
+import { UserInterviewsComponent } from './users/user-interviews/user-interviews.component';
+import { CompanyInterviewsComponent } from './companies/company-interviews/company-interviews.component';
+import { InterviewsComponent } from './admin/interviews/interviews.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +52,10 @@ import { LoginComponent } from './admin/login/login.component';
     UsersComponent,
     CompaniesComponent,
     JobsComponent,
-    LoginComponent
+    LoginComponent,
+    UserInterviewsComponent,
+    InterviewsComponent,
+    CompanyInterviewsComponent
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts

@@ -17,15 +17,17 @@ import { Router } from '@angular/router';
 export class UserProfileComponent implements OnInit {
 
   user: User = new User();
-  updated: boolean;
   uploadProgress: Observable<number>;
   downloadURL: Observable<string>;
   ref: AngularFireStorageReference;
   task: AngularFireUploadTask;
+  successMessage: string = null;
+  errorMessage: string = null;
+  appliedJobs: any[];
+  numberOfApplies: number;
 
   constructor(private authServ: AuthService, public fireServ: FirebaseService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private afStorage: AngularFireStorage) {
-    this.updated = false;
+    private loader: Ng4LoadingSpinnerService) {
     this.fireServ.getUser(this.authServ.currentUserId).then(
       res => {
         this.user = res;
@@ -40,31 +42,48 @@ export class UserProfileComponent implements OnInit {
     this.loader.show();
     this.fireServ.updateUser(profileForm.value).then(
       res => {
-        this.updated = true;
+        this.errorMessage = null;
+        this.successMessage = 'Profile has been updated';
         this.loader.hide();
       }
-    );
+    )
+    .catch(err => {
+      this.successMessage = null;
+      this.errorMessage = err;
+    });
   }
 
   upload(event, type) {
     const filename = event.path[0].value;
     this.loader.show();
-    this.fireServ.upload(event, this.user.fullName + filename.substring(filename.lastIndexOf('.'))).then(
+    let path;
+    if (type === 'resume') {
+      path = 'Resumes/';
+    } else {
+      path = 'Photos/';
+    }
+    this.fireServ.upload(event, path + this.user.fullName + filename.substring(filename.lastIndexOf('.'))).then(
       res => {
         res.ref.getDownloadURL().then(
           res2 => {
             if (type === 'resume') {
               this.user.resume = res2;
+              this.successMessage = 'Resume uploaded succesfuly';
             } else {
               this.user.photo = res2;
+              this.successMessage = 'Profile photo uploaded succesfully';
             }
+            this.errorMessage = null;
             this.fireServ.updateUser(this.user);
-            this.updated = true;
             this.loader.hide();
           }
         );
       }
-    );
+    )
+    .catch(err => {
+      this.successMessage = null;
+      this.errorMessage = err;
+    });
   }
 
   logout() {

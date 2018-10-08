@@ -16,12 +16,16 @@ import { UsersComponent } from './admin/users/users.component';
 import { CompaniesComponent } from './admin/companies/companies.component';
 import { JobsComponent } from './admin/jobs/jobs.component';
 import { LoginComponent } from './admin/login/login.component';
+import { UserInterviewsComponent } from './users/user-interviews/user-interviews.component';
+import { CompanyInterviewsComponent } from './companies/company-interviews/company-interviews.component';
+import { InterviewsComponent } from './admin/interviews/interviews.component';
 
 const appRoutes: Routes = [
   { path: '', redirectTo: 'user/login', pathMatch: 'full' },
   { path: 'company/login', component: CompanyLoginComponent, canActivate: [AuthGuard]},
   { path: 'company/register', component: CompanyRegisterComponent, canActivate: [AuthGuard]},
   { path: 'company/profile', component: CompanyProfileComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
+  { path: 'company/interviews', component: CompanyInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/job-applicants/:id/all-applicants',
   component: JobApplicantsComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/jobs', component: CompanyJobsComponent, canActivate: [AuthGuard], data: {roles: ['company']}  },
@@ -29,16 +33,16 @@ const appRoutes: Routes = [
   { path: 'user/register', component: UserRegisterComponent, canActivate: [AuthGuard] },
   { path: 'user/profile', component: UserProfileComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/jobs', component: UserJobsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
+  { path: 'user/interviews', component: UserInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'forgot-password', component: ForgetPasswordComponent, canActivate: [AuthGuard]},
   { path: 'admin', component: LoginComponent, canActivate: [AuthGuard]},
   { path: 'admin/dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
   { path: 'admin/users', component: UsersComponent, canActivate: [AuthGuard], data: {roles: ['admin']}},
   { path: 'admin/companies', component: CompaniesComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
   { path: 'admin/jobs', component: JobsComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
+  { path: 'admin/interviews', component: InterviewsComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard], data: {roles: ['user', 'company']} },
-
-  // otherwise redirect to home
-  { path: '**', redirectTo: '' }
+  { path: '**', redirectTo: 'user/login' }
 ];
 
 export const routing = RouterModule.forRoot(appRoutes);

@@ -30,8 +30,8 @@
 
 <div class="container">
   <div class="table-responsive">
-    <table class="table table-stripped table-light">
-      <thead>
+    <table class="table table-hover table-striped table-light">
+      <thead class="thead-light">
         <tr>
           <th>Name</th>
           <th>Address</th>
@@ -46,8 +46,8 @@
           <td>{{item.address}}</td>
           <td>{{item.email}}</td>
           <td>{{item.phone}}</td>
-          <td><a class="btn btn-outline-primary" (click)="fillModal(item)" data-toggle="modal" data-target="#editModal">Edit</a>&nbsp;
-            <a class="btn btn-outline-danger" data-toggle="modal" data-target="#deleteModal" (click)="fillModal(item)">Delete</a></td>
+          <td><button class="btn btn-primary" (click)="fillModal(item)" data-toggle="modal" data-target="#editModal">Edit</button>&nbsp;
+            <button class="btn btn-danger" data-toggle="modal" data-target="#deleteModal" (click)="fillModal(item)">Delete</button></td>
         </tr>
       </tbody>
     </table>
@@ -59,7 +59,7 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Edit User</h4>
+          <h4 class="modal-title">Edit Company</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
         <div class="modal-body">

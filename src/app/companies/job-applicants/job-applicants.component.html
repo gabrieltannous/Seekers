@@ -13,6 +13,9 @@
       <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/company/jobs">My Jobs</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/interviews">Interviews</a>
+      </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
       <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
@@ -24,8 +27,8 @@
     {{successMessage}}
   </div>
   <div class="table-responsive">
-    <table *ngIf="applicants.length !== 0" class="table table-striped table-light">
-      <thead>
+    <table *ngIf="applicants.length !== 0" class="table table-hover table-striped table-light">
+      <thead class="thead-light">
         <th>Full Name</th>
         <th>Email</th>
         <th>Resume</th>
@@ -39,8 +42,8 @@
             <label *ngIf="item.resume == null">No Resume Uploaded</label>
             <a *ngIf="item.resume != null" href="{{item.resume}}">Download Resume</a>
           </td>
-          <td><a class="btn btn-outline-success" data-toggle="modal" data-target="#interviewModal" (click)="fillModal(item)">Set
-              Interview</a></td>
+          <td><button class="btn btn-success" data-toggle="modal" data-target="#interviewModal" (click)="fillModal(item)">Set
+              Interview</button></td>
         </tr>
       </tbody>
     </table>

@@ -37,7 +37,7 @@ export class CompaniesComponent implements OnInit {
 
   editCompany() {
     this.loader.show();
-    this.fireServ.updateUser(this.company).then(() => this.loadCompanies());
+    this.fireServ.updateCompany(this.company).then(() => this.loadCompanies());
   }
 
   delete($key) {
