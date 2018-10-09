@@ -22,7 +22,7 @@ export class CompaniesComponent implements OnInit {
   }
 
   loadCompanies() {
-    this.fireServ.getAllCompanies().then(res => {
+    return this.fireServ.getAllCompanies().then(res => {
       this.companies = res;
       this.loader.hide();
     });
@@ -41,7 +41,10 @@ export class CompaniesComponent implements OnInit {
   }
 
   delete($key) {
-    this.fireServ.deleteCopmany($key);
+    this.loader.show();
+    this.fireServ.deleteCopmany($key).then(() => {
+      this.loadCompanies().then(() => this.loader.hide());
+    });
   }
 
   logout() {

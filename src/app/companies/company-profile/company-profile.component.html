@@ -30,7 +30,8 @@
       <div class="text-center">
         <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
         <h6>Upload a different photo...</h6>
-        <input type="file" class="text-center center-block file-upload">
+        <input type="file" name="resume" id="resume" class="text-center center-block file-upload" (change)="upload($event)"
+          accept=".png, .jpeg, .jpg">
       </div>
       <hr><br>
       <div class="card">
@@ -38,23 +39,27 @@
           Website <i class="fa fa-link fa-1x"></i>
         </div>
         <ul class="list-group list-group-flush">
-          <li *ngIf="company.website !== null" class="list-group-item"><a href="http://bootnipets.com">bootnipets.com</a></li>
+          <li *ngIf="company.website !== null" class="list-group-item"><a href="http://bootnipets.com">{{company.website}}</a></li>
         </ul>
       </div>
-      <ul class="list-group">
+      <!-- <ul class="list-group">
         <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
         <li class="list-group-item text-right"><span class="pull-left"><strong>Jobs</strong></span> 125</li>
         <li class="list-group-item text-right"><span class="pull-left"><strong>Applicants</strong></span> 13</li>
         <li class="list-group-item text-right"><span class="pull-left"><strong>Interviews</strong></span> 37</li>
-      </ul>
+      </ul> -->
     </div>
     <!--/col-3-->
     <div class="col-sm-9">
       <div class="tab-content">
         <div class="tab-pane active" id="home">
           <hr>
-          <div *ngIf="updated" class="alert alert-success">
-            <strong>Success!</strong> Profile has been updated</div>
+          <div *ngIf="successMessage !== null" class="alert alert-success">
+            <strong>Success!</strong> {{successMessage}}
+          </div>
+          <div *ngIf="errorMessage !== null" class="alert alert-danger">
+            <strong>Error!</strong> {{errorMessage}}
+          </div>
           <form class="row form" #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)" id="profileForm">
             <input type="hidden" class="form-control" name="$key" #$key="ngModel" [(ngModel)]="company.$key" />
             <div class="form-group col-sm-6">
@@ -62,7 +67,7 @@
                 <h4>Name</h4>
               </label>
               <input type="text" class="form-control" name="name" #name="ngModel" [(ngModel)]="company.name"
-                placeholder="Please enter your full name" title="Please enter your name" />
+                placeholder="Please enter your company name" title="Please enter your name" />
             </div>
 
             <div class="form-group col-sm-6">
@@ -70,22 +75,28 @@
                 <h4>Phone</h4>
               </label>
               <input type="text" class="form-control" name="phone" #phone="ngModel" [(ngModel)]="company.phone" id="phone"
-                placeholder="enter phone" title="enter your phone number if any.">
+                placeholder="Enter phone number" title="Please enter phone number">
             </div>
 
             <div class="form-group col-sm-6">
               <label for="email">
                 <h4>Email</h4>
               </label>
-              <input type="email" class="form-control" value="{{company.email}}" name="email" id="email" disabled
-                placeholder="you@email.com" title="enter your email.">
+              <input type="email" class="form-control" value="{{company.email}}" disabled>
             </div>
             <div class="form-group col-sm-6">
               <label for="location">
                 <h4>Address</h4>
               </label>
               <input type="text" name="address" #address="ngModel" [(ngModel)]="company.address" class="form-control"
-                id="address" placeholder="Enter compay address" title="Enter your address">
+                id="address" placeholder="Enter company address" title="Please enter your address">
+            </div>
+            <div class="form-group col-sm-6">
+              <label for="location">
+                <h4>Website</h4>
+              </label>
+              <input type="text" name="website" #website="ngModel" [(ngModel)]="company.website" class="form-control"
+                id="website" placeholder="Enter company website" title="Enter your website">
             </div>
             <div class="form-group col-sm-12">
               <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>

@@ -22,7 +22,7 @@ export class InterviewsComponent implements OnInit {
   }
 
   loadInterviews() {
-    this.fireServ.getAllInterviews().then(res => {
+    return this.fireServ.getAllInterviews().then(res => {
       this.interviews = res;
       this.loader.hide();
     });
@@ -35,13 +35,16 @@ export class InterviewsComponent implements OnInit {
     this.interview = interview;
   }
 
-  editCompany() {
+  editInterview() {
     this.loader.show();
     this.fireServ.updateInterview(this.interview).then(() => this.loadInterviews());
   }
 
   delete($key) {
-    this.fireServ.deleteInterview($key);
+    this.loader.show();
+    this.fireServ.deleteInterview($key).then(() => {
+      this.loadInterviews().then(() => this.loader.hide());
+    });
   }
 
   logout() {

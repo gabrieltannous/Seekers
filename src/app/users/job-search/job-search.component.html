@@ -1,0 +1,65 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <h2><a id="logo" routerLink="/home">Seekers</a></h2>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/profile">Profile <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/jobs">Applied Jobs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
+      </li>
+      <li class="nav-item active">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/search">Search Jobs</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container">
+  <form>
+  <div class="row">
+    <div class="col-sm-4">
+        <input type="text" class="form-control" name="title" #title="ngModel" [(ngModel)]="job.title" placeholder="Title">
+    </div>
+    <div class="col-sm-4">
+        <input type="text" class="form-control" name="type" #type="ngModel" [(ngModel)]="job.type" placeholder="Type">
+    </div>
+    <div class="col-sm-2">
+        <input type="number" class="form-control" name="salary" #salary="ngModel" [(ngModel)]="job.salary" placeholder="Salary Over">
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-success" type="submit" (click)="search()">Search</button>
+    </div>
+  </div>
+  </form>
+</div>
+
+<div *ngIf="jobs !== undefined" class="container">
+    <div *ngIf="jobs['length'] === 0" class="col-xs-12 text-center">
+      <h3>No Result Found</h3>
+      </div>
+    <div *ngIf="jobs['length'] > 0" class="row">
+        <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
+          <div class="card-header">
+            <h4>{{item.title}}</h4>
+          </div>
+          <div class="card-body">
+            <h5 class="card-title">{{item.type}}</h5>
+            <p class="card-text">${{item.salary}}</p>
+            <button class="btn btn-primary" *ngIf="!item.applied" (click)="apply(item)">Apply</button>
+            <button class="btn btn-success" disabled *ngIf="item.applied">Applied</button>
+          </div>
+        </div>
+      </div>
+    </div>

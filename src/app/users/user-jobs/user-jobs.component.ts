@@ -16,8 +16,8 @@ export class UserJobsComponent implements OnInit {
 
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService, private route: Router) {
-      this.fireServ.getUserAppliedJobs(this.authServ.currentUserId).then(result => {
-        this.appliedJobs = result;
+      this.fireServ.getUserAppliedJobs(this.authServ.currentUserId).then(res => {
+        this.appliedJobs = res;
         this.loader.hide();
       });
     }

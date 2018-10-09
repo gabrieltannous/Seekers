@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 export class CompanyRegisterComponent implements OnInit {
 
   company = new Company();
-  errorMessage: string;
+  errorMessage: string = null;
 
   constructor( private authService: AuthService, private firebaseService: FirebaseService,
     private loader: Ng4LoadingSpinnerService, private route: Router) {

@@ -19,29 +19,44 @@ import { LoginComponent } from './admin/login/login.component';
 import { UserInterviewsComponent } from './users/user-interviews/user-interviews.component';
 import { CompanyInterviewsComponent } from './companies/company-interviews/company-interviews.component';
 import { InterviewsComponent } from './admin/interviews/interviews.component';
+import { UserComponent } from './companies/user/user.component';
+import { CompanyComponent } from './users/company/company.component';
+import { JobSearchComponent } from './users/job-search/job-search.component';
 
 const appRoutes: Routes = [
+  // Index page
   { path: '', redirectTo: 'user/login', pathMatch: 'full' },
+
+  // Companies pages
   { path: 'company/login', component: CompanyLoginComponent, canActivate: [AuthGuard]},
   { path: 'company/register', component: CompanyRegisterComponent, canActivate: [AuthGuard]},
   { path: 'company/profile', component: CompanyProfileComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/interviews', component: CompanyInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
-  { path: 'company/job-applicants/:id/all-applicants',
+  { path: 'company/job/:id/all-applicants',
   component: JobApplicantsComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
+  { path: 'company/user/:id/profile',
+  component: UserComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/jobs', component: CompanyJobsComponent, canActivate: [AuthGuard], data: {roles: ['company']}  },
+
+  // Users pages
   { path: 'user/login', component: UserLoginComponent, canActivate: [AuthGuard]},
   { path: 'user/register', component: UserRegisterComponent, canActivate: [AuthGuard] },
   { path: 'user/profile', component: UserProfileComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/jobs', component: UserJobsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
+  { path: 'user/search', component: JobSearchComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/interviews', component: UserInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
-  { path: 'forgot-password', component: ForgetPasswordComponent, canActivate: [AuthGuard]},
+  { path: 'user/company/:id/profile', component: CompanyComponent, canActivate: [AuthGuard], data: {roles: ['user']} },
+
+  // Admin pages
   { path: 'admin', component: LoginComponent, canActivate: [AuthGuard]},
   { path: 'admin/dashboard', component: DashboardComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
   { path: 'admin/users', component: UsersComponent, canActivate: [AuthGuard], data: {roles: ['admin']}},
   { path: 'admin/companies', component: CompaniesComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
   { path: 'admin/jobs', component: JobsComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
   { path: 'admin/interviews', component: InterviewsComponent, canActivate: [AuthGuard], data: {roles: ['admin']} },
+
   { path: 'home', component: HomeComponent, canActivate: [AuthGuard], data: {roles: ['user', 'company']} },
+  { path: 'forgot-password', component: ForgetPasswordComponent, canActivate: [AuthGuard]},
   { path: '**', redirectTo: 'user/login' }
 ];
 

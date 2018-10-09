@@ -22,7 +22,7 @@ export class UsersComponent implements OnInit {
   }
 
   loadUsers() {
-    this.fireServ.getAllUsers().then(res => {
+    return this.fireServ.getAllUsers().then(res => {
       this.users = res;
       this.loader.hide();
     });
@@ -41,7 +41,10 @@ export class UsersComponent implements OnInit {
   }
 
   delete($key) {
-    this.fireServ.deleteUser($key);
+    this.loader.show();
+    this.fireServ.deleteUser($key).then(() => {
+      this.loadUsers().then(() => this.loader.hide());
+    });
   }
 
   logout() {

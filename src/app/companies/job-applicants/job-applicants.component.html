@@ -36,7 +36,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of applicants">
-          <td>{{item.fullName}}</td>
+          <td><a [routerLink]="['/company/user', item.$key, 'profile']">{{item.fullName}}</a></td>
           <td>{{item.email}}</td>
           <td>
             <label *ngIf="item.resume == null">No Resume Uploaded</label>

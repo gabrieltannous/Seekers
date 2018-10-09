@@ -17,7 +17,7 @@
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link btn btn-outline-secondary" routerLink="/user/profile">Search Jobs</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/search">Search Jobs</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
@@ -44,7 +44,7 @@
     </thead>
     <tbody *ngFor="let item of interviews">
       <tr>
-        <td>{{item.company.name}}</td>
+        <td><a [routerLink]="['/user/company', item.company.$key, 'profile']">{{item.company.name}}</a></td>
         <td>{{item.date}}</td>
         <td *ngIf="item.decision === ''"><button class="btn btn-success" (click)="decide(item, 'accepted')">Accept</button>&nbsp;
           <button class="btn btn-danger" (click)="decide(item, 'declined')">Decline</button></td>

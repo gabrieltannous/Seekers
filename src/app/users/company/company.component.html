@@ -1,0 +1,78 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <h2><a id="logo" routerLink="/home">Seekers</a></h2>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/profile">Profile <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/jobs">Applied Jobs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/search">Search Jobs</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container bootstrap snippet">
+  <div class="row">
+    <div class="col-sm-3">
+      <!--left col-->
+      <div class="text-center">
+        <img *ngIf="company.photo === ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+          alt="avatar">
+        <img *ngIf="company.photo !== ''" src="{{company.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
+      </div>
+      <hr><br>
+      <div class="card">
+        <div class="card-header">
+          Website <i class="fa fa-link fa-1x"></i>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li *ngIf="company.website !== ''" class="list-group-item"><a href="{{company.website}}">{{company.website}}</a></li>
+          <li *ngIf="company.website === ''" class="list-group-item">No Website</li>
+        </ul>
+      </div>
+    </div>
+    <!--/col-3-->
+    <div class="col-sm-9">
+      <div class="tab-content">
+        <div class="tab-pane active" id="home">
+          <hr>
+          <div class="row">
+            <div *ngIf="company.name !== ''" class="form-group col-sm-6">
+              <h4>Name:</h4>
+              <h5>{{company.name}}</h5>
+            </div>
+
+            <div *ngIf="company.phone !== ''" class="form-group col-sm-6">
+              <h4>Phone:</h4>
+              <h5>{{company.phone}}</h5>
+            </div>
+
+            <div *ngIf="company.email !== ''" class="form-group col-sm-6">
+              <h4>Email:</h4>
+              <h5>{{company.email}}</h5>
+            </div>
+            <div *ngIf="company.address !== ''" class="form-group col-sm-6">
+              <h4>Address:</h4>
+              <h5>{{company.address}}</h5>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

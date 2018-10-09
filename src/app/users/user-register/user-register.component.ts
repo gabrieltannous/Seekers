@@ -14,7 +14,7 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 export class UserRegisterComponent implements OnInit {
 
   user = new User();
-  errorMessage: string;
+  errorMessage: string = null;
 
   constructor(private authService: AuthService, private firebaseService: FirebaseService,
     private route: Router, private loader: Ng4LoadingSpinnerService) {

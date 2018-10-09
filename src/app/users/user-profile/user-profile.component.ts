@@ -17,10 +17,6 @@ import { Router } from '@angular/router';
 export class UserProfileComponent implements OnInit {
 
   user: User = new User();
-  uploadProgress: Observable<number>;
-  downloadURL: Observable<string>;
-  ref: AngularFireStorageReference;
-  task: AngularFireUploadTask;
   successMessage: string = null;
   errorMessage: string = null;
   appliedJobs: any[];
@@ -60,7 +56,7 @@ export class UserProfileComponent implements OnInit {
     if (type === 'resume') {
       path = 'Resumes/';
     } else {
-      path = 'Photos/';
+      path = 'User-Photos/';
     }
     this.fireServ.upload(event, path + this.user.fullName + filename.substring(filename.lastIndexOf('.'))).then(
       res => {
@@ -81,6 +77,7 @@ export class UserProfileComponent implements OnInit {
       }
     )
     .catch(err => {
+      this.loader.hide();
       this.successMessage = null;
       this.errorMessage = err;
     });

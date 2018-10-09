@@ -17,7 +17,7 @@
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link btn btn-outline-secondary" routerLink="/user/profile">Search Jobs</a>
+        <a class="nav-link btn btn-outline-secondary" routerLink="/user/search">Search Jobs</a>
       </li>
     </ul>
     <form class="form-inline my-2 my-lg-0">
@@ -37,6 +37,7 @@
     <thead class="thead-light">
       <tr>
         <th scope="col">Title</th>
+        <th scope="col">Company</th>
         <th scope="col">Job Type</th>
         <th scope="col">Salary</th>
       </tr>
@@ -44,6 +45,7 @@
     <tbody *ngFor="let item of appliedJobs">
       <tr>
         <td>{{item.title}}</td>
+        <td><a [routerLink]="['/user/company', item.company.id, 'profile']">{{item.company.name}}</a></td>
         <td>{{item.type}}</td>
         <td>{{item.salary}}</td>
       </tr>

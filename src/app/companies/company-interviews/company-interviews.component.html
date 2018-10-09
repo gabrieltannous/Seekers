@@ -41,7 +41,7 @@
     </thead>
     <tbody *ngFor="let item of interviews">
       <tr>
-        <td>{{item.user.fullName}}</td>
+        <td><a [routerLink]="['/company/user', item.userId, 'profile']">{{item.user.fullName}}</a></td>
         <td>{{item.date}}</td>
           <td *ngIf="item.decision === ''"><button class="btn btn-secondary" disabled>No Decision Yet</button></td>
           <td *ngIf="item.decision === 'accepted'"><button class="btn btn-success" disabled>Accepted</button></td>

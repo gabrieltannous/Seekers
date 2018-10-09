@@ -31,18 +31,18 @@
     <div class="col-sm-3">
       <!--left col-->
       <div class="text-center">
-        <img *ngIf="user.photo === '' || user.photo === null" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+        <img *ngIf="user.photo === ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
           alt="avatar">
-        <img *ngIf="user.photo != ''" src="{{user.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
+        <img *ngIf="user.photo !== ''" src="{{user.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
         <h6>Upload a different photo...</h6>
         <input type="file" name="resume" id="resume" class="text-center center-block file-upload" (change)="upload($event, 'photo')"
           accept=".png, .jpeg, .jpg">
       </div>
       <hr><br>
-      <ul class="list-group">
+      <!-- <ul class="list-group">
         <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
         <li class="list-group-item text-right"><span class="pull-left"><strong>Applies</strong></span> {{numberOfApplies}}</li>
-      </ul>
+      </ul> -->
     </div>
     <!--/col-3-->
     <div class="col-sm-9">
@@ -71,21 +71,20 @@
                 <h4>Phone</h4>
               </label>
               <input type="text" class="form-control" name="phone" #phone="ngModel" [(ngModel)]="user.phone" id="phone"
-                placeholder="Phone Number" title="enter your phone number if any.">
+                placeholder="Phone Number" title="Please enter your phone number">
             </div>
 
             <div class="form-group col-sm-6">
               <label for="mobile">
                 <h4>Mobile</h4>
               </label>
-              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Mobile Number" title="enter your mobile number if any.">
+              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Mobile Number" title="Please enter your mobile number">
             </div>
             <div class="form-group col-sm-6">
               <label for="email">
                 <h4>Email</h4>
               </label>
-              <input type="email" class="form-control" value="{{user.email}}" name="email" id="email" disabled
-                placeholder="you@email.com" title="Please enter your email">
+              <input type="email" class="form-control" value="{{user.email}}" disabled>
             </div>
             <div class="form-group col-sm-6">
               <label for="email">

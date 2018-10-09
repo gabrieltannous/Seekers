@@ -21,7 +21,7 @@ export class JobsComponent implements OnInit {
   }
 
   loadJobs() {
-    this.fireServ.getAllJobs().then(res => {
+    return this.fireServ.getAllJobs().then(res => {
       this.jobs = res;
       this.loader.hide();
     });
@@ -40,7 +40,10 @@ export class JobsComponent implements OnInit {
   }
 
   delete($key) {
-    this.fireServ.deleteJob($key);
+    this.loader.show();
+    this.fireServ.deleteJob($key).then(() => {
+      this.loadJobs().then(() => this.loader.hide());
+    });
   }
 
   logout() {

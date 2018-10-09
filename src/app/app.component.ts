@@ -1,8 +1,8 @@
 import { Component, ViewEncapsulation } from '@angular/core';
 import { Router, Event as RouterEvent, NavigationStart, NavigationEnd, NavigationCancel, NavigationError} from '@angular/router';
-
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { AuthService } from './services/auth.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,13 +18,10 @@ export class AppComponent {
     });
   }
 
-  // Shows and hides the loading spinner during RouterEvent changes
+  // Shows the loading spinner during RouterEvent changes
   navigationInterceptor(event: RouterEvent): void {
     if (event instanceof NavigationStart) {
       this.loader.show();
-    }
-    if (event instanceof NavigationEnd) {
-      // this.loader.hide();
     }
 
     // Set loading state to false in both of the below events to hide the spinner in case a request fails

@@ -1,0 +1,76 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <h2><a id="logo" routerLink="/home">Seekers</a></h2>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/profile">Profile</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/jobs">My Jobs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link btn btn-outline-secondary" routerLink="/company/interviews">Interviews</a>
+      </li>
+    </ul>
+    <form class="form-inline my-2 my-lg-0">
+      <button class="btn btn-outline-danger my-2 my-sm-0" (click)="logout()">Logout</button>
+    </form>
+  </div>
+</nav>
+
+<div class="container bootstrap snippet">
+  <div class="row">
+    <div class="col-sm-3">
+      <!--left col-->
+      <div class="text-center">
+        <img *ngIf="user.photo === ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+          alt="avatar">
+        <img *ngIf="user.photo !== ''" src="{{user.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
+      </div>
+      <hr><br>
+      <!-- <ul class="list-group">
+        <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
+        <li class="list-group-item text-right"><span class="pull-left"><strong>Applies</strong></span> {{numberOfApplies}}</li>
+      </ul> -->
+    </div>
+    <div class="col-sm-9">
+      <div class="tab-content">
+        <div class="tab-pane active" id="home">
+          <hr>
+          <div class="row">
+            <div *ngIf="user.fullName !== ''" class="form-group col-sm-6">
+              <h4>Full name:</h4>
+              <h5>{{user.fullName}}</h5>
+            </div>
+            <div *ngIf="user.phone !== ''" class="form-group col-sm-6">
+              <h4>Phone:</h4>
+              <h5>{{user.phone}}</h5>
+            </div>
+            <div *ngIf="user.mobile !== ''" class="form-group col-sm-6">
+              <h4>Mobile:</h4>
+              <h5>{{user.mobile}}</h5>
+            </div>
+            <div *ngIf="user.email !== ''" class="form-group col-sm-6">
+              <h4>Email:</h4>
+              <h5>{{user.email}}</h5>
+            </div>
+            <div *ngIf="user.address !== ''" class="form-group col-sm-6">
+              <h4>Address:</h4>
+              <h5>{{user.address}}</h5>
+            </div>
+            <div class="form-group col-sm-6">
+              <h4>Resume:</h4>
+              <h5 *ngIf="user.resume === ''">No Resume uploaded</h5>
+              <a *ngIf="user.resume !== ''" class="btn btn-info" href="{{user.resume}}">Download resume</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

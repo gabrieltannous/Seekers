@@ -80,7 +80,15 @@ export class FirebaseService {
           doc => {
             if (doc.length === 1) {
               applied = true;
-              jobs.push({$key, ...jobData, applied});
+              const companyId = jobData['companyId'];
+              this.db.collection('companies').doc(companyId).ref.get().then(
+                company => {
+                  const id = company.id;
+                  const uData = company.data();
+                  jobData['company'] = {id, ...uData};
+                  jobs.push({$key, ...jobData, applied});
+                }
+              );
             } else {
               applied = false;
             }
@@ -151,9 +159,19 @@ export class FirebaseService {
   async getAllInterviews(): Promise<Interview[]> {
     const interviews = new Array();
     await this.db.collection('interview').snapshotChanges().subscribe(items => {
-      items.map(a => {
+      items.map(async a => {
         const $key = a.payload.doc.id;
         const data = a.payload.doc.data();
+        await this.db.collection('companies').doc(data['companyId']).ref.get().then(
+          async doc => {
+            data['company'] = doc.data();
+          }
+        );
+        await this.db.collection('users').doc(data['userId']).ref.get().then(
+          async doc => {
+            data['user'] = doc.data();
+          }
+        );
         interviews.push({ $key, ...data });
       });
     });
@@ -171,6 +189,7 @@ export class FirebaseService {
         await this.db.collection('companies').doc(data['companyId']).ref.get().then(
           async doc => {
             data['company'] = doc.data();
+            data['company']['$key'] = doc.id;
             interviews.push({$key, ...data});
           }
         );
@@ -190,6 +209,7 @@ export class FirebaseService {
         await this.db.collection('users').doc(data['userId']).ref.get().then(
           async doc => {
             data['user'] = doc.data();
+            data['user']['$key'] = doc.id;
             interviews.push({$key, ...data});
           }
         );
@@ -246,7 +266,6 @@ export class FirebaseService {
       email: company.email,
       address: '',
       phone: '',
-      addrses: '',
       website: '',
       photo: ''
     })
@@ -364,7 +383,8 @@ export class FirebaseService {
         name: company.name,
         phone: (company.phone == null ? '' : company.phone),
         address: (company.address == null ? '' : company.address),
-        website: (company.website == null ? '' : company.website)
+        website: (company.website == null ? '' : company.website),
+        photo: ''
     })
     .catch(function(error) {
         console.error('Error updating document: ', error);
@@ -420,6 +440,53 @@ export class FirebaseService {
       job : jobId,
       user : userId
     });
+  }
+
+  async searchJobs(jobs, title, type, salary, userId): Promise<any[]> {
+    const resultJobs = new Array();
+    jobs.map(job => {
+        let checked = false;
+        let titleChecked = false;
+        let typeChecked = false;
+        let salaryChecked = false;
+        if (title === undefined && type === undefined && salary === undefined) {
+          checked = true;
+        } else {
+          if (title !== undefined && type !== undefined && salary !== undefined) {
+            if (job['title'].toLowerCase().indexOf(title.toLowerCase()) > -1) {
+              titleChecked = true;
+            }
+            if (job['salary'] > salary) {
+              salaryChecked = true;
+            }
+            if (job['type'].toLowerCase().indexOf(type.toLowerCase()) > -1) {
+              typeChecked = true;
+            }
+            if (titleChecked && salaryChecked && typeChecked) {
+              checked = true;
+            }
+          }
+          if (salary !== 0) {
+            if (job['salary'] > salary) {
+              checked = true;
+            }
+          }
+          if (type !== undefined) {
+            if (job['type'].toLowerCase().indexOf(type.toLowerCase()) > -1) {
+              checked = true;
+            }
+          }
+          if (title !== undefined) {
+            if (job['title'].toLowerCase().indexOf(title.toLowerCase()) > -1) {
+              checked = true;
+            }
+          }
+        }
+        if (checked) {
+          resultJobs.push(job);
+        }
+      });
+    return resultJobs;
   }
 
   deleteCopmany(id) { // delete a company -- admin function

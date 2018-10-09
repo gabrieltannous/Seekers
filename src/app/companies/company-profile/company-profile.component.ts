@@ -14,14 +14,14 @@ import { Router } from '@angular/router';
 export class CompanyProfileComponent implements OnInit {
 
   company: Company = new Company();
-  updated: boolean;
   numberOfJobs: number;
   numberOfApplicants: number;
   numberOfInterviews: number;
+  successMessage: string = null;
+  errorMessage: string = null;
 
   constructor(private authServ: AuthService, public fireServ: FirebaseService,
     private loader: Ng4LoadingSpinnerService, private route: Router) {
-    this.updated = false;
     this.fireServ.getCompany(this.authServ.currentUserId).then(
       res => {
         this.company = res;
@@ -32,12 +32,36 @@ export class CompanyProfileComponent implements OnInit {
   ngOnInit() {
   }
 
+  upload(event) {
+    const filename = event.path[0].value;
+    this.loader.show();
+    const path = 'Company-Photos/';
+    this.fireServ.upload(event, path + this.company.name + filename.substring(filename.lastIndexOf('.'))).then(
+      res => {
+        res.ref.getDownloadURL().then(
+          res2 => {
+            this.company.photo = res2;
+            this.successMessage = 'Profile photo uploaded succesfully';
+            this.errorMessage = null;
+            this.fireServ.updateUser(this.company);
+            this.loader.hide();
+          }
+        );
+      }
+    )
+    .catch(err => {
+      this.loader.hide();
+      this.successMessage = null;
+      this.errorMessage = err;
+    });
+  }
+
   updateProfile(profileForm: NgForm) {
     this.loader.show();
     this.fireServ.updateCompany(profileForm.value).then(
       res => {
         this.loader.hide();
-        this.updated = true;
+        this.successMessage = 'Profile updated successfuly';
       }
     );
   }

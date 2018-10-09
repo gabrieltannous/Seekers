@@ -43,7 +43,7 @@
           <td>{{item.title}}</td>
           <td>{{item.type}}</td>
           <td>{{item.salary}}</td>
-          <td><button class="btn btn-success" [routerLink]="['/company/job-applicants', item.$key, 'all-applicants']">See Applicants</button></td>
+          <td><button class="btn btn-success" [routerLink]="['/company/job', item.$key, 'all-applicants']">See Applicants</button></td>
         </tr>
       </tbody>
     </table>
