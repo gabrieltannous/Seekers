@@ -424,6 +424,7 @@ export class FirebaseService {
         mobile: (user.mobile == null ? '' : user.mobile),
         phone: (user.phone == null ? '' : user.phone),
         address: (user.address == null ? '' : user.address),
+        resume: (user.resume == null ? '' : user.resume),
         photo: (user.photo == null ? '' : user.photo)
     })
     .catch(function(error) {

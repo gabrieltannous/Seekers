@@ -58,6 +58,7 @@
           <form class="row form" #profileForm="ngForm" (ngSubmit)="updateProfile(profileForm)" id="profileForm">
             <input type="hidden" class="form-control" name="$key" #$key="ngModel" [(ngModel)]="user.$key" />
             <input type="hidden" class="form-control" name="photo" #photo="ngModel" [(ngModel)]="user.photo" />
+            <input type="hidden" class="form-control" name="resume" #resume="ngModel" [(ngModel)]="user.resume" />
             <div class="form-group col-sm-6">
               <label for="fullName">
                 <h4>Full name</h4>
