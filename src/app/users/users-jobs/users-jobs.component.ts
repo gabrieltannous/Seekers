@@ -49,14 +49,17 @@ export class UsersJobsComponent implements OnInit {
   addJob() {
     if (this.authServ.isCompany()) {
       if (this.job.title === undefined || this.job.title === '') {
+        this.successMessage = null;
         this.errorMessage = 'Title cannot be empty';
       } else if (this.job.details === undefined || this.job.details === '') {
+        this.successMessage = null;
         this.errorMessage = 'Details cannot be empty';
       } else {
       this.loader.show();
         this.job.userId = this.authServ.currentUserId;
         this.fireServ.addUserJob(this.job).then(() => {
           this.successMessage = 'Job added successfuly';
+          this.loadJobs();
           this.errorMessage = null;
           this.loader.hide();
         });

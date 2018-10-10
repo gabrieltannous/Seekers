@@ -32,20 +32,24 @@
 
 
 <div class="container">
-    <div class="row">
-        <div *ngIf="successMessage !== null" class="col-md-12 alert alert-success">
-            <strong>Success!</strong> {{successMessage}}
-          </div>
-      <div class="col-md-4">
-        <button type="button" class="btn btn-info btn-lg" (click)="fillModal()" data-toggle="modal" data-target="#myModal">Create Job</button>
-      </div>
+  <div class="row">
+    <div *ngIf="successMessage !== null" class="col-md-12 alert alert-success">
+      <strong>Success!</strong> {{successMessage}}
+    </div>
+    <div *ngIf="errorMessage !== null" class="col-md-12 alert alert-danger">
+      <strong>Error!</strong> {{errorMessage}}
+    </div>
+    <div class="col-md-4">
+      <button type="button" class="btn btn-info btn-lg" (click)="fillModal()" data-toggle="modal" data-target="#myModal">Create
+        Job</button>
+    </div>
 
-    </div>
-    </div>
+  </div>
+</div>
 
 
 <div class="container">
-    <h2 class="text-center">My Jobs</h2>
+  <h2 class="text-center">My Jobs</h2>
   <div *ngIf="jobs?.length > 0" class="row">
     <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
       <div class="card-header">
@@ -59,7 +63,7 @@
 </div>
 
 <div class="container">
-    <h2 class="text-center">Users Jobs</h2>
+  <h2 class="text-center">Users Jobs</h2>
   <div *ngIf="jobs2?.length > 0" class="row">
     <div *ngFor="let item of jobs2" class="card border-light mb-3" style="width: 18rem;">
       <div class="card-header">
@@ -74,30 +78,29 @@
 </div>
 
 
-  <!-- Modal -->
-  <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+  <div class="modal-dialog">
 
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <h4 class="modal-title">Create a Job</h4>
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-        </div>
-        <form class="form-signin" #jobForm="ngForm" (ngSubmit)="addJob(jobForm)">
-          <div class="modal-body">
-            <input type="text" name="title" #title="ngModel" [(ngModel)]="job.title" class="form-control" placeholder="Job Title"
-              required autofocus>
-            <textarea name="details" #details="ngModel" [(ngModel)]="job.details" class="form-control" placeholder="Job Details"
-              required></textarea>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-success" (click)="addJob()" data-dismiss="modal">Add Job</button>
-          </div>
-        </form>
+    <!-- Modal content-->
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Create a Job</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
-
+      <form class="form-signin" #jobForm="ngForm" (ngSubmit)="addJob(jobForm)">
+        <div class="modal-body">
+          <input type="text" name="title" #title="ngModel" [(ngModel)]="job.title" class="form-control" placeholder="Job Title"
+            required autofocus>
+          <textarea name="details" #details="ngModel" [(ngModel)]="job.details" class="form-control" placeholder="Job Details"
+            required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-success" (click)="addJob()" data-dismiss="modal">Add Job</button>
+        </div>
+      </form>
     </div>
-  </div>
 
+  </div>
+</div>

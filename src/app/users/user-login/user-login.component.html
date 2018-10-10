@@ -28,7 +28,7 @@
     <form class="form-signin" #signInForm="ngForm" (ngSubmit)="signin(signInForm)">
       <span id="reauth-email" class="reauth-email"></span>
       <input type="email" id="inputEmail" name="email" #email="ngModel" [(ngModel)]="user.email" class="form-control"
-        placeholder="Email address" required autofocus>
+        placeholder="Email address" required autofocus ngModel email>
       <input type="password" id="inputPassword" class="form-control" name="password" #password="ngModel" [(ngModel)]="user.password"
         placeholder="Password" required>
       <div *ngIf="errorMessage !== null" class="alert alert-danger">
