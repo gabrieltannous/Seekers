@@ -24,21 +24,27 @@ export class LoginComponent implements OnInit {
   }
 
   login(admin: NgForm) {
-    this.loader.show();
-    if (this.authServ.isAdminEmail(admin.value.email)) {
-      this.authServ.signInEmail(admin.value)
-      .then(res => {
-        if (res !== undefined) {
-          this.route.navigate(['/admin/dashboard']);
-        }
-      })
-      .catch(err => {
-        this.loader.hide();
-        this.errorMessage = err.message;
-      });
+    if (admin.value.email === undefined || admin.value.email === '') {
+      this.errorMessage = 'Please fill email value';
+    } else if (admin.value.password === undefined || admin.value.password === '') {
+      this.errorMessage = 'Please fill password value';
     } else {
-        this.errorMessage = 'Admin account does not exist';
-        this.loader.hide();
+      this.loader.show();
+      if (this.authServ.isAdminEmail(admin.value.email)) {
+        this.authServ.signInEmail(admin.value)
+        .then(res => {
+          if (res !== undefined) {
+            this.route.navigate(['/admin/dashboard']);
+          }
+        })
+        .catch(err => {
+          this.loader.hide();
+          this.errorMessage = err.message;
+        });
+      } else {
+          this.errorMessage = 'Admin account does not exist';
+          this.loader.hide();
+      }
     }
   }
 }

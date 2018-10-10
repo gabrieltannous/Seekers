@@ -25,6 +25,11 @@ export class UserLoginComponent implements OnInit {
   }
 
   signin(user: NgForm) { // log user in
+    if (user.value.email === undefined || user.value.email === '') {
+      this.errorMessage = 'Please fill email value';
+    } else if (user.value.password === undefined || user.value.password === '') {
+      this.errorMessage = 'Please fill password value';
+    } else {
     this.loader.show();
     this.fireServ.getUserByEmail(user.value.email).subscribe(res => {
       if (res.length === 0) {
@@ -41,6 +46,7 @@ export class UserLoginComponent implements OnInit {
           });
       }
     });
+  }
   }
 
   googleLogin() {

@@ -27,6 +27,11 @@ export class CompanyLoginComponent implements OnInit {
   }
 
   signin(company: NgForm) {
+    if (company.value.email === undefined || company.value.email === '') {
+      this.errorMessage = 'Please fill email value';
+    } else if (company.value.password === undefined || company.value.password === '') {
+      this.errorMessage = 'Please fill password value';
+    } else {
     this.loader.show();
     this.fireServ.getCompanyByEmail(company.value.email).subscribe(res => {
       if (res.length === 0) {
@@ -43,5 +48,6 @@ export class CompanyLoginComponent implements OnInit {
           });
       }
     });
+  }
   }
 }
