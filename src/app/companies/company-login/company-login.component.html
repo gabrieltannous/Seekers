@@ -27,7 +27,7 @@
     <p id="profile-name" class="profile-name-card"></p>
     <form class="form-signin" #signInForm="ngForm" (ngSubmit)="signin(signInForm)">
       <span id="reauth-email" class="reauth-email"></span>
-      <input type="email" id="inputEmail" name="email" #email="ngModel" [(ngModel)]="company.email" class="form-control"
+      <input type="email" id="inputEmail" name="email" #email="ngModel" email [(ngModel)]="company.email" class="form-control"
         placeholder="Email address" required autofocus>
       <input type="password" id="inputPassword" name="password" #password="ngModel" [(ngModel)]="company.password"
         class="form-control" placeholder="Password" required>
