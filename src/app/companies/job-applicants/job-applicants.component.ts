@@ -43,12 +43,14 @@ export class JobApplicantsComponent implements OnInit {
     this.interview.userId = user.$key;
     this.errorMessage = null;
     this.successMessage = null;
-    this.interview.date = '';
+    this.interview.date = new Date(Date.now());
   }
 
   setInterview() {
     if (this.interview.date === undefined) {
       this.errorMessage = 'Date and time cannot be null';
+    } else if (new Date(Date.now()) > this.interview.date) {
+      this.errorMessage = 'Interview cannot be in the past';
     } else {
       this.loader.show();
       this.fireServ.setInterview(this.interview).then(

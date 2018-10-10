@@ -10,6 +10,6 @@ export class Interview {
   public job: Job;
   public userId: string;
   public user: User;
-  public date: string;
+  public date: Date;
   public decision: string;
 }

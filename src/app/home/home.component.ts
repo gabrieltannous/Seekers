@@ -18,6 +18,8 @@ export class HomeComponent implements OnInit {
   isCompany: boolean;
   jobs: any[];
   applied: boolean;
+  test1 = 12345678;
+  successMessage = null;
 
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService, private route: Router) {
@@ -47,10 +49,14 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  addJob(jobForm: NgForm) {
+  addJob() {
+    this.loader.show();
     if (this.authServ.isCompany()) {
-      jobForm.value.companyId = this.authServ.currentUserId;
-      this.fireServ.addJob(jobForm.value);
+      this.job.companyId = this.authServ.currentUserId;
+      this.fireServ.addJob(this.job).then(() => {
+        this.successMessage = 'Job added successfuly';
+        this.loader.hide();
+      });
     }
   }
 

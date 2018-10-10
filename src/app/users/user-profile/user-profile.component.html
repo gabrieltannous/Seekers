@@ -78,7 +78,7 @@
               <label for="mobile">
                 <h4>Mobile</h4>
               </label>
-              <input type="text" class="form-control" name="mobile" id="mobile" placeholder="Mobile Number" title="Please enter your mobile number">
+              <input type="text" class="form-control" name="mobile" #mobile="ngModel" [(ngModel)]="user.mobile" id="mobile" placeholder="Mobile Number" title="Please enter your mobile number">
             </div>
             <div class="form-group col-sm-6">
               <label for="email">
@@ -90,11 +90,11 @@
               <label for="email">
                 <h4>Address</h4>
               </label>
-              <input type="email" class="form-control" id="address" placeholder="Address" title="Please enter your address">
+              <input type="email" class="form-control" name="address" #address="ngModel" [(ngModel)]="user.address" id="address" placeholder="Address" title="Please enter your address">
             </div>
             <div class="form-group col-sm-6">
               <label for="resume">
-                <h4>Resume</h4>
+                <h4>Resume (only pdf, doc or docx)</h4>
               </label>
               <br>
               <input type="file" name="resume" id="resume" (change)="upload($event, 'resume')" accept=".pdf, .doc, .docx" />

@@ -47,7 +47,7 @@
         <td>{{item.title}}</td>
         <td><a [routerLink]="['/user/company', item.company.id, 'profile']">{{item.company.name}}</a></td>
         <td>{{item.type}}</td>
-        <td>{{item.salary}}</td>
+        <td>${{item.salary}}</td>
       </tr>
     </tbody>
   </table>

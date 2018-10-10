@@ -22,6 +22,7 @@ export class JobsComponent implements OnInit {
 
   loadJobs() {
     return this.fireServ.getAllJobs().then(res => {
+      console.log(res);
       this.jobs = res;
       this.loader.hide();
     });

@@ -31,8 +31,8 @@ export class JobSearchComponent implements OnInit {
 
   search() {
     this.loader.show();
-    this.fireServ.searchJobs(this.allJobs, this.job.title, this.job.type, this.job.salary, this.authServ.currentUserId).then(res2 => {
-      this.jobs = res2;
+    this.fireServ.searchJobs(this.allJobs, this.job.title, this.job.type, this.job.salary, this.authServ.currentUserId).then(res => {
+      this.jobs = res;
       this.loader.hide();
     });
   }

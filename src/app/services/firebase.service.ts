@@ -40,7 +40,14 @@ export class FirebaseService {
         const $key = a.payload.doc.id;
         const jobData = a.payload.doc.data();
         let applied;
-        await this.db.collection('applied', ref => ref.where('job', '==', $key) .where('user', '==', userId)).snapshotChanges().subscribe(
+        this.db.collection('companies').doc(jobData['companyId']).ref.get().then(
+          company => {
+            const id = company.id;
+            const uData = company.data();
+            jobData['company'] = {id, ...uData};
+          }
+        ).then(() =>
+        this.db.collection('applied', ref => ref.where('job', '==', $key) .where('user', '==', userId)).snapshotChanges().subscribe(
           doc => {
             if (doc.length === 1) {
               applied = true;
@@ -48,10 +55,21 @@ export class FirebaseService {
               applied = false;
             }
             jobs.push({$key, ...jobData, applied});
-        });
+        }));
       });
     });
     return jobs;
+  }
+
+  thousandSep(number): string {
+    let a = number.toString();
+    let length = a.length;
+    const b = length / 3 - 1;
+    for (let i = 0; i < b; i++) {
+      length = length - 3;
+      a = [a.slice(0, length), ',', a.slice(length)].join('');
+    }
+    return a;
   }
 
   async getCompanyJobs(companyId): Promise<any[]> {
@@ -75,6 +93,7 @@ export class FirebaseService {
       await res.map(async a => {
         const $key = a.payload.doc.id;
         const jobData = a.payload.doc.data();
+        jobData['salary'] = this.thousandSep(jobData['salary']);
         let applied;
         await this.db.collection('applied', ref => ref.where('job', '==', $key) .where('user', '==', userId)).snapshotChanges().subscribe(
           doc => {
@@ -146,9 +165,14 @@ export class FirebaseService {
   async getAllJobs(): Promise<Job[]> {
     const jobs = new Array();
     await this.db.collection('jobs').snapshotChanges().subscribe(items => {
-      items.map(a => {
+      items.map(async a => {
         const $key = a.payload.doc.id;
         const data = a.payload.doc.data();
+        await this.db.collection('companies').doc(data['companyId']).ref.get().then(
+          async doc => {
+            data['company'] = doc.data();
+          }
+        );
         jobs.push({ $key, ...data });
       });
     });
@@ -206,6 +230,7 @@ export class FirebaseService {
       await res.map(async a => {
         const $key = a.payload.doc.id;
         const data = a.payload.doc.data();
+        data['date'] = new Date(data['date']);
         await this.db.collection('users').doc(data['userId']).ref.get().then(
           async doc => {
             data['user'] = doc.data();
@@ -393,13 +418,12 @@ export class FirebaseService {
 
   updateUser(user) { // update user info
     const userRef = this.db.collection('users').doc(user.$key);
-
+    console.log(user);
     return userRef.update({
         fullName: user.fullName,
         mobile: (user.mobile == null ? '' : user.mobile),
         phone: (user.phone == null ? '' : user.phone),
         address: (user.address == null ? '' : user.address),
-        resume: (user.resume == null ? '' : user.resume),
         photo: (user.photo == null ? '' : user.photo)
     })
     .catch(function(error) {
@@ -445,44 +469,27 @@ export class FirebaseService {
   async searchJobs(jobs, title, type, salary, userId): Promise<any[]> {
     const resultJobs = new Array();
     jobs.map(job => {
-        let checked = false;
-        let titleChecked = false;
-        let typeChecked = false;
-        let salaryChecked = false;
-        if (title === undefined && type === undefined && salary === undefined) {
-          checked = true;
-        } else {
-          if (title !== undefined && type !== undefined && salary !== undefined) {
-            if (job['title'].toLowerCase().indexOf(title.toLowerCase()) > -1) {
-              titleChecked = true;
-            }
-            if (job['salary'] > salary) {
-              salaryChecked = true;
-            }
-            if (job['type'].toLowerCase().indexOf(type.toLowerCase()) > -1) {
-              typeChecked = true;
-            }
-            if (titleChecked && salaryChecked && typeChecked) {
-              checked = true;
-            }
-          }
-          if (salary !== 0) {
-            if (job['salary'] > salary) {
-              checked = true;
-            }
-          }
-          if (type !== undefined) {
-            if (job['type'].toLowerCase().indexOf(type.toLowerCase()) > -1) {
-              checked = true;
-            }
-          }
-          if (title !== undefined) {
-            if (job['title'].toLowerCase().indexOf(title.toLowerCase()) > -1) {
-              checked = true;
-            }
+        let titleChecked = true;
+        let typeChecked = true;
+        let salaryChecked = true;
+        console.log(job['salary']);
+        console.log(salary);
+        if (salary !== undefined && salary !== null) {
+          if (job['salary'] < salary) {
+            salaryChecked = false;
           }
         }
-        if (checked) {
+        if (type !== undefined && type !== '') {
+          if (job['type'].toLowerCase().indexOf(type.toLowerCase()) === -1) {
+            typeChecked = false;
+          }
+        }
+        if (title !== undefined && title !== '') {
+          if (job['title'].toLowerCase().indexOf(title.toLowerCase()) === -1) {
+            titleChecked = false;
+          }
+        }
+        if (titleChecked && typeChecked && salaryChecked) {
           resultJobs.push(job);
         }
       });

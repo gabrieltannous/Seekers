@@ -45,7 +45,7 @@
     <tbody *ngFor="let item of interviews">
       <tr>
         <td><a [routerLink]="['/user/company', item.company.$key, 'profile']">{{item.company.name}}</a></td>
-        <td>{{item.date}}</td>
+        <td>{{item.date |  date:'MM/dd/yyyy hh:mm a'}}</td>
         <td *ngIf="item.decision === ''"><button class="btn btn-success" (click)="decide(item, 'accepted')">Accept</button>&nbsp;
           <button class="btn btn-danger" (click)="decide(item, 'declined')">Decline</button></td>
           <td *ngIf="item.decision === 'accepted'"><button class="btn btn-success" disabled>Accepted</button></td>

@@ -26,6 +26,9 @@
   <div *ngIf="successMessage !== null" class="alert alert-success">
     {{successMessage}}
   </div>
+  <div *ngIf="errorMessage !== null" class="alert alert-danger">
+      {{errorMessage}}
+    </div>
   <div class="table-responsive">
     <table *ngIf="applicants.length !== 0" class="table table-hover table-striped table-light">
       <thead class="thead-light">
@@ -56,14 +59,11 @@
     <!-- Modal content-->
     <div class="modal-content">
       <div class="modal-header">
-        <h4 class="modal-title">Edit User</h4>
+        <h4 class="modal-title">Set Interview</h4>
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
         <div class="modal-body">
           <input type="datetime-local" class="form-control" name="date" #date="ngModel" [(ngModel)]="interview.date" />
-          <div *ngIf="errorMessage !== null" class="alert alert-danger">
-            {{errorMessage}}
-          </div>
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

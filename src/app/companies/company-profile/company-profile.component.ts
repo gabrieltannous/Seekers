@@ -43,7 +43,7 @@ export class CompanyProfileComponent implements OnInit {
             this.company.photo = res2;
             this.successMessage = 'Profile photo uploaded succesfully';
             this.errorMessage = null;
-            this.fireServ.updateUser(this.company);
+            this.fireServ.updateCompany(this.company);
             this.loader.hide();
           }
         );

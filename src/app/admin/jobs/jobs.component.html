@@ -34,6 +34,7 @@
       <thead class="thead-light">
         <tr>
           <th>Title</th>
+          <th>Company</th>
           <th>Type</th>
           <th>Salary</th>
           <th></th>
@@ -42,6 +43,7 @@
       <tbody>
         <tr *ngFor="let item of jobs">
           <td>{{item.title}}</td>
+          <td>{{item.company['name']}}</td>
           <td>{{item.type}}</td>
           <td>{{item.salary}}</td>
           <td><button class="btn btn-primary" (click)="fillModal(item)" data-toggle="modal" data-target="#editModal">Edit</button>&nbsp;
@@ -57,7 +59,7 @@
       <!-- Modal content-->
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Edit User</h4>
+          <h4 class="modal-title">Edit Job</h4>
           <button type="button" class="close" data-dismiss="modal">&times;</button>
         </div>
           <div class="modal-body">
