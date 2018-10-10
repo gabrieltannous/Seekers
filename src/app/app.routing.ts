@@ -23,6 +23,7 @@ import { UserComponent } from './companies/user/user.component';
 import { CompanyComponent } from './users/company/company.component';
 import { JobSearchComponent } from './users/job-search/job-search.component';
 import { UsersJobsComponent } from './users/users-jobs/users-jobs.component';
+import { UserPComponent } from './users/user/user.component';
 
 const appRoutes: Routes = [
   // Index page
@@ -44,6 +45,7 @@ const appRoutes: Routes = [
   { path: 'user/register', component: UserRegisterComponent, canActivate: [AuthGuard] },
   { path: 'user/profile', component: UserProfileComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/applies', component: UserAppliesComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
+  { path: 'user/:id/profile', component: UserPComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/jobs', component: UsersJobsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/search', component: JobSearchComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/interviews', component: UserInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },

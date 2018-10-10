@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 export class UsersJobsComponent implements OnInit {
 
   jobs: UserJob[];
+  jobs2: any[];
   job = new UserJob;
   successMessage: string = null;
   errorMessage: string = null;
@@ -20,11 +21,20 @@ export class UsersJobsComponent implements OnInit {
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
     private loader: Ng4LoadingSpinnerService, private route: Router) {
       this.loadJobs();
+      this.loadJobs2();
     }
 
     loadJobs() {
       this.fireServ.getuj(this.authServ.currentUserId).then( res => {
         this.jobs = res;
+        this.loader.hide();
+      });
+    }
+
+    loadJobs2() {
+      this.fireServ.getuj2(this.authServ.currentUserId).then( res => {
+        console.log(res);
+        this.jobs2 = res;
         this.loader.hide();
       });
     }

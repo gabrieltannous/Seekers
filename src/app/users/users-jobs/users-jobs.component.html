@@ -60,12 +60,13 @@
 
 <div class="container">
     <h2 class="text-center">Users Jobs</h2>
-  <div *ngIf="jobs?.length > 0" class="row">
-    <div *ngFor="let item of jobs" class="card border-light mb-3" style="width: 18rem;">
+  <div *ngIf="jobs2?.length > 0" class="row">
+    <div *ngFor="let item of jobs2" class="card border-light mb-3" style="width: 18rem;">
       <div class="card-header">
         <h4>{{item.title}}</h4>
       </div>
       <div class="card-body">
+        <p class="card-text"><a [routerLink]="['/user/', item.user.id, 'profile']">{{item.user.fullName}}</a></p>
         <p class="card-text">{{item.details}}</p>
       </div>
     </div>

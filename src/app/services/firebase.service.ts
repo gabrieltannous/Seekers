@@ -79,6 +79,26 @@ export class FirebaseService {
     return jobs;
   }
 
+  async getuj2(userId): Promise<any[]> {
+    const jobs = new Array();
+    await this.db.collection('user-jobs').snapshotChanges().subscribe(
+    res => {
+      res.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        if (data['userId'] !== userId) {
+        this.db.collection('users').doc(data['userId']).ref.get().then(
+          user => {
+            const id = user.id;
+            const uData = user.data();
+            data['user'] = {id, ...uData};
+          }).then(() => jobs.push({$key, ...data}));
+        }
+      });
+    });
+    return jobs;
+  }
+
   thousandSep(number): string {
     let a = number.toString();
     let length = a.length;
