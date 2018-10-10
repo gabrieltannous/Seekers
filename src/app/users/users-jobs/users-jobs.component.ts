@@ -33,7 +33,6 @@ export class UsersJobsComponent implements OnInit {
 
     loadJobs2() {
       this.fireServ.getuj2(this.authServ.currentUserId).then( res => {
-        console.log(res);
         this.jobs2 = res;
         this.loader.hide();
       });

@@ -467,7 +467,6 @@ export class FirebaseService {
 
   updateUser(user) { // update user info
     const userRef = this.db.collection('users').doc(user.$key);
-    console.log(user);
     return userRef.update({
         fullName: user.fullName,
         mobile: (user.mobile == null ? '' : user.mobile),
@@ -522,8 +521,6 @@ export class FirebaseService {
         let titleChecked = true;
         let typeChecked = true;
         let salaryChecked = true;
-        console.log(job['salary']);
-        console.log(salary);
         if (salary !== undefined && salary !== null) {
           if (job['salary'] < salary) {
             salaryChecked = false;
