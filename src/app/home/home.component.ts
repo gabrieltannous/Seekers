@@ -20,6 +20,8 @@ export class HomeComponent implements OnInit {
   applied: boolean;
   test1 = 12345678;
   successMessage = null;
+  errorMessage = null;
+  userName: string;
 
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService, private route: Router) {
@@ -28,6 +30,7 @@ export class HomeComponent implements OnInit {
         this.isUser = res;
         if (this.isUser) {
           this.updateJobs();
+          this.fireServ.getUser(this.authServ.currentUserId).then(user => this.userName = user.fullName);
         }
       });
 
@@ -35,6 +38,7 @@ export class HomeComponent implements OnInit {
         this.isCompany = res;
         if (this.isCompany) {
           this.loader.hide();
+          this.fireServ.getCompany(this.authServ.currentUserId).then(user => this.userName = user.name);
         }
       });
   }
@@ -49,14 +53,27 @@ export class HomeComponent implements OnInit {
     });
   }
 
+  fillModal() {
+    this.job = new Job();
+  }
+
   addJob() {
-    this.loader.show();
     if (this.authServ.isCompany()) {
-      this.job.companyId = this.authServ.currentUserId;
-      this.fireServ.addJob(this.job).then(() => {
-        this.successMessage = 'Job added successfuly';
-        this.loader.hide();
-      });
+      if (this.job.title === undefined || this.job.title === '') {
+        this.errorMessage = 'Title cannot be empty';
+      } else if (this.job.type === undefined || this.job.type === '') {
+        this.errorMessage = 'Type cannot be empty';
+      } else if (this.job.salary === undefined || this.job.salary === null) {
+        this.errorMessage = 'Salary cannot be empty';
+      } else {
+      this.loader.show();
+        this.job.companyId = this.authServ.currentUserId;
+        this.fireServ.addJob(this.job).then(() => {
+          this.successMessage = 'Job added successfuly';
+          this.errorMessage = null;
+          this.loader.hide();
+        });
+      }
     }
   }
 

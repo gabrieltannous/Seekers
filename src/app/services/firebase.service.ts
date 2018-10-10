@@ -61,6 +61,24 @@ export class FirebaseService {
     return jobs;
   }
 
+  async getuj(userId): Promise<any[]> {
+    const jobs = new Array();
+    await this.db.collection('user-jobs', ref => ref.where('userId', '==', userId)).snapshotChanges().subscribe(
+    res => {
+      res.map(a => {
+        const $key = a.payload.doc.id;
+        const data = a.payload.doc.data();
+        this.db.collection('users').doc(data['userId']).ref.get().then(
+          user => {
+            const id = user.id;
+            const uData = user.data();
+            data['user'] = {id, ...uData};
+          }).then(() => jobs.push({$key, ...data}));
+        });
+    });
+    return jobs;
+  }
+
   thousandSep(number): string {
     let a = number.toString();
     let length = a.length;
@@ -335,6 +353,17 @@ export class FirebaseService {
       companyId: job.companyId,
       type: job.type,
       salary: job.salary
+    })
+    .catch(err => {
+      console.error(err);
+    });
+  }
+
+  addUserJob(job) { // add a new user to
+    return this.db.collection('user-jobs').add({
+      title: job.title,
+      userId: job.userId,
+      details: job.details
     })
     .catch(err => {
       console.error(err);

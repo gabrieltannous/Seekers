@@ -1,7 +1,7 @@
 ﻿import { Routes, RouterModule } from '@angular/router';
 import { UserLoginComponent } from './users/user-login/user-login.component';
 import { UserProfileComponent } from './users/user-profile/user-profile.component';
-import { UserJobsComponent } from './users/user-jobs/user-jobs.component';
+import { UserAppliesComponent } from './users/user-applies/user-applies.component';
 import { CompanyLoginComponent } from './companies/company-login/company-login.component';
 import { CompanyProfileComponent } from './companies/company-profile/company-profile.component';
 import { CompanyRegisterComponent } from './companies/company-register/company-register.component';
@@ -22,6 +22,7 @@ import { InterviewsComponent } from './admin/interviews/interviews.component';
 import { UserComponent } from './companies/user/user.component';
 import { CompanyComponent } from './users/company/company.component';
 import { JobSearchComponent } from './users/job-search/job-search.component';
+import { UsersJobsComponent } from './users/users-jobs/users-jobs.component';
 
 const appRoutes: Routes = [
   // Index page
@@ -42,7 +43,8 @@ const appRoutes: Routes = [
   { path: 'user/login', component: UserLoginComponent, canActivate: [AuthGuard]},
   { path: 'user/register', component: UserRegisterComponent, canActivate: [AuthGuard] },
   { path: 'user/profile', component: UserProfileComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
-  { path: 'user/jobs', component: UserJobsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
+  { path: 'user/applies', component: UserAppliesComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
+  { path: 'user/jobs', component: UsersJobsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/search', component: JobSearchComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/interviews', component: UserInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/company/:id/profile', component: CompanyComponent, canActivate: [AuthGuard], data: {roles: ['user']} },

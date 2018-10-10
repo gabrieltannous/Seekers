@@ -23,7 +23,7 @@ import { HomeComponent } from './home/home.component';
 import { Ng4LoadingSpinnerModule } from 'ng4-loading-spinner';
 import { LayoutModule } from '@angular/cdk/layout';
 import { CompanyJobsComponent } from './companies/company-jobs/company-jobs.component';
-import { UserJobsComponent } from './users/user-jobs/user-jobs.component';
+import { UserAppliesComponent } from './users/user-applies/user-applies.component';
 import { JobApplicantsComponent } from './companies/job-applicants/job-applicants.component';
 import { DashboardComponent } from './admin/dashboard/dashboard.component';
 import { UsersComponent } from './admin/users/users.component';
@@ -36,6 +36,7 @@ import { InterviewsComponent } from './admin/interviews/interviews.component';
 import { UserComponent } from './companies/user/user.component';
 import { CompanyComponent } from './users/company/company.component';
 import { JobSearchComponent } from './users/job-search/job-search.component';
+import { UsersJobsComponent } from './users/users-jobs/users-jobs.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,7 @@ import { JobSearchComponent } from './users/job-search/job-search.component';
     HomeComponent,
     ForgetPasswordComponent,
     CompanyJobsComponent,
-    UserJobsComponent,
+    UserAppliesComponent,
     JobApplicantsComponent,
     DashboardComponent,
     UsersComponent,
@@ -61,7 +62,8 @@ import { JobSearchComponent } from './users/job-search/job-search.component';
     CompanyInterviewsComponent,
     UserComponent,
     CompanyComponent,
-    JobSearchComponent
+    JobSearchComponent,
+    UsersJobsComponent
   ],
   imports: [
     AngularFireModule.initializeApp(environment.firebaseConfig), // Initialize firebase with the config placed in enviroment.ts

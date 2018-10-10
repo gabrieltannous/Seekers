@@ -2,15 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user-jobs',
-  templateUrl: './user-jobs.component.html',
-  styleUrls: ['./user-jobs.component.css']
+  selector: 'app-user-applies',
+  templateUrl: './user-applies.component.html',
+  styleUrls: ['./user-applies.component.css']
 })
-export class UserJobsComponent implements OnInit {
+export class UserAppliesComponent implements OnInit {
 
   appliedJobs: any[];
 
