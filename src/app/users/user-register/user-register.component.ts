@@ -26,15 +26,21 @@ export class UserRegisterComponent implements OnInit {
   }
 
   register(user: NgForm) {
-    if (user.value.password === user.value.cpassword) {
-      this.loader.show();
-      this.authService.signUpEmailUser(user.value)
-      .catch(err => {
-        this.errorMessage = err.message;
-        this.loader.hide();
-      });
+    if (user.value.fname === '' || user.value.fname === undefined || user.value.lname === '' || user.value.lname === undefined
+    || user.value.emai === '' || user.value.email === undefined) {
+      this.errorMessage = 'Please fill all fields';
+
     } else {
-      this.errorMessage = 'Passwords do not match';
+      if (user.value.password === user.value.cpassword) {
+        this.loader.show();
+        this.authService.signUpEmailUser(user.value)
+        .catch(err => {
+          this.errorMessage = err.message;
+          this.loader.hide();
+        });
+      } else {
+        this.errorMessage = 'Passwords do not match';
+      }
     }
   }
 
