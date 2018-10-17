@@ -42,7 +42,7 @@ export class CompaniesComponent implements OnInit {
 
   delete($key) {
     this.loader.show();
-    this.fireServ.deleteCopmany($key).then(() => {
+    this.fireServ.deleteCompany($key).then(() => {
       this.loadCompanies().then(() => this.loader.hide());
     });
   }

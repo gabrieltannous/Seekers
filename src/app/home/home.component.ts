@@ -5,6 +5,10 @@ import { Job } from '../models/job';
 import { NgForm } from '@angular/forms';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Router } from '@angular/router';
+import { UserService } from '../services/user.service';
+import { JobService } from '../services/job.service';
+import { Apply } from '../models/apply';
+import { CompanyService } from '../services/company.service';
 
 @Component({
   selector: 'app-home',
@@ -14,31 +18,35 @@ import { Router } from '@angular/router';
 export class HomeComponent implements OnInit {
 
   job = new Job();
-  isUser: boolean;
-  isCompany: boolean;
-  jobs: any[];
+  isUser: any;
+  isCompany: any;
+  jobs;
   applied: boolean;
-  test1 = 12345678;
   successMessage = null;
   errorMessage = null;
   userName: string;
 
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
-    public loader: Ng4LoadingSpinnerService, private route: Router) {
+    public loader: Ng4LoadingSpinnerService, private route: Router, private userServ: UserService,
+    private jobServ: JobService, private companyServ: CompanyService) {
       this.loader.show();
-      this.authServ.isUser().then(res => {
+      this.userServ.isUser(this.authServ.currentUser.email).subscribe(res => {
         this.isUser = res;
         if (this.isUser) {
           this.updateJobs();
-          this.fireServ.getUser(this.authServ.currentUserId).then(user => this.userName = user.fullName);
+          this.userServ.GetUser(this.authServ.currentUser).subscribe(user => {
+            this.userName = user['fullName'];
+          });
         }
       });
 
-      this.authServ.isCompany().then(res => {
+      this.companyServ.isCompany(this.authServ.currentUser.email).subscribe(res => {
         this.isCompany = res;
         if (this.isCompany) {
           this.loader.hide();
-          this.fireServ.getCompany(this.authServ.currentUserId).then(user => this.userName = user.name);
+          this.companyServ.GetCompany(this.authServ.currentUser).subscribe(company => {
+            this.userName = company['name'];
+          });
         }
       });
   }
@@ -47,10 +55,12 @@ export class HomeComponent implements OnInit {
   }
 
   updateJobs() {
-    this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
-      this.jobs = result;
-      this.loader.hide();
-    });
+    this.jobServ.GetJobs().subscribe(data => console.log(data));
+    this.loader.hide();
+
+    // this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
+    //   this.jobs = result;
+    // });
   }
 
   fillModal() {
@@ -66,19 +76,25 @@ export class HomeComponent implements OnInit {
       } else if (this.job.salary === undefined || this.job.salary === null) {
         this.errorMessage = 'Salary cannot be empty';
       } else {
-      this.loader.show();
+      // this.loader.show();
         this.job.companyId = this.authServ.currentUserId;
-        this.fireServ.addJob(this.job).then(() => {
-          this.successMessage = 'Job added successfuly';
-          this.errorMessage = null;
-          this.loader.hide();
-        });
+        this.job.mode = 'Save';
+        this.jobServ.saveJob(this.job).subscribe(res => alert(res));
+        // this.fireServ.addJob(this.job).then(() => {
+        //   this.successMessage = 'Job added successfuly';
+        //   this.errorMessage = null;
+        //   this.loader.hide();
+        // });
       }
     }
   }
 
   apply(job) {
-    this.fireServ.apply(job.$key, this.authServ.currentUserId);
+    // this.fireServ.apply(job.$key, this.authServ.currentUserId);
+    const apply = new Apply;
+    apply.jobId = job._id;
+    apply.userId = this.authServ.currentUserId;
+    this.jobServ.apply(apply);
     this.updateJobs();
   }
 

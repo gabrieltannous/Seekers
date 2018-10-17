@@ -339,7 +339,7 @@ export class FirebaseService {
 
   addUser(user) { // add a new user to
     return this.db.collection('users').doc(user.uid).set({
-      fullName: user.fname + ' ' + user.lname,
+      fullName: user.fullName,
       email: user.email,
       mobile: '',
       phone: '',
@@ -543,7 +543,7 @@ export class FirebaseService {
     return resultJobs;
   }
 
-  deleteCopmany(id) { // delete a company -- admin function
+  deleteCompany(id) { // delete a company -- admin function
     return this.db.collection('companies').doc(id).delete();
   }
 

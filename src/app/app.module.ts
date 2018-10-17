@@ -5,6 +5,7 @@ import { AuthService } from './services/auth.service';
 import { AuthGuard } from './services/auth-guard.service';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -38,6 +39,9 @@ import { CompanyComponent } from './users/company/company.component';
 import { JobSearchComponent } from './users/job-search/job-search.component';
 import { UsersJobsComponent } from './users/users-jobs/users-jobs.component';
 import { UserPComponent } from './users/user/user.component';
+import { UserService } from './services/user.service';
+import { JobService } from './services/job.service';
+import { CompanyService } from './services/company.service';
 
 @NgModule({
   declarations: [
@@ -72,6 +76,7 @@ import { UserPComponent } from './users/user/user.component';
     BrowserModule,
     FormsModule,
     HttpModule,
+    HttpClientModule,
     routing,
     Ng4LoadingSpinnerModule.forRoot(),
     AngularFireStorageModule,
@@ -82,7 +87,10 @@ import { UserPComponent } from './users/user/user.component';
   ],
   providers: [
     AuthService,
-    AuthGuard
+    AuthGuard,
+    UserService,
+    CompanyService,
+    JobService
   ],
   bootstrap: [AppComponent]
 })
