@@ -1,6 +1,6 @@
 var express = require('express');
 var router = express.Router();
-
+const { body,query,validationResult  } = require('express-validator/check');
 
 //passport, mongoose
 var mongoose = require('mongoose');
@@ -12,20 +12,48 @@ var jwt = require('jsonwebtoken');
 //models
 var Company = require("../models/company");
 
+//get user token from req headers
+getToken = function (headers) {
+  if (headers && headers.authorization) {
+    var parted = headers.authorization.split(' ');
+    if (parted.length === 2) {
+      return parted[1];
+    } else {
+      return null;
+    }
+    } else {
+      return null;
+    }
+};
+
 /* test API */
 router.get('/', function(req, res, next) {
   res.send('API is working');
 });
 
-router.post('/signupCompany', function(req, res, next) {
-	console.log(req.body.email);
-    console.log(req.body.password);
-    console.log(req.body.name);
+
+//sign up a comapany
+router.post('/signupCompany',
+  [
+    body('email',"Invalid email").isEmail(), 
+    body('name',"Name cannot be blank").not().isEmpty(),
+    body('password',"Password must be 6 - 32 characters in length")
+    .not().isEmpty().isLength({ min: 6,max: 32 })
+  ],
+  function(req, res, next) {
+    //validate request
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      var err_array = errors.array().map(value => { return value.msg }); 
+      return res.json({success: false, msg: err_array });
+    }
+	  // console.log(req.body.email);
+   //  console.log(req.body.password);
+   //  console.log(req.body.name);
 
     //create a new document
     var newCom = new Company({
       email: req.body.email,
-      hash: req.body.password,
       name: req.body.name
     });
     
@@ -34,13 +62,61 @@ router.post('/signupCompany', function(req, res, next) {
     		if(isSuccess && !error){
     			newCom.save(function(err) {
       				if (err) {
-        				return res.json({success: false, msg: "save problems", details: err});
+        				return res.json({success: false, msg: ["This email already exists"] });
       				}
-      				res.json({success: true, msg: 'Successful created new user.'});
+      				res.json({success: true, msg: ['Successfully created new user.'] });
     			});
     		}else{
-    			res.json({success: false, msg: "hash problems", details: error});
+    			res.json({success: false, msg: ["Hash problem"] });
     		}
     });    
+});
+
+//sign in a comapany
+router.post('/signinCompany',
+  [
+    body('email',"Invalid email").isEmail(), 
+    body('password',"Password must be 6 - 32 characters in length")
+    .not().isEmpty().isLength({ min: 6,max: 32 })
+  ],
+  function(req, res, next) {
+    //validate request
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      var err_array = errors.array().map(value => { return value.msg }); 
+      return res.json({success: false, msg: err_array });
+    }
+    // console.log(req.body.email);
+    // console.log(req.body.password);
+   Company.findOne({ email: req.body.email}, 
+      function(err, company) {
+        if (err) throw err;
+
+        if (!company) {
+          res.json({success: false, msg: 'Company not found.'});
+        } else {
+          // check if password matches
+          company.comparePassword(req.body.password, function (err, isMatch) {
+              if (isMatch && !err) {
+                  //create token for user  
+                  var token = jwt.sign(company.toJSON(), config.secretCompany);
+                  res.json({success: true, token: token});
+              } else {
+                  res.json({success: false, msg: 'Wrong password.'});
+              }       
+          });
+        }
+    });
+});
+
+
+//authenticate Company
+router.get('/isCompany', passport.authenticate('jwt-company', { session: false}), function(req, res) {
+  var token = getToken(req.headers);
+  if (token) {
+
+  } else {
+    
+  }
 });
 module.exports = router;

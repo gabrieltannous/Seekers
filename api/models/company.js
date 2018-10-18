@@ -39,6 +39,7 @@ var companySchema = new mongoose.Schema({
 
 //encrypt password using bcrypt
 companySchema.methods.setPassword = function(password,callback){
+    var company = this;
     bcrypt.genSalt(10, function (err, salt) {
         if (err) {
             return callback(err,false);
@@ -47,7 +48,7 @@ companySchema.methods.setPassword = function(password,callback){
           if (err) {
               return callback(err,false);
           }
-          this.hash = hash;
+          company.hash = hash;
           callback(null, true);
       });
     });
@@ -55,7 +56,8 @@ companySchema.methods.setPassword = function(password,callback){
 
 //compare password with hash
 companySchema.methods.comparePassword = function (password, callback) {
-    bcrypt.compare(password, this.hash, function (err, isMatch) {
+    var company = this;
+    bcrypt.compare(password, company.hash, function (err, isMatch) {
         if (err) {
             return callback(err,false);
         }

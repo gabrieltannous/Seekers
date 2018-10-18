@@ -30,8 +30,8 @@ const appRoutes: Routes = [
   { path: '', redirectTo: 'user/login', pathMatch: 'full' },
 
   // Companies pages
-  { path: 'company/login', component: CompanyLoginComponent, canActivate: [AuthGuard]},
-  { path: 'company/register', component: CompanyRegisterComponent, canActivate: [AuthGuard]},
+  { path: 'company/login', component: CompanyLoginComponent},
+  { path: 'company/register', component: CompanyRegisterComponent},
   { path: 'company/profile', component: CompanyProfileComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/interviews', component: CompanyInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/job/:id/all-applicants',
