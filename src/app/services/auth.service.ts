@@ -5,13 +5,15 @@ import * as firebase from 'firebase/app';
 import { FirebaseService } from './firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { first } from 'rxjs/operators';
+import { UserService } from './user.service';
+import { CompanyService } from './company.service';
 
 @Injectable()
 export class AuthService {
   authState: any = null;
 
   constructor(private afAuth: AngularFireAuth, private route: Router, private fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService) {
+    private loader: Ng4LoadingSpinnerService, private userServ: UserService, private companyServ: CompanyService) {
       this.loader.show();
       this.afAuth.authState.subscribe(auth => {
         this.authState = auth;
@@ -46,12 +48,12 @@ export class AuthService {
   }
 
   async isUser(): Promise<boolean> {
-    const user = await this.fireServ.getUser(this.currentUserId);
+    const user = await this.userServ.isUser(this.currentUser.email).subscribe(res => res);
     return (user !== undefined);
   }
 
   async isCompany(): Promise<boolean> {
-    const company = await this.fireServ.getCompany(this.currentUserId);
+    const company = await this.companyServ.isCompany(this.currentUser.email).subscribe(res => res);
     return (company !== undefined);
   }
 
@@ -63,13 +65,15 @@ export class AuthService {
     return (email === 'admin@admin.com');
   }
 
-  signUpEmailUser(user) {
+  signUpEmailUser(user): any {
     return this.afAuth.auth.createUserWithEmailAndPassword(user.email, user.password)
     .then(res => {
-      user.uid = res.user.uid;
-      this.fireServ.addUser(user);
+      // user.uid = res.user.uid;
+      // this.fireServ.addUser(user);
+      console.log(res.user);
+      this.userServ.updateUser(res.user);
       this.signInEmail(user).then(
-        nav => {
+        () => {
           this.loader.hide();
           this.route.navigate(['/home']);
       });
@@ -79,10 +83,10 @@ export class AuthService {
   signUpEmailCompany(company) {
     return this.afAuth.auth.createUserWithEmailAndPassword(company.email, company.password)
     .then(res => {
-      company.uid = res.user.uid;
-      this.fireServ.addCompany(company);
+      // company.uid = res.user.uid;
+      // this.fireServ.addCompany(company);
       this.signInEmail(company).then(
-        nav => {
+        () => {
           this.loader.hide();
           this.route.navigate(['/home']);
       });
@@ -101,10 +105,12 @@ export class AuthService {
         this.fireServ.getUser(res.user.uid).then(
           user => {
             if (user === undefined) {
-              this.fireServ.addGoogleUser(res.user).then(
+              this.userServ.saveGoogleUser(res.user);
+              this.route.navigate(['/home']);
+                /* this.fireServ.addGoogleUser(res.user).then(
                 () => {
                   this.route.navigate(['/home']);
-                });
+                }); */
             } else {
                   this.route.navigate(['/home']);
             }

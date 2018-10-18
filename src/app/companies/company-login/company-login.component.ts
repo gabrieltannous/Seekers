@@ -5,6 +5,7 @@ import { Company } from '../../models/company';
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { FirebaseService } from '../../services/firebase.service';
+import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
   selector: 'app-company-login',
@@ -18,7 +19,7 @@ export class CompanyLoginComponent implements OnInit {
   errorMessage: string = null;
 
   constructor(private authServ: AuthService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService) {
+    private loader: Ng4LoadingSpinnerService, private companyServ: CompanyService) {
 
   }
 
@@ -27,27 +28,27 @@ export class CompanyLoginComponent implements OnInit {
   }
 
   signin(company: NgForm) {
-    if (company.value.email === undefined || company.value.email === '') {
-      this.errorMessage = 'Please fill email value';
-    } else if (company.value.password === undefined || company.value.password === '') {
-      this.errorMessage = 'Please fill password value';
+    if (company.value.password === undefined) {
+      this.errorMessage = 'Please enter a Password';
     } else {
-    this.loader.show();
-    this.fireServ.getCompanyByEmail(company.value.email).subscribe(res => {
-      if (res.length === 0) {
-        this.loader.hide();
-        this.errorMessage = 'User does not exist';
-      } else {
-        this.authServ.signInEmail(company.value).then(
-          () => {
-            this.route.navigate(['/home']);
-          })
-          .catch(err => {
-            this.loader.hide();
-            this.errorMessage = err.message;
-          });
-      }
-    });
-  }
+    this.companyServ.GetCompany(company.value).subscribe(
+      res => {
+        if (res && res[0]) {
+          this.errorMessage = res[0].msg;
+        } else {
+          this.loader.show();
+          this.authServ.signInEmail(company.value).then(
+            () => {
+              this.route.navigate(['/home']);
+            })
+            .catch(err => {
+              this.loader.hide();
+              this.errorMessage = err.message;
+            });
+        }
+      },
+      err => console.log(err)
+    );
+    }
   }
 }

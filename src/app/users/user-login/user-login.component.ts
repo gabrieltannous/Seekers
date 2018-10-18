@@ -5,6 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { FirebaseService } from '../../services/firebase.service';
+import { UserService } from 'src/app/services/user.service';
 
 @Component({
   selector: 'app-user-login',
@@ -16,8 +17,8 @@ export class UserLoginComponent implements OnInit {
   user = new User();
   errorMessage: string = null;
 
-  constructor(private authServ: AuthService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService) {
+  constructor(private authServ: AuthService, private route: Router, private userServ: UserService,
+    private loader: Ng4LoadingSpinnerService, private fireauServ: FirebaseService) {
     }
 
   ngOnInit() {
@@ -25,28 +26,28 @@ export class UserLoginComponent implements OnInit {
   }
 
   signin(user: NgForm) { // log user in
-    if (user.value.email === undefined || user.value.email === '') {
-      this.errorMessage = 'Please fill email value';
-    } else if (user.value.password === undefined || user.value.password === '') {
-      this.errorMessage = 'Please fill password value';
+    if (user.value.password === undefined) {
+      this.errorMessage = 'Please enter a Password';
     } else {
-    this.loader.show();
-    this.fireServ.getUserByEmail(user.value.email).subscribe(res => {
-      if (res.length === 0) {
-        this.loader.hide();
-        this.errorMessage = 'Account does not exist';
-      } else {
-        this.authServ.signInEmail(user.value).then(
-          () => {
-            this.route.navigate(['/home']);
-          })
-          .catch(err => {
-            this.loader.hide();
-            this.errorMessage = err.message;
-          });
-      }
-    });
-  }
+    this.userServ.AuthUser(user.value).subscribe(
+      res => {
+        if (res && res[0]) {
+          this.errorMessage = res[0].msg;
+        } else {
+          this.loader.show();
+          this.authServ.signInEmail(user.value).then(
+            () => {
+              this.route.navigate(['/home']);
+            })
+            .catch(err => {
+              this.loader.hide();
+              this.errorMessage = err.message;
+            });
+        }
+      },
+      err => console.log(err)
+    );
+    }
   }
 
   googleLogin() {

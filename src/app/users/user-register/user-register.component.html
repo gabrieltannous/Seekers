@@ -25,13 +25,14 @@
     <br>
     <form class="form-signin" #registerForm="ngForm" (ngSubmit)="register(registerForm)">
       <span id="reauth-email" class="reauth-email"></span>
-      <input type="text" id="full-name" class="form-control" name="fname" #fname="ngModel" [(ngModel)]="user.fullName"
+      <input type="text" id="full-name" class="form-control" required name="fullName" #fullName="ngModel" [(ngModel)]="user.fullName"
         placeholder="Full Name" required autofocus>
-      <input type="email" id="inputEmail" name="email" #email="ngModel" email [(ngModel)]="user.email" class="form-control"
-        placeholder="Email address" required>
-      <input type="password" id="inputPassword" class="form-control" name="password" #password="ngModel" [(ngModel)]="user.password"
-        placeholder="Password" required>
-      <input type="password" id="inputCPassword" name="cpassword" #cpassword="ngModel" [(ngModel)]="user.cpassword" class="form-control" placeholder="Confirm Password" required>
+      <input type="email" id="inputEmail" required name="email" #email="ngModel" [(ngModel)]="user.email" class="form-control"
+        placeholder="Email address">
+      <input type="password" id="inputPassword" class="form-control" required name="password" #password="ngModel" [(ngModel)]="user.password"
+        placeholder="Password">
+      <input type="password" id="inputCPassword" required name="cpassword" #cpassword="ngModel" [(ngModel)]="user.cpassword" class="form-control"
+      placeholder="Confirm Password">
       <div *ngIf="errorMessage !== null" class="alert alert-danger">
         <strong>Error!</strong> {{errorMessage}}
       </div>
