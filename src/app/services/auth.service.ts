@@ -4,18 +4,38 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { FirebaseService } from './firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { first } from 'rxjs/operators';
+import { first,map } from 'rxjs/operators';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
+
 
 @Injectable()
 export class AuthService {
   authState: any = null;
 
   constructor(private afAuth: AngularFireAuth, private route: Router, private fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService) {
+    private loader: Ng4LoadingSpinnerService,private http: HttpClient) {
       this.loader.show();
       this.afAuth.authState.subscribe(auth => {
         this.authState = auth;
       });
+  }
+
+  loggedIn(){
+    let token: string = localStorage.getItem('jwtToken');
+    if(token === null || token === undefined || token === ""){
+       return false;
+    }
+    return true;
+  }
+  async fake(): Promise<boolean>{
+      return true;
+  }
+  isCompany(){
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http.get('http://localhost:3000/api/isCompany',httpOptions)
+                                     .pipe(map((response: Response) => response));
   }
 
   isLoggedIn() {
@@ -50,10 +70,10 @@ export class AuthService {
     return (user !== undefined);
   }
 
-  async isCompany(): Promise<boolean> {
-    const company = await this.fireServ.getCompany(this.currentUserId);
-    return (company !== undefined);
-  }
+  // async isCompany(): Promise<boolean> {
+  //   const company = await this.fireServ.getCompany(this.currentUserId);
+  //   return (company !== undefined);
+  // }
 
   isAdmin(): boolean {
     return (this.currentUser.email === 'admin@admin.com');

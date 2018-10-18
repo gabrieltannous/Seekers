@@ -43,7 +43,6 @@ export class CompanyRegisterComponent implements OnInit {
                     this.companyServ.signinCompany(company.value).subscribe(
                       res => {
                         if(res["success"]){
-                            // alert("suc");
                             localStorage.setItem('jwtToken', res["token"]);
                             this.loader.hide();
                             this.route.navigate(['/home']);

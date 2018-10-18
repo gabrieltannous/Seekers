@@ -5,6 +5,7 @@ import { Company } from '../../models/company';
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { FirebaseService } from '../../services/firebase.service';
+import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
   selector: 'app-company-login',
@@ -18,7 +19,7 @@ export class CompanyLoginComponent implements OnInit {
   errorMessage: string = null;
 
   constructor(private authServ: AuthService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService) {
+    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService,private companyServ: CompanyService) {
 
   }
 
@@ -33,21 +34,19 @@ export class CompanyLoginComponent implements OnInit {
       this.errorMessage = 'Please fill password value';
     } else {
     this.loader.show();
-    this.fireServ.getCompanyByEmail(company.value.email).subscribe(res => {
-      if (res.length === 0) {
-        this.loader.hide();
-        this.errorMessage = 'User does not exist';
-      } else {
-        this.authServ.signInEmail(company.value).then(
-          () => {
-            this.route.navigate(['/home']);
-          })
-          .catch(err => {
-            this.loader.hide();
-            this.errorMessage = err.message;
-          });
-      }
-    });
-  }
+    this.companyServ.signinCompany(company.value).subscribe(
+                      res => {
+                        if(res["success"]){
+                            localStorage.setItem('jwtToken', res["token"]);
+                            this.loader.hide();
+                            this.route.navigate(['/home']);
+                        }else{
+                          this.errorMessage = res["msg"];
+                          this.loader.hide();
+                        }
+                      },err => console.log(err)
+    );
+
+    }
   }
 }

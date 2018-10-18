@@ -15,15 +15,15 @@ var Company = require("../models/company");
 //get user token from req headers
 getToken = function (headers) {
   if (headers && headers.authorization) {
-    var parted = headers.authorization.split(' ');
-    if (parted.length === 2) {
-      return parted[1];
+    var parts = headers.authorization.split(' ');
+    if (parts.length === 2) {
+      return parts[1];
     } else {
       return null;
     }
-    } else {
-      return null;
-    }
+  } else {
+    return null;
+  }
 };
 
 /* test API */
@@ -100,7 +100,7 @@ router.post('/signinCompany',
               if (isMatch && !err) {
                   //create token for user  
                   var token = jwt.sign(company.toJSON(), config.secretCompany);
-                  res.json({success: true, token: token});
+                  res.json({success: true, token: config.passportScheme + " " + token});
               } else {
                   res.json({success: false, msg: 'Wrong password.'});
               }       
@@ -110,13 +110,17 @@ router.post('/signinCompany',
 });
 
 
-//authenticate Company
-router.get('/isCompany', passport.authenticate('jwt-company', { session: false}), function(req, res) {
-  var token = getToken(req.headers);
-  if (token) {
-
-  } else {
-    
-  }
+//Company Authentication failed
+router.get('/companyAuthenticationFailure', function(req, res) {
+  res.json({isCompany: false});
 });
+
+//authenticate Company
+router.get('/isCompany', 
+  passport.authenticate('jwt-company', 
+    { failureRedirect: 'companyAuthenticationFailure',session: false}), 
+  function(req, res) {
+      res.json({isCompany: true,name: req.company.name});
+});
+
 module.exports = router;

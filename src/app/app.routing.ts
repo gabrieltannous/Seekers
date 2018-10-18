@@ -30,8 +30,8 @@ const appRoutes: Routes = [
   { path: '', redirectTo: 'user/login', pathMatch: 'full' },
 
   // Companies pages
-  { path: 'company/login', component: CompanyLoginComponent},
-  { path: 'company/register', component: CompanyRegisterComponent},
+  { path: 'company/login', component: CompanyLoginComponent,canActivate: [AuthGuard]},
+  { path: 'company/register', component: CompanyRegisterComponent,canActivate: [AuthGuard]},
   { path: 'company/profile', component: CompanyProfileComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/interviews', component: CompanyInterviewsComponent, canActivate: [AuthGuard], data: {roles: ['company']} },
   { path: 'company/job/:id/all-applicants',
@@ -41,8 +41,8 @@ const appRoutes: Routes = [
   { path: 'company/jobs', component: CompanyJobsComponent, canActivate: [AuthGuard], data: {roles: ['company']}  },
 
   // Users pages
-  { path: 'user/login', component: UserLoginComponent, canActivate: [AuthGuard]},
-  { path: 'user/register', component: UserRegisterComponent, canActivate: [AuthGuard] },
+  { path: 'user/login', component: UserLoginComponent,canActivate: [AuthGuard]},
+  { path: 'user/register', component: UserRegisterComponent,canActivate: [AuthGuard]},
   { path: 'user/profile', component: UserProfileComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/applies', component: UserAppliesComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },
   { path: 'user/:id/profile', component: UserPComponent, canActivate: [AuthGuard], data: {roles: ['user']}  },

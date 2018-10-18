@@ -25,21 +25,22 @@ export class HomeComponent implements OnInit {
 
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService, private route: Router) {
+      // alert("home");
       this.loader.show();
-      this.authServ.isUser().then(res => {
-        this.isUser = res;
-        if (this.isUser) {
-          this.updateJobs();
-          this.fireServ.getUser(this.authServ.currentUserId).then(user => this.userName = user.fullName);
-        }
-      });
+      // this.authServ.isUser().then(res => {
+      //   this.isUser = res;
+      //   if (this.isUser) {
+      //     this.updateJobs();
+      //     this.fireServ.getUser(this.authServ.currentUserId).then(user => this.userName = user.fullName);
+      //   }
+      // });
 
-      this.authServ.isCompany().then(res => {
-        this.isCompany = res;
-        if (this.isCompany) {
-          this.loader.hide();
-          this.fireServ.getCompany(this.authServ.currentUserId).then(user => this.userName = user.name);
-        }
+      this.authServ.isCompany().subscribe(res => {
+         this.isCompany = res["isCompany"];
+         if(this.isCompany){
+             this.loader.hide();
+             this.userName = res["name"];
+         }
       });
   }
 
@@ -47,47 +48,46 @@ export class HomeComponent implements OnInit {
   }
 
   updateJobs() {
-    this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
-      this.jobs = result;
-      this.loader.hide();
-    });
+    // this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
+    //   this.jobs = result;
+    //   this.loader.hide();
+    // });
   }
 
   fillModal() {
-    this.job = new Job();
+    // this.job = new Job();
   }
 
   addJob() {
-    if (this.authServ.isCompany()) {
-      if (this.job.title === undefined || this.job.title === '') {
-        this.errorMessage = 'Title cannot be empty';
-      } else if (this.job.type === undefined || this.job.type === '') {
-        this.errorMessage = 'Type cannot be empty';
-      } else if (this.job.salary === undefined || this.job.salary === null) {
-        this.errorMessage = 'Salary cannot be empty';
-      } else {
-      this.loader.show();
-        this.job.companyId = this.authServ.currentUserId;
-        this.fireServ.addJob(this.job).then(() => {
-          this.successMessage = 'Job added successfuly';
-          this.errorMessage = null;
-          this.loader.hide();
-        });
-      }
-    }
+    // if (this.authServ.isCompany()) {
+    //   if (this.job.title === undefined || this.job.title === '') {
+    //     this.errorMessage = 'Title cannot be empty';
+    //   } else if (this.job.type === undefined || this.job.type === '') {
+    //     this.errorMessage = 'Type cannot be empty';
+    //   } else if (this.job.salary === undefined || this.job.salary === null) {
+    //     this.errorMessage = 'Salary cannot be empty';
+    //   } else {
+    //   this.loader.show();
+    //     this.job.companyId = this.authServ.currentUserId;
+    //     this.fireServ.addJob(this.job).then(() => {
+    //       this.successMessage = 'Job added successfuly';
+    //       this.errorMessage = null;
+    //       this.loader.hide();
+    //     });
+    //   }
+    // }
   }
 
   apply(job) {
-    this.fireServ.apply(job.$key, this.authServ.currentUserId);
-    this.updateJobs();
+    // this.fireServ.apply(job.$key, this.authServ.currentUserId);
+    // this.updateJobs();
   }
 
   logout() {
-    if (this.isUser) {
-      this.authServ.logout().then(() => this.route.navigate(['/user/login']));
-    } else {
-      this.authServ.logout().then(() => this.route.navigate(['/company/login']));
-    }
+    localStorage.removeItem("jwtToken");
+    if (this.isCompany) {
+      this.route.navigate(['/company/login']);
+    } 
   }
 
 }
