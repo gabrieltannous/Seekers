@@ -28,7 +28,7 @@ export class CompanyRegisterComponent implements OnInit {
 
   register(company: NgForm) {
     if (company.value.name === '' || company.value.name === undefined || company.value.email === '' || company.value.email === undefined
-    || company.value.password === '' || company.value.name === undefined) {
+    || company.value.password === '' || company.value.password === undefined) {
       this.errorMessage = 'Please fill all fields';
     } else {
     if (company.value.password === company.value.cpassword) {
