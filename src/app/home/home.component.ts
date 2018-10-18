@@ -39,7 +39,7 @@ export class HomeComponent implements OnInit {
          this.isCompany = res["isCompany"];
          if(this.isCompany){
              this.loader.hide();
-             this.userName = res["name"];
+             this.userName = res["company"].name;
          }
       });
   }
@@ -84,7 +84,7 @@ export class HomeComponent implements OnInit {
   }
 
   logout() {
-    localStorage.removeItem("jwtToken");
+    this.authServ.logOut();
     if (this.isCompany) {
       this.route.navigate(['/company/login']);
     } 

@@ -120,7 +120,41 @@ router.get('/isCompany',
   passport.authenticate('jwt-company', 
     { failureRedirect: 'companyAuthenticationFailure',session: false}), 
   function(req, res) {
-      res.json({isCompany: true,name: req.company.name});
+      res.json({isCompany: true,company: req.company});
 });
 
+
+
+//update profile
+router.post('/updateCompanyProfile',
+  [ 
+    body('name',"Name cannot be blank").not().isEmpty()
+  ],
+  passport.authenticate('jwt-company', 
+    { failureRedirect: 'companyAuthenticationFailure',session: false}),
+  function(req, res, next) {
+    //validate request
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      var err_array = errors.array().map(value => { return value.msg }); 
+      return res.json({ success: false, msg: err_array });
+    }
+
+    console.log(req.company);
+
+    var id = req.company._id;
+
+    Company.findByIdAndUpdate(id,{$set:req.body}, 
+      function(err, result) {
+        if (err) throw err;
+
+        console.log(result);
+        if (!result) {
+          res.json({ success: false, msg: ['Problem occurs. Data cannot be saved'] });
+        } else {
+          res.json({ success: true, msg: ['Profile updated successfuly'] });
+        }
+    });
+
+});
 module.exports = router;

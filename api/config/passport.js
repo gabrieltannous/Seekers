@@ -13,13 +13,13 @@ module.exports = function(passport) {
 
   // strategy for company
   passport.use('jwt-company',new JwtStrategy(opts, function(req,jwt_payload, done) {
-    // console.log(jwt_payload);
+    console.log(jwt_payload);
     Company.findOne({_id: jwt_payload._id}, function(err, company) {
           if (err) {
               return done(err, false);
           }
           if (company) {
-              // console.log(company);
+              console.log(company);
               req.company = company;
               done(null, company);
           } else {

@@ -5,6 +5,7 @@ import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { NgForm } from '@angular/forms';
 import { Router } from '@angular/router';
+import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
   selector: 'app-company-profile',
@@ -19,14 +20,17 @@ export class CompanyProfileComponent implements OnInit {
   numberOfInterviews: number;
   successMessage: string = null;
   errorMessage: string = null;
-
+  isCompany: boolean;
   constructor(private authServ: AuthService, public fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService, private route: Router) {
-    this.fireServ.getCompany(this.authServ.currentUserId).then(
-      res => {
-        this.company = res;
-        this.loader.hide();
-    });
+    private loader: Ng4LoadingSpinnerService, private route: Router,private companyServ: CompanyService) {
+    this.loader.show()
+    this.authServ.isCompany().subscribe(res => {
+         this.isCompany = res["isCompany"];
+         if(this.isCompany){
+             this.loader.hide();
+             this.company = res["company"];
+         }
+      });
   }
 
   ngOnInit() {
@@ -34,17 +38,21 @@ export class CompanyProfileComponent implements OnInit {
 
   upload(event) {
     const filename = event.path[0].value;
+
     this.loader.show();
     const path = 'Company-Photos/';
+    alert(JSON.stringify(this.company));
     this.fireServ.upload(event, path + this.company.name + filename.substring(filename.lastIndexOf('.'))).then(
       res => {
         res.ref.getDownloadURL().then(
           res2 => {
             this.company.photo = res2;
-            this.successMessage = 'Profile photo uploaded succesfully';
-            this.errorMessage = null;
-            this.fireServ.updateCompany(this.company);
-            this.loader.hide();
+            this.companyServ.updateCompanyProfile(this.company).subscribe(
+              res3 => {                       
+                  this.successMessage = 'Profile photo uploaded succesfully';
+                  this.errorMessage = null;
+                  this.loader.hide();
+              });
           }
         );
       }
@@ -58,16 +66,23 @@ export class CompanyProfileComponent implements OnInit {
 
   updateProfile(profileForm: NgForm) {
     this.loader.show();
-    this.fireServ.updateCompany(profileForm.value).then(
+    this.companyServ.updateCompanyProfile(profileForm.value).subscribe(
       res => {
         this.loader.hide();
-        this.successMessage = 'Profile updated successfuly';
+        if (res["success"]) {
+          this.successMessage = res["msg"][0];
+          this.errorMessage = null;
+        }else{
+          this.errorMessage = res["msg"][0];
+          this.successMessage = null;
+        }
       }
     );
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/company/login']));
+    this.authServ.logOut();
+    this.route.navigate(['/company/login']);
   }
 
 }

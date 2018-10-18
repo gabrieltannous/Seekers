@@ -20,6 +20,13 @@ export class AuthService {
       });
   }
 
+  async fake(): Promise<boolean>{
+      return true;
+  }
+
+  logOut(){
+    localStorage.removeItem("jwtToken");
+  }
   loggedIn(){
     let token: string = localStorage.getItem('jwtToken');
     if(token === null || token === undefined || token === ""){
@@ -27,9 +34,7 @@ export class AuthService {
     }
     return true;
   }
-  async fake(): Promise<boolean>{
-      return true;
-  }
+
   isCompany(){
     let httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators';
 export class CompanyService {
   
   constructor(private http: HttpClient) {}
-
+  
   signupCompany(company) {
     return this.http
       .post('http://localhost:3000/api/signupCompany', company)
@@ -17,6 +17,15 @@ export class CompanyService {
   signinCompany(company) {
     return this.http
       .post('http://localhost:3000/api/signinCompany', company)
+      .pipe(map((response: Response) => response));
+  }
+
+  updateCompanyProfile(company) {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .post('http://localhost:3000/api/updateCompanyProfile', company,httpOptions)
       .pipe(map((response: Response) => response));
   }
   // updateCompany(company) {
