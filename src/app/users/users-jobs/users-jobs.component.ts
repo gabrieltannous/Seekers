@@ -11,32 +11,35 @@ import { Router } from '@angular/router';
   styleUrls: ['./users-jobs.component.css']
 })
 export class UsersJobsComponent implements OnInit {
-
   jobs: UserJob[];
   jobs2: any[];
-  job = new UserJob;
+  job = new UserJob();
   successMessage: string = null;
   errorMessage: string = null;
 
-  constructor(private authServ: AuthService, private fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService, private route: Router) {
-      this.loadJobs();
-      this.loadJobs2();
-    }
+  constructor(
+    private authServ: AuthService,
+    private fireServ: FirebaseService,
+    private loader: Ng4LoadingSpinnerService,
+    private route: Router
+  ) {
+    this.loadJobs();
+    this.loadJobs2();
+  }
 
-    loadJobs() {
-      this.fireServ.getuj(this.authServ.currentUserId).then( res => {
-        this.jobs = res;
-        this.loader.hide();
-      });
-    }
+  loadJobs() {
+    this.fireServ.getuj(this.authServ.currentUserId).then(res => {
+      this.jobs = res;
+      this.loader.hide();
+    });
+  }
 
-    loadJobs2() {
-      this.fireServ.getuj2(this.authServ.currentUserId).then( res => {
-        this.jobs2 = res;
-        this.loader.hide();
-      });
-    }
+  loadJobs2() {
+    this.fireServ.getuj2(this.authServ.currentUserId).then(res => {
+      this.jobs2 = res;
+      this.loader.hide();
+    });
+  }
 
   ngOnInit() {
     this.loader.hide();
@@ -55,7 +58,7 @@ export class UsersJobsComponent implements OnInit {
         this.successMessage = null;
         this.errorMessage = 'Details cannot be empty';
       } else {
-      this.loader.show();
+        this.loader.show();
         this.job.userId = this.authServ.currentUserId;
         this.fireServ.addUserJob(this.job).then(() => {
           this.successMessage = 'Job added successfuly';
@@ -68,7 +71,6 @@ export class UsersJobsComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
   }
-
 }

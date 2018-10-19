@@ -27,52 +27,43 @@ export class HomeComponent implements OnInit {
 
   successMessage = null;
   errorMessage = null;
-  constructor(private authServ: AuthService, private fireServ: FirebaseService,
-    public loader: Ng4LoadingSpinnerService, private route: Router,
-    private companyServ: CompanyService, private userServ: UserService) {
-      // alert("home");
-      this.loader.show();
-      // this.authServ.isUser().then(res => {
-      //   this.isUser = res;
-      //   if (this.isUser) {
-      //     this.updateJobs();
-      //     this.fireServ.getUser(this.authServ.currentUserId).then(user => this.userName = user.fullName);
-      //   }
-      // });
+  constructor(
+    private authServ: AuthService,
+    private fireServ: FirebaseService,
+    public loader: Ng4LoadingSpinnerService,
+    private route: Router,
+    private companyServ: CompanyService,
+    private userServ: UserService
+  ) {
+    this.loader.show();
+    this.authServ.isUser().subscribe(res => {
+      this.isUser = res['isUser'];
+      if (this.isUser) {
+        this.updateJobs();
+        this.loader.hide();
+        this.userName = res['user'].fullName;
+        this.currentId = res['user']._id;
+      }
+    });
 
-      this.authServ.isUser().subscribe(res => {
-         this.isUser = res['isUser'];
-         if (this.isUser) {
-            this.updateJobs();
-            this.loader.hide();
-            this.userName = res['user'].fullName;
-            this.currentId = res['user']._id;
-         }
-      });
-
-      this.authServ.isCompany().subscribe(res => {
-         this.isCompany = res['isCompany'];
-         if (this.isCompany) {
-             this.loader.hide();
-             this.userName = res['company'].name;
-             this.currentId = res['company']._id;
-         }
-      });
+    this.authServ.isCompany().subscribe(res => {
+      this.isCompany = res['isCompany'];
+      if (this.isCompany) {
+        this.loader.hide();
+        this.userName = res['company'].name;
+        this.currentId = res['company']._id;
+      }
+    });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   updateJobs() {
-    this.userServ.getJobsApplied().subscribe(res => this.jobs = res['jobs']);
-    // this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
-    //   this.jobs = result;
-    //   this.loader.hide();
-    // });
+    this.userServ.getJobs().subscribe(res => (this.jobs = res['jobs']));
   }
 
   fillModal() {
-    // this.job = new Job();
+    this.job = new Job();
   }
 
   addJob() {
@@ -86,7 +77,7 @@ export class HomeComponent implements OnInit {
       } else {
         this.loader.show();
         this.job.companyId = this.currentId;
-        this.companyServ.addCompanyJob(this.job).subscribe( res => {
+        this.companyServ.addCompanyJob(this.job).subscribe(res => {
           if (res['success']) {
             this.successMessage = res['msg'][0];
             this.errorMessage = null;
@@ -101,17 +92,10 @@ export class HomeComponent implements OnInit {
   }
 
   apply(job) {
-    // this.fireServ.apply(job.$key, this.authServ.currentUserId);
-    // this.updateJobs();
+    this.userServ.applyToJob(job).subscribe(() => this.updateJobs());
   }
 
   logout() {
     this.authServ.logOut();
-    if (this.isCompany) {
-      this.route.navigate(['/company/login']);
-    } else if (this.isUser) {
-      this.route.navigate(['/user/login']);
-    }
   }
-
 }

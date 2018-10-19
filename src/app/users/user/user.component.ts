@@ -10,27 +10,26 @@ import { User } from '../../models/user';
   templateUrl: './user.component.html',
   styleUrls: ['./user.component.css']
 })
-
 export class UserPComponent implements OnInit {
-
   user: User = new User();
 
-  constructor(private authServ: AuthService, public fireServ: FirebaseService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private router: ActivatedRoute) {
-      const userId = this.router.snapshot.paramMap.get('id');
-    this.fireServ.getUser(userId).then(
-      res => {
+  constructor(
+    private authServ: AuthService,
+    public fireServ: FirebaseService,
+    private route: Router,
+    private loader: Ng4LoadingSpinnerService,
+    private router: ActivatedRoute
+  ) {
+    const userId = this.router.snapshot.paramMap.get('id');
+    this.fireServ.getUser(userId).then(res => {
       this.user = res;
-        this.loader.hide();
-      });
+      this.loader.hide();
+    });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
   }
-
-
 }

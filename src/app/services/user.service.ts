@@ -5,7 +5,6 @@ import { map } from 'rxjs/operators';
 
 @Injectable()
 export class UserService {
-
   constructor(private http: HttpClient) {}
 
   signupUser(user) {
@@ -22,19 +21,34 @@ export class UserService {
 
   updateUserProfile(user) {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
     };
     return this.http
       .post('http://localhost:3000/api/updateUserProfile', user, httpOptions)
       .pipe(map((response: Response) => response));
   }
 
-  getJobsApplied() {
+  getJobs() {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
     };
     return this.http
-      .get('http://localhost:3000/api/getJobsApplied', httpOptions)
+      .get('http://localhost:3000/api/getJobs', httpOptions)
+      .pipe(map((response: Response) => response));
+  }
+
+  applyToJob(job) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
+    };
+    return this.http
+      .post('http://localhost:3000/api/applyToJob', job, httpOptions)
       .pipe(map((response: Response) => response));
   }
 }

@@ -28,7 +28,7 @@ export class CompanyComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
   }
 
 }

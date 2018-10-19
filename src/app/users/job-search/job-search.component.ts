@@ -11,30 +11,38 @@ import { Job } from '../../models/job';
   styleUrls: ['./job-search.component.css']
 })
 export class JobSearchComponent implements OnInit {
-
   job = new Job();
   jobs: any[];
   allJobs: any[];
 
-  constructor(private authServ: AuthService, private route: Router, private fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService) {
-      this.loader.hide();
-      this.fireServ.getUserJobs(this.authServ.currentUserId).then(
-        res => {
-          this.allJobs = res;
-        }
-      );
+  constructor(
+    private authServ: AuthService,
+    private route: Router,
+    private fireServ: FirebaseService,
+    private loader: Ng4LoadingSpinnerService
+  ) {
+    this.loader.hide();
+    this.fireServ.getUserJobs(this.authServ.currentUserId).then(res => {
+      this.allJobs = res;
+    });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   search() {
     this.loader.show();
-    this.fireServ.searchJobs(this.allJobs, this.job.title, this.job.type, this.job.salary, this.authServ.currentUserId).then(res => {
-      this.jobs = res;
-      this.loader.hide();
-    });
+    this.fireServ
+      .searchJobs(
+        this.allJobs,
+        this.job.title,
+        this.job.type,
+        this.job.salary,
+        this.authServ.currentUserId
+      )
+      .then(res => {
+        this.jobs = res;
+        this.loader.hide();
+      });
   }
 
   apply(job) {
@@ -43,7 +51,6 @@ export class JobSearchComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['user/login']));
+    this.authServ.logOut();
   }
-
 }

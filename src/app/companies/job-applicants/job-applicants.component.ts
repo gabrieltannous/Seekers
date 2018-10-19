@@ -62,7 +62,7 @@ export class JobApplicantsComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/company/login']));
+    this.authServ.logOut();
   }
 
 }

@@ -48,6 +48,6 @@ export class UsersComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/admin']));
+    this.authServ.logOut();
   }
 }

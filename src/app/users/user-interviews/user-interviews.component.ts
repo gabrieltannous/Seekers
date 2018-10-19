@@ -11,22 +11,26 @@ import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
   styleUrls: ['./user-interviews.component.css']
 })
 export class UserInterviewsComponent implements OnInit {
-
   interviews: Interview[];
-  constructor(private authServ: AuthService, private route: Router,
-    private fireServ: FirebaseService, private loader: Ng4LoadingSpinnerService) {
-      this.loadInterviews();
+  constructor(
+    private authServ: AuthService,
+    private route: Router,
+    private fireServ: FirebaseService,
+    private loader: Ng4LoadingSpinnerService
+  ) {
+    this.loadInterviews();
   }
 
   loadInterviews() {
-    return this.fireServ.getUserInterviews(this.authServ.currentUserId).then(res => {
-      this.interviews = res;
-      this.loader.hide();
-    });
+    return this.fireServ
+      .getUserInterviews(this.authServ.currentUserId)
+      .then(res => {
+        this.interviews = res;
+        this.loader.hide();
+      });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   decide(interview, decision) {
     interview.decision = decision;
@@ -37,6 +41,6 @@ export class UserInterviewsComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
   }
 }

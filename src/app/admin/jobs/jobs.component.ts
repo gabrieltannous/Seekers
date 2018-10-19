@@ -47,6 +47,6 @@ export class JobsComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/admin']));
+    this.authServ.logOut();
   }
 }

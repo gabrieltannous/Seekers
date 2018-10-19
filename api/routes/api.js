@@ -247,7 +247,7 @@ router.post('/updateCompanyProfile',
 
   });
 
-//add Job - current user
+//add Job - current company
 router.post('/addCompanyJob',
   [
     body('companyId', "Unable to find the company").not().isEmpty(),
@@ -323,38 +323,31 @@ router.get('/getAllCompanyJobs',
     });
   });
 
-//get all jobs - current user
-router.get('/getJobsApplied',
+//get all jobs with company profile and check if current user applied
+router.get('/getJobs',
   passport.authenticate('jwt-user', {
     failureRedirect: 'userAuthenticationFailure',
     session: false
   }),
   function (req, res, next) {
-    //find all jobs of current user
     Job.find({}, function (err, data) {
       if (err) {
         res.json({
           success: false
         });
       } else {
-        console.log('here');
         var promises = data.map(function (item) {
-        console.log('here2');
-        console.log(item.companyId);
-        return Company.findById(item.companyId, {})
-        .then(res => {
-            item.company = res;
-            // return item;
-            return Application.findOne({
-              userId: req.user._id,
-              jobId: item._id
-            }).then(result => {
-        console.log('here3');
-
-              result ? item.applied = true : item.applied = false;
-              return item
-            });
-          })
+          return Company.findById(item.companyId, {})
+            .then(res => {
+              item.company = res;
+              return Application.findOne({
+                userId: req.user._id,
+                jobId: item._id
+              }).then(result => {
+                result ? item.applied = true : item.applied = false;
+                return item
+              });
+            })
         })
 
         Promise.all(promises).then(function (results) {
@@ -364,6 +357,36 @@ router.get('/getJobsApplied',
           });
         })
       }
+    });
+  });
+
+//apply to Job - current user
+router.post('/applyToJob',
+  passport.authenticate('jwt-user', {
+    failureRedirect: 'userAuthenticationFailure',
+    session: false
+  }),
+  function (req, res, next) {
+    //create a new document
+    var apply = new Application({
+      userId: req.user._id,
+      jobId: req.body._id
+    });
+    console.log('Jobid =---------------------');
+    console.log(req.body._id);
+
+    //add application
+    apply.save(function (err) {
+      if (err) {
+        return res.json({
+          success: false,
+          msg: ["Database error. Cannot apply to job"]
+        });
+      }
+      res.json({
+        success: true,
+        msg: ['Successfuly applied to job']
+      });
     });
   });
 
