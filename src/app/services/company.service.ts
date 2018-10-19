@@ -46,6 +46,42 @@ export class CompanyService {
       .get('http://localhost:3000/api/getAllCompanyJobs',httpOptions)
       .pipe(map((response: Response) => response));
   }
+
+  getApplicants(jobId) {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .post('http://localhost:3000/api/getApplicants', {jobId:jobId},httpOptions)
+      .pipe(map((response: Response) => response));
+  }
+
+  getApplicantProfile(userId) {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .post('http://localhost:3000/api/getApplicantProfile', {userId:userId},httpOptions)
+      .pipe(map((response: Response) => response));
+  }
+
+  setInterview(interview) {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .post('http://localhost:3000/api/setInterview', interview,httpOptions)
+      .pipe(map((response: Response) => response));
+  }
+
+  getCompanyInterviews() {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .get('http://localhost:3000/api/getCompanyInterviews',httpOptions)
+      .pipe(map((response: Response) => response));
+  }
   // updateCompany(company) {
   //   return this.http
   //     .post('http://localhost:3000/api/UpdateCompany/', company)

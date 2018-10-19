@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Interview } from '../../models/interview';
 import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-interviews',
@@ -14,13 +15,14 @@ export class UserInterviewsComponent implements OnInit {
 
   interviews: Interview[];
   constructor(private authServ: AuthService, private route: Router,
-    private fireServ: FirebaseService, private loader: Ng4LoadingSpinnerService) {
-      this.loadInterviews();
-  }
-
-  loadInterviews() {
-    return this.fireServ.getUserInterviews(this.authServ.currentUserId).then(res => {
-      this.interviews = res;
+    private fireServ: FirebaseService, 
+    private loader: Ng4LoadingSpinnerService,private userServ: UserService) {
+      this.loader.show();
+      this.userServ.getUserInterviews().subscribe(res => {
+        if (res["success"]) {
+          this.interviews = res["interviews"];         
+        }
+      
       this.loader.hide();
     });
   }
@@ -31,12 +33,15 @@ export class UserInterviewsComponent implements OnInit {
   decide(interview, decision) {
     interview.decision = decision;
     this.loader.show();
-    this.fireServ.updateInterview(interview).then(() => {
-      this.loadInterviews().then(() => this.loader.hide());
+    this.userServ.updateUserInterview(interview).subscribe(res => {
+        if (!res["success"])
+          alert(res["msg"]);
+        this.loader.hide();
     });
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
+    this.route.navigate(['/user/login']);
   }
 }

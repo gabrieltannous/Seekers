@@ -4,6 +4,7 @@ import { Company } from '../../models/company';
 import { FirebaseService } from '../../services/firebase.service';
 import { AuthService } from '../../services/auth.service';
 import { Router, ActivatedRoute } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-company',
@@ -15,12 +16,16 @@ export class CompanyComponent implements OnInit {
   company: Company = new Company();
 
   constructor(private authServ: AuthService, public fireServ: FirebaseService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private router: ActivatedRoute) {
+    private loader: Ng4LoadingSpinnerService, private router: ActivatedRoute,private userServ: UserService) {
       const companyId = this.router.snapshot.paramMap.get('id');
-    this.fireServ.getCompany(companyId).then(
+      this.loader.show();
+      this.userServ.getAppliedCompanyProfile(companyId).subscribe(
       res => {
-      this.company = res;
-        this.loader.hide();
+
+         if(res["success"]){
+           this.company = res["company"];
+         }
+         this.loader.hide();
       });
   }
 
@@ -28,7 +33,8 @@ export class CompanyComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
+    this.route.navigate(['/user/login']);
   }
 
 }

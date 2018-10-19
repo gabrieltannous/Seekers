@@ -16,7 +16,7 @@ module.exports = function(passport) {
   com_opts.secretOrKey = config.secretCompany;
 
   passport.use('jwt-company',new JwtStrategy(com_opts, function(req,jwt_payload, done) {
-    console.log(jwt_payload);
+    // console.log(jwt_payload);
     Company.findOne({_id: jwt_payload._id}, function(err, company) {
           if (err) {
               return done(err, false);
@@ -36,7 +36,6 @@ module.exports = function(passport) {
   user_opts.secretOrKey = config.secretUser;
 
   passport.use('jwt-user',new JwtStrategy(user_opts, function(req,jwt_payload, done) {
-    console.log(jwt_payload);
     User.findOne({_id: jwt_payload._id}, function(err, user) {
           if (err) {
               return done(err, false);
@@ -56,7 +55,6 @@ module.exports = function(passport) {
   admin_opts.secretOrKey = config.secretAdmin;
 
   passport.use('jwt-admin',new JwtStrategy(admin_opts, function(req,jwt_payload, done) {
-    console.log(jwt_payload);
     Admin.findOne({_id: jwt_payload._id}, function(err, admin) {
           if (err) {
               return done(err, false);

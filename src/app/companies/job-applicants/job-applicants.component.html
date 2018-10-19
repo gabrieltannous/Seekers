@@ -39,7 +39,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let item of applicants">
-          <td><a [routerLink]="['/company/user', item.$key, 'profile']">{{item.fullName}}</a></td>
+          <td><a [routerLink]="['/company/user', item._id, 'profile']">{{item.fullName}}</a></td>
           <td>{{item.email}}</td>
           <td>
             <label *ngIf="item.resume == null">No Resume Uploaded</label>
@@ -63,8 +63,9 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
       </div>
         <div class="modal-body">
-          <input type="datetime-local" class="form-control" name="date" #date="ngModel" [(ngModel)]="interview.date" />
-        </div>
+          <input type="date" class="form-control" [ngModel]="interview.date | date:'yyyy-MM-dd'" 
+                 (ngModelChange)="interview.date = $event">`
+
         <div class="modal-footer">
           <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           <button type="submit" class="btn btn-success" (click)="setInterview()" data-dismiss="modal">Save</button>

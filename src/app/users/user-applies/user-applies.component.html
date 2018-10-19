@@ -13,9 +13,9 @@
       <li class="nav-item active">
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/applies">Applied Jobs</a>
       </li>
-      <li class="nav-item">
+<!--       <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/jobs">My Jobs</a>
-      </li>
+      </li> -->
       <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
       </li>
@@ -48,7 +48,7 @@
     <tbody *ngFor="let item of appliedJobs">
       <tr>
         <td>{{item.title}}</td>
-        <td><a [routerLink]="['/user/company', item.company.id, 'profile']">{{item.company.name}}</a></td>
+        <td><a [routerLink]="['/user/company', item.company._id, 'profile']">{{item.company.name}}</a></td>
         <td>{{item.type}}</td>
         <td>${{item.salary}}</td>
       </tr>
