@@ -18,7 +18,7 @@ export class UserLoginComponent implements OnInit {
   errorMessage: string = null;
 
   constructor(private authServ: AuthService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService,private userServ: UserService) {
+    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService, private userServ: UserService) {
     }
 
   ngOnInit() {
@@ -59,15 +59,15 @@ export class UserLoginComponent implements OnInit {
     this.loader.show();
     this.userServ.signinUser(user.value).subscribe(
         res => {
-          if(res["success"]){
-              localStorage.setItem('jwtToken', res["token"]);
+          if (res['success']) {
+              localStorage.setItem('jwtToken', res['token']);
               this.loader.hide();
               this.route.navigate(['/home']);
-          }else{
-            this.errorMessage = res["msg"];
+          } else {
+            this.errorMessage = res['msg'];
             this.loader.hide();
           }
-        },err => console.log(err)
+        }, err => console.log(err)
     );
 
     }

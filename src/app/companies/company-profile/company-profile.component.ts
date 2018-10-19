@@ -22,13 +22,13 @@ export class CompanyProfileComponent implements OnInit {
   errorMessage: string = null;
   isCompany: boolean;
   constructor(private authServ: AuthService, public fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService, private route: Router,private companyServ: CompanyService) {
-    this.loader.show()
+    private loader: Ng4LoadingSpinnerService, private route: Router, private companyServ: CompanyService) {
+    this.loader.show();
     this.authServ.isCompany().subscribe(res => {
-         this.isCompany = res["isCompany"];
-         if(this.isCompany){
+         this.isCompany = res['isCompany'];
+         if (this.isCompany) {
              this.loader.hide();
-             this.company = res["company"];
+             this.company = res['company'];
          }
       });
   }
@@ -47,7 +47,7 @@ export class CompanyProfileComponent implements OnInit {
           res2 => {
             this.company.photo = res2;
             this.companyServ.updateCompanyProfile(this.company).subscribe(
-              res3 => {                       
+              () => {
                   this.successMessage = 'Profile photo uploaded succesfully';
                   this.errorMessage = null;
                   this.loader.hide();
@@ -68,11 +68,11 @@ export class CompanyProfileComponent implements OnInit {
     this.companyServ.updateCompanyProfile(profileForm.value).subscribe(
       res => {
         this.loader.hide();
-        if (res["success"]) {
-          this.successMessage = res["msg"][0];
+        if (res['success']) {
+          this.successMessage = res['msg'][0];
           this.errorMessage = null;
-        }else{
-          this.errorMessage = res["msg"][0];
+        } else {
+          this.errorMessage = res['msg'][0];
           this.successMessage = null;
         }
       }

@@ -1,6 +1,10 @@
 var express = require('express');
 var router = express.Router();
-const { body,query,validationResult  } = require('express-validator/check');
+const {
+  body,
+  query,
+  validationResult
+} = require('express-validator/check');
 
 //passport, mongoose
 var mongoose = require('mongoose');
@@ -31,7 +35,7 @@ getToken = function (headers) {
 };
 
 /* test API */
-router.get('/', function(req, res, next) {
+router.get('/', function (req, res, next) {
   res.send('API is working');
 });
 
@@ -39,160 +43,236 @@ router.get('/', function(req, res, next) {
 //sign up a comapany
 router.post('/signupCompany',
   [
-    body('email',"Invalid email").isEmail(), 
-    body('name',"Name cannot be blank").not().isEmpty(),
-    body('password',"Password must be 6 - 32 characters in length")
-    .not().isEmpty().isLength({ min: 6,max: 32 })
+    body('email', "Invalid email").isEmail(),
+    body('name', "Name cannot be blank").not().isEmpty(),
+    body('password', "Password must be 6 - 32 characters in length")
+    .not().isEmpty().isLength({
+      min: 6,
+      max: 32
+    })
   ],
-  function(req, res, next) {
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
 
     //check admin email
     var admins = config.adminEmails;
-    for(var i = 0; i < admins.length; i++){
-        if(admins[i] == req.body.email){
-          return res.json({success: false, msg: ["This email already exists"] });
-        }
+    for (var i = 0; i < admins.length; i++) {
+      if (admins[i] == req.body.email) {
+        return res.json({
+          success: false,
+          msg: ["This email already exists"]
+        });
+      }
     }
 
     //check user email
-    User.findOne( {email:req.body.email },function (e,user) {
-        if(e) throw e;
+    User.findOne({
+      email: req.body.email
+    }, function (e, user) {
+      if (e) throw e;
 
-        if(user)
-          return res.json({success: false, msg: ["This email already exists"] });
-
-        //create a new document
-        var newCom = new Company({
-          email: req.body.email,
-          name: req.body.name
+      if (user)
+        return res.json({
+          success: false,
+          msg: ["This email already exists"]
         });
-        
-        //encrypt password using bcrypt
-        newCom.setPassword(req.body.password, function(error,isSuccess){
-            if(isSuccess && !error){
-              newCom.save(function(err) {
-                  if (err) {
-                    return res.json({success: false, msg: ["This email already exists"] });
-                  }
-                  res.json({success: true, msg: ['Successfully created new user.'] });
+
+      //create a new document
+      var newCom = new Company({
+        email: req.body.email,
+        name: req.body.name
+      });
+
+      //encrypt password using bcrypt
+      newCom.setPassword(req.body.password, function (error, isSuccess) {
+        if (isSuccess && !error) {
+          newCom.save(function (err) {
+            if (err) {
+              return res.json({
+                success: false,
+                msg: ["This email already exists"]
               });
-            }else{
-              res.json({success: false, msg: ["Hash problem"] });
             }
-        });  
+            res.json({
+              success: true,
+              msg: ['Successfully created new user.']
+            });
+          });
+        } else {
+          res.json({
+            success: false,
+            msg: ["Hash problem"]
+          });
+        }
+      });
 
 
-    });  
-});
+    });
+  });
 
 //sign in a comapany
 router.post('/signinCompany',
   [
-    body('email',"Invalid email").isEmail(), 
-    body('password',"Password must be 6 - 32 characters in length")
-    .not().isEmpty().isLength({ min: 6,max: 32 })
+    body('email', "Invalid email").isEmail(),
+    body('password', "Password must be 6 - 32 characters in length")
+    .not().isEmpty().isLength({
+      min: 6,
+      max: 32
+    })
   ],
-  function(req, res, next) {
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
     // console.log(req.body.email);
     // console.log(req.body.password);
-   Company.findOne({ email: req.body.email}, 
-      function(err, company) {
+    Company.findOne({
+        email: req.body.email
+      },
+      function (err, company) {
         if (err) throw err;
 
         if (!company) {
-          res.json({success: false, msg: 'Company not found.'});
+          res.json({
+            success: false,
+            msg: 'Company not found.'
+          });
         } else {
           // check if password matches
           company.comparePassword(req.body.password, function (err, isMatch) {
-              if (isMatch && !err) {
-                  //create token for user  
-                  var token = jwt.sign(company.toJSON(), config.secretCompany);
-                  res.json({success: true, token: config.passportScheme + " " + token});
-              } else {
-                  res.json({success: false, msg: 'Wrong password.'});
-              }       
+            if (isMatch && !err) {
+              //create token for user  
+              var token = jwt.sign(company.toJSON(), config.secretCompany);
+              res.json({
+                success: true,
+                token: config.passportScheme + " " + token
+              });
+            } else {
+              res.json({
+                success: false,
+                msg: 'Wrong password.'
+              });
+            }
           });
         }
-    });
-});
+      });
+  });
 
 
 //Company Authentication failed
-router.get('/companyAuthenticationFailure', function(req, res) {
-  res.json({isCompany: false});
+router.get('/companyAuthenticationFailure', function (req, res) {
+  res.json({
+    isCompany: false
+  });
 });
 
 //authenticate Company
-router.get('/isCompany', 
-  passport.authenticate('jwt-company', 
-    { failureRedirect: 'companyAuthenticationFailure',session: false}), 
-  function(req, res) {
-      res.json({isCompany: true,company: req.company});
-});
+router.get('/isCompany',
+  passport.authenticate('jwt-company', {
+    failureRedirect: 'companyAuthenticationFailure',
+    session: false
+  }),
+  function (req, res) {
+    res.json({
+      isCompany: true,
+      company: req.company
+    });
+  });
 
 
 
 //update company profile
 router.post('/updateCompanyProfile',
-  [ 
-    body('name',"Name cannot be blank").not().isEmpty()
+  [
+    body('name', "Name cannot be blank").not().isEmpty()
   ],
-  passport.authenticate('jwt-company', 
-    { failureRedirect: 'companyAuthenticationFailure',session: false}),
-  function(req, res, next) {
+  passport.authenticate('jwt-company', {
+    failureRedirect: 'companyAuthenticationFailure',
+    session: false
+  }),
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({ success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
 
     // console.log(req.company);
 
     var id = req.company._id;
 
-    Company.findByIdAndUpdate(id,{$set:req.body}, 
-      function(err, result) {
+    Company.findByIdAndUpdate(id, {
+        $set: req.body
+      },
+      function (err, result) {
         if (err) throw err;
 
         console.log(result);
         if (!result) {
-          res.json({ success: false, msg: ['Problem occurs. Data cannot be saved'] });
+          res.json({
+            success: false,
+            msg: ['Problem occurs. Data cannot be saved']
+          });
         } else {
-          res.json({ success: true, msg: ['Profile updated successfuly'] });
+          res.json({
+            success: true,
+            msg: ['Profile updated successfuly']
+          });
         }
-    });
+      });
 
-});
+  });
 
 //add Job - current user
 router.post('/addCompanyJob',
   [
-    body('companyId',"Unable to find the company").not().isEmpty(),
-    body('type',"Type cannot be empty").not().isEmpty(), 
-    body('title',"Title cannot be empty").not().isEmpty(),
-    body('salary',"Salary cannot be empty").not().isEmpty()
+    body('companyId', "Unable to find the company").not().isEmpty(),
+    body('type', "Type cannot be empty").not().isEmpty(),
+    body('title', "Title cannot be empty").not().isEmpty(),
+    body('salary', "Salary cannot be empty").not().isEmpty(),
+    body('salary', "Salary cannot be negative").isInt({
+      min: 0
+    })
   ],
-  passport.authenticate('jwt-company', 
-    { failureRedirect: 'companyAuthenticationFailure',session: false}),
-  function(req, res, next) {
+  passport.authenticate('jwt-company', {
+    failureRedirect: 'companyAuthenticationFailure',
+    session: false
+  }),
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
 
 
@@ -203,168 +283,292 @@ router.post('/addCompanyJob',
       title: req.body.title,
       salary: req.body.salary
     });
-    
+
     //add job
-    newJob.save(function(err) {
-        if (err) {
-          return res.json({success: false, msg: ["Database error. Job cannot be added"] });
-        }
-        res.json({success: true, msg: ['Successfuly added new job'] });
-    });   
-});
+    newJob.save(function (err) {
+      if (err) {
+        return res.json({
+          success: false,
+          msg: ["Database error. Job cannot be added"]
+        });
+      }
+      res.json({
+        success: true,
+        msg: ['Successfuly added new job']
+      });
+    });
+  });
 
 
 //get all jobs - current user
 router.get('/getAllCompanyJobs',
-  passport.authenticate('jwt-company', 
-    { failureRedirect: 'companyAuthenticationFailure',session: false}),
-  function(req, res, next) {
+  passport.authenticate('jwt-company', {
+    failureRedirect: 'companyAuthenticationFailure',
+    session: false
+  }),
+  function (req, res, next) {
     //find all jobs of current user
-    Job.find({ companyId: req.company._id}, function(err, jobs) {
-        if (err) {
-          return res.json({success: false});
-        }
-        res.json({success: true, jobs: jobs });
-    });   
-});
+    Job.find({
+      companyId: req.company._id
+    }, function (err, jobs) {
+      if (err) {
+        return res.json({
+          success: false
+        });
+      }
+      res.json({
+        success: true,
+        jobs: jobs
+      });
+    });
+  });
 
+//get all jobs - current user
+router.get('/getJobsApplied',
+  passport.authenticate('jwt-user', {
+    failureRedirect: 'userAuthenticationFailure',
+    session: false
+  }),
+  function (req, res, next) {
+    //find all jobs of current user
+    Job.find({}, function (err, data) {
+      if (err) {
+        res.json({
+          success: false
+        });
+      } else {
+        console.log('here');
+        var promises = data.map(function (item) {
+        console.log('here2');
+        console.log(item.companyId);
+        return Company.findById(item.companyId, {})
+        .then(res => {
+            item.company = res;
+            // return item;
+            return Application.findOne({
+              userId: req.user._id,
+              jobId: item._id
+            }).then(result => {
+        console.log('here3');
+
+              result ? item.applied = true : item.applied = false;
+              return item
+            });
+          })
+        })
+
+        Promise.all(promises).then(function (results) {
+          res.json({
+            success: true,
+            jobs: data
+          });
+        })
+      }
+    });
+  });
 
 // sign up a user
 router.post('/signupUser',
   [
-    body('email',"Invalid email").isEmail(), 
-    body('fullName',"Name cannot be blank").not().isEmpty(),
-    body('password',"Password must be 6 - 32 characters in length")
-    .not().isEmpty().isLength({ min: 6,max: 32 })
+    body('email', "Invalid email").isEmail(),
+    body('fullName', "Name cannot be blank").not().isEmpty(),
+    body('password', "Password must be 6 - 32 characters in length")
+    .not().isEmpty().isLength({
+      min: 6,
+      max: 32
+    })
   ],
-  function(req, res, next) {
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
 
     //check admin email
     var admins = config.adminEmails;
-    for(var i = 0; i < admins.length; i++){
-        if(admins[i] == req.body.email){
-          return res.json({success: false, msg: ["This email already exists"] });
-        }
+    for (var i = 0; i < admins.length; i++) {
+      if (admins[i] == req.body.email) {
+        return res.json({
+          success: false,
+          msg: ["This email already exists"]
+        });
+      }
     }
 
     //check company email
-    Company.findOne( {email:req.body.email },function (e,company) {
-        if(e) throw e;
+    Company.findOne({
+      email: req.body.email
+    }, function (e, company) {
+      if (e) throw e;
 
-        if(company)
-          return res.json({success: false, msg: ["This email already exists"] });
-
-        //create a new document
-        var newUser = new User({
-          email: req.body.email,
-          fullName: req.body.fullName
+      if (company)
+        return res.json({
+          success: false,
+          msg: ["This email already exists"]
         });
-        
-        //encrypt password using bcrypt
-        newUser.setPassword(req.body.password, function(error,isSuccess){
-            if(isSuccess && !error){
-              newUser.save(function(err) {
-                  if (err) {
-                    return res.json({success: false, msg: ["This email already exists"] });
-                  }
-                  res.json({success: true, msg: ['Successfully created new user.'] });
+
+      //create a new document
+      var newUser = new User({
+        email: req.body.email,
+        fullName: req.body.fullName
+      });
+
+      //encrypt password using bcrypt
+      newUser.setPassword(req.body.password, function (error, isSuccess) {
+        if (isSuccess && !error) {
+          newUser.save(function (err) {
+            if (err) {
+              return res.json({
+                success: false,
+                msg: ["This email already exists"]
               });
-            }else{
-              res.json({success: false, msg: ["Hash problem"] });
             }
-        });  
+            res.json({
+              success: true,
+              msg: ['Successfully created new user.']
+            });
+          });
+        } else {
+          res.json({
+            success: false,
+            msg: ["Hash problem"]
+          });
+        }
+      });
 
 
-    });  
-});
+    });
+  });
 
 //sign in a user
 router.post('/signinUser',
   [
-    body('email',"Invalid email").isEmail(), 
-    body('password',"Password must be 6 - 32 characters in length")
-    .not().isEmpty().isLength({ min: 6,max: 32 })
+    body('email', "Invalid email").isEmail(),
+    body('password', "Password must be 6 - 32 characters in length")
+    .not().isEmpty().isLength({
+      min: 6,
+      max: 32
+    })
   ],
-  function(req, res, next) {
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
     // console.log(req.body.email);
     // console.log(req.body.password);
-   User.findOne({ email: req.body.email}, 
-      function(err, user) {
+    User.findOne({
+        email: req.body.email
+      },
+      function (err, user) {
         if (err) throw err;
 
         if (!user) {
-          res.json({success: false, msg: 'User not found.'});
+          res.json({
+            success: false,
+            msg: 'User not found.'
+          });
         } else {
           // check if password matches
           user.comparePassword(req.body.password, function (err, isMatch) {
-              if (isMatch && !err) {
-                  //create token for user  
-                  var token = jwt.sign(user.toJSON(), config.secretUser);
-                  res.json({success: true, token: config.passportScheme + " " + token});
-              } else {
-                  res.json({success: false, msg: 'Wrong password.'});
-              }       
+            if (isMatch && !err) {
+              //create token for user  
+              var token = jwt.sign(user.toJSON(), config.secretUser);
+              res.json({
+                success: true,
+                token: config.passportScheme + " " + token
+              });
+            } else {
+              res.json({
+                success: false,
+                msg: 'Wrong password.'
+              });
+            }
           });
         }
-    });
-});
+      });
+  });
 
 //user Authentication failed
-router.get('/userAuthenticationFailure', function(req, res) {
-  res.json({isUser: false});
+router.get('/userAuthenticationFailure', function (req, res) {
+  res.json({
+    isUser: false
+  });
 });
 
 //authenticate user
-router.get('/isUser', 
-  passport.authenticate('jwt-user', 
-    { failureRedirect: 'userAuthenticationFailure',session: false}), 
-  function(req, res) {
-      res.json({isUser: true,user: req.user});
-});
+router.get('/isUser',
+  passport.authenticate('jwt-user', {
+    failureRedirect: 'userAuthenticationFailure',
+    session: false
+  }),
+  function (req, res) {
+    res.json({
+      isUser: true,
+      user: req.user
+    });
+  });
 
 
 //update user profile
 router.post('/updateUserProfile',
-  [ 
-    body('fullName',"Name cannot be blank").not().isEmpty()
+  [
+    body('fullName', "Name cannot be blank").not().isEmpty()
   ],
-  passport.authenticate('jwt-user', 
-    { failureRedirect: 'companyAuthenticationFailure',session: false}),
-  function(req, res, next) {
+  passport.authenticate('jwt-user', {
+    failureRedirect: 'companyAuthenticationFailure',
+    session: false
+  }),
+  function (req, res, next) {
     //validate request
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => { return value.msg }); 
-      return res.json({ success: false, msg: err_array });
+      var err_array = errors.array().map(value => {
+        return value.msg
+      });
+      return res.json({
+        success: false,
+        msg: err_array
+      });
     }
 
     // console.log(req.company);
 
     var id = req.user._id;
 
-    User.findByIdAndUpdate(id,{$set:req.body}, 
-      function(err, result) {
+    User.findByIdAndUpdate(id, {
+        $set: req.body
+      },
+      function (err, result) {
         if (err) throw err;
 
         console.log(result);
         if (!result) {
-          res.json({ success: false, msg: ['Problem occurs. Data cannot be saved'] });
+          res.json({
+            success: false,
+            msg: ['Problem occurs. Data cannot be saved']
+          });
         } else {
-          res.json({ success: true, msg: ['Profile updated successfuly'] });
+          res.json({
+            success: true,
+            msg: ['Profile updated successfuly']
+          });
         }
-    });
+      });
 
-});
+  });
 module.exports = router;

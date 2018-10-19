@@ -18,7 +18,7 @@ export class UserRegisterComponent implements OnInit {
   errorMessage: string = null;
 
   constructor(private authService: AuthService, private firebaseService: FirebaseService,
-    private route: Router, private loader: Ng4LoadingSpinnerService,private userServ: UserService) {
+    private route: Router, private loader: Ng4LoadingSpinnerService, private userServ: UserService) {
 
     }
 
@@ -44,39 +44,36 @@ export class UserRegisterComponent implements OnInit {
   // }
 
     register(user: NgForm) {
-    if (user.value.fullName === '' || user.value.fullName === undefined || 
+    if (user.value.fullName === '' || user.value.fullName === undefined ||
         (user.value.email) === '' || user.value.email === undefined ||
         user.value.password === '' || user.value.password === undefined ||
         user.value.cpassword === '' || user.value.cpassword === undefined) {
           this.errorMessage = 'Please fill all fields';
-    } 
-    else {
+    } else {
         if (user.value.password === user.value.cpassword) {
-            this.loader.show();        
+            this.loader.show();
             this.userServ.signupUser(user.value).subscribe(
-                res => {
-                  if(res["success"]){
+                res1 => {
+                  if (res1['success']) {
                     this.userServ.signinUser(user.value).subscribe(
-                      res => {
-                        if(res["success"]){
-                            localStorage.setItem('jwtToken', res["token"]);
+                      res2 => {
+                        if (res2['success']) {
+                            localStorage.setItem('jwtToken', res2['token']);
                             this.loader.hide();
                             this.route.navigate(['/home']);
-                        }else{
-                          this.errorMessage = "Automatic login failed";
+                        } else {
+                          this.errorMessage = 'Automatic login failed';
                           this.loader.hide();
                         }
-                      },err => console.log(err));
-                  }
-                  else{
-                    this.errorMessage = res["msg"][0];
+                      }, err => console.log(err));
+                  } else {
+                    this.errorMessage = res1['msg'][0];
                     this.loader.hide();
                   }
                 },
                 err => console.log(err)
             );
-        } 
-        else {
+        } else {
             this.errorMessage = 'Passwords do not match';
         }
     }

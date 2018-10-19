@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
   errorMessage = null;
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService, private route: Router,
-    private companyServ: CompanyService,private userServ: UserService) {
+    private companyServ: CompanyService, private userServ: UserService) {
       // alert("home");
       this.loader.show();
       // this.authServ.isUser().then(res => {
@@ -41,20 +41,21 @@ export class HomeComponent implements OnInit {
       // });
 
       this.authServ.isUser().subscribe(res => {
-         this.isUser = res["isUser"];
-         if(this.isUser){
-             this.loader.hide();
-             this.userName = res["user"].fullName;
-             this.currentId = res["user"]._id;
+         this.isUser = res['isUser'];
+         if (this.isUser) {
+            this.updateJobs();
+            this.loader.hide();
+            this.userName = res['user'].fullName;
+            this.currentId = res['user']._id;
          }
       });
 
       this.authServ.isCompany().subscribe(res => {
-         this.isCompany = res["isCompany"];
-         if(this.isCompany){
+         this.isCompany = res['isCompany'];
+         if (this.isCompany) {
              this.loader.hide();
-             this.userName = res["company"].name;
-             this.currentId = res["company"]._id;
+             this.userName = res['company'].name;
+             this.currentId = res['company']._id;
          }
       });
   }
@@ -63,6 +64,7 @@ export class HomeComponent implements OnInit {
   }
 
   updateJobs() {
+    this.userServ.getJobsApplied().subscribe(res => this.jobs = res['jobs']);
     // this.fireServ.getUserJobs(this.authServ.currentUserId).then(result => {
     //   this.jobs = result;
     //   this.loader.hide();
@@ -85,11 +87,11 @@ export class HomeComponent implements OnInit {
         this.loader.show();
         this.job.companyId = this.currentId;
         this.companyServ.addCompanyJob(this.job).subscribe( res => {
-          if(res["success"]){
-            this.successMessage = res["msg"][0];
+          if (res['success']) {
+            this.successMessage = res['msg'][0];
             this.errorMessage = null;
-          }else{
-            this.errorMessage = res["msg"][0];
+          } else {
+            this.errorMessage = res['msg'][0];
             this.successMessage = null;
           }
           this.loader.hide();
@@ -107,9 +109,9 @@ export class HomeComponent implements OnInit {
     this.authServ.logOut();
     if (this.isCompany) {
       this.route.navigate(['/company/login']);
-    }else if(this.isUser){
+    } else if (this.isUser) {
       this.route.navigate(['/user/login']);
-    } 
+    }
   }
 
 }

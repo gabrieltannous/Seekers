@@ -25,13 +25,13 @@ export class UserProfileComponent implements OnInit {
   isUser: boolean;
 
   constructor(private authServ: AuthService, public fireServ: FirebaseService, private route: Router,
-    private loader: Ng4LoadingSpinnerService,private userServ: UserService) {
-    this.loader.show()
+    private loader: Ng4LoadingSpinnerService, private userServ: UserService) {
+    this.loader.show();
     this.authServ.isUser().subscribe(res => {
-         this.isUser = res["isUser"];
-         if(this.isUser){
+         this.isUser = res['isUser'];
+         if (this.isUser) {
              this.loader.hide();
-             this.user = res["user"];
+             this.user = res['user'];
          }
       });
   }
@@ -44,11 +44,11 @@ export class UserProfileComponent implements OnInit {
     this.userServ.updateUserProfile(profileForm.value).subscribe(
       res => {
         this.loader.hide();
-        if (res["success"]) {
-          this.successMessage = res["msg"][0];
+        if (res['success']) {
+          this.successMessage = res['msg'][0];
           this.errorMessage = null;
-        }else{
-          this.errorMessage = res["msg"][0];
+        } else {
+          this.errorMessage = res['msg'][0];
           this.successMessage = null;
         }
       }
@@ -77,9 +77,9 @@ export class UserProfileComponent implements OnInit {
             }
             this.errorMessage = null;
             this.userServ.updateUserProfile(this.user).subscribe(
-              res3 => {                       
+              res3 => {
                   this.loader.hide();
-            });         
+            });
           }
         );
       }

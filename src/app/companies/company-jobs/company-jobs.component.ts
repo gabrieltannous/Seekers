@@ -15,10 +15,10 @@ export class CompanyJobsComponent implements OnInit {
   companyJobs: any[];
 
   constructor(private authServ: AuthService, private fireServ: FirebaseService,
-    public loader: Ng4LoadingSpinnerService, private route: Router,private companyServ: CompanyService) {
+    public loader: Ng4LoadingSpinnerService, private route: Router, private companyServ: CompanyService) {
       this.companyServ.getAllCompanyJobs().subscribe(
         res => {
-          this.companyJobs = res["jobs"];
+          this.companyJobs = res['jobs'];
       });
   }
 

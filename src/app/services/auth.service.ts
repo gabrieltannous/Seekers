@@ -4,8 +4,8 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import * as firebase from 'firebase/app';
 import { FirebaseService } from './firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { first,map } from 'rxjs/operators';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { first, map } from 'rxjs/operators';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 
 
 @Injectable()
@@ -13,41 +13,42 @@ export class AuthService {
   authState: any = null;
 
   constructor(private afAuth: AngularFireAuth, private route: Router, private fireServ: FirebaseService,
-    private loader: Ng4LoadingSpinnerService,private http: HttpClient) {
+    private loader: Ng4LoadingSpinnerService, private http: HttpClient) {
       this.loader.show();
       this.afAuth.authState.subscribe(auth => {
         this.authState = auth;
       });
   }
 
-  async fake(): Promise<boolean>{
+  async fake(): Promise<boolean> {
       return true;
   }
 
-  logOut(){
-    localStorage.removeItem("jwtToken");
+  logOut() {
+    localStorage.removeItem('jwtToken');
   }
-  loggedIn(){
-    let token: string = localStorage.getItem('jwtToken');
-    if(token === null || token === undefined || token === ""){
+
+  loggedIn() {
+    const token: string = localStorage.getItem('jwtToken');
+    if (token === null || token === undefined || token === '') {
        return false;
     }
     return true;
   }
 
   isCompany() {
-    let httpOptions = {
+    const httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
-    return this.http.get('http://localhost:3000/api/isCompany',httpOptions)
+    return this.http.get('http://localhost:3000/api/isCompany', httpOptions)
                                      .pipe(map((response: Response) => response));
   }
 
   isUser() {
-    let httpOptions = {
+    const httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
-    return this.http.get('http://localhost:3000/api/isUser',httpOptions)
+    return this.http.get('http://localhost:3000/api/isUser', httpOptions)
                                      .pipe(map((response: Response) => response));
   }
 

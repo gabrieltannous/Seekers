@@ -18,6 +18,10 @@ var jobSchema = new mongoose.Schema({
     salary:{
       type: Number,
       required: true
+    },
+    company: {type: mongoose.Schema.Types, ref: 'Company'},
+    applied: {
+      type: Boolean
     }
 });
 

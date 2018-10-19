@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpClient,HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CompanyService {
-  
+
   constructor(private http: HttpClient) {}
-  
+
   signupCompany(company) {
     return this.http
       .post('http://localhost:3000/api/signupCompany', company)
@@ -21,29 +21,29 @@ export class CompanyService {
   }
 
   updateCompanyProfile(company) {
-    let httpOptions = {
+    const httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
     return this.http
-      .post('http://localhost:3000/api/updateCompanyProfile', company,httpOptions)
+      .post('http://localhost:3000/api/updateCompanyProfile', company, httpOptions)
       .pipe(map((response: Response) => response));
   }
 
   addCompanyJob(job) {
-    let httpOptions = {
+    const httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
     return this.http
-      .post('http://localhost:3000/api/addCompanyJob', job,httpOptions)
+      .post('http://localhost:3000/api/addCompanyJob', job, httpOptions)
       .pipe(map((response: Response) => response));
   }
 
   getAllCompanyJobs() {
-    let httpOptions = {
+    const httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
     return this.http
-      .get('http://localhost:3000/api/getAllCompanyJobs',httpOptions)
+      .get('http://localhost:3000/api/getAllCompanyJobs', httpOptions)
       .pipe(map((response: Response) => response));
   }
   // updateCompany(company) {
