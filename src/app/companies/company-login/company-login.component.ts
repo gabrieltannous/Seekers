@@ -14,14 +14,16 @@ import { CompanyService } from 'src/app/services/company.service';
   encapsulation: ViewEncapsulation.None
 })
 export class CompanyLoginComponent implements OnInit {
-
   company = new Company();
   errorMessage: string = null;
 
-  constructor(private authServ: AuthService, private route: Router,
-    private loader: Ng4LoadingSpinnerService, private fireServ: FirebaseService,private companyServ: CompanyService) {
-
-  }
+  constructor(
+    private authServ: AuthService,
+    private route: Router,
+    private loader: Ng4LoadingSpinnerService,
+    private fireServ: FirebaseService,
+    private companyServ: CompanyService
+  ) {}
 
   ngOnInit() {
     this.loader.hide();
@@ -30,23 +32,26 @@ export class CompanyLoginComponent implements OnInit {
   signin(company: NgForm) {
     if (company.value.email === undefined || company.value.email === '') {
       this.errorMessage = 'Please fill email value';
-    } else if (company.value.password === undefined || company.value.password === '') {
+    } else if (
+      company.value.password === undefined ||
+      company.value.password === ''
+    ) {
       this.errorMessage = 'Please fill password value';
     } else {
-    this.loader.show();
-    this.companyServ.signinCompany(company.value).subscribe(
-                      res => {
-                        if(res["success"]){
-                            localStorage.setItem('jwtToken', res["token"]);
-                            this.loader.hide();
-                            this.route.navigate(['/home']);
-                        }else{
-                          this.errorMessage = res["msg"];
-                          this.loader.hide();
-                        }
-                      },err => console.log(err)
-    );
-
+      this.loader.show();
+      this.companyServ.signinCompany(company.value).subscribe(
+        res => {
+          if (res['success']) {
+            localStorage.setItem('jwtToken', res['token']);
+            this.loader.hide();
+            this.route.navigate(['/home']);
+          } else {
+            this.errorMessage = res['msg'];
+            this.loader.hide();
+          }
+        },
+        err => console.log(err)
+      );
     }
   }
 }

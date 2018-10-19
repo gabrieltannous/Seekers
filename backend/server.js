@@ -1,14 +1,16 @@
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
+const cors = require('cors');
 var logger = require('morgan');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 var passport = require('passport');
-var config = require('./api/config/database');
+var config = require('./config/database');
+const helmet = require('helmet');
+const Promise = require('bluebird');
 
-
-var api = require('./api/routes/api');
+var api = require('./routes/api');
 var app = express();
 
 //connect to database
@@ -20,6 +22,14 @@ mongoose.connect(config.database,{ useNewUrlParser: true }, function (err, respo
   }
 });
 
+global.Promise = Promise;
+app.use(helmet());
+app.disable('x-powered-by');
+app.set('trust proxy', 1); // trust first proxy
+let corsOptions = {
+  origin: 'http://localhost:4200', // Allow from localhost:1337
+};
+app.use(cors(corsOptions));
 //init passport
 app.use(passport.initialize());
 
@@ -38,6 +48,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use("/",express.static(path.join(__dirname, 'dist')));
+
+require('./config/passport')(passport);
 
 app.use('/api', api);
 

@@ -10,7 +10,7 @@ export class JobService {
 
   saveJob(job) {
     return this.http
-      .post('http://localhost:3000/api/SaveJob/', job)
+      .post('http://localhost:3000/api/job/SaveJob/', job)
       .pipe(map((response: Response) => response));
   }
 
@@ -19,19 +19,19 @@ export class JobService {
     apply.jobId = jobId;
     apply.userId = userId;
     return this.http
-      .post('http://localhost:3000/api/applyToJob/', apply)
+      .post('http://localhost:3000/ap/jobi/applyToJob/', apply)
       .pipe(map((response: Response) => response));
   }
 
   GetJobs() {
     return this.http
-      .get('http://localhost:3000/api/getJobs/')
+      .get('http://localhost:3000/api/job/getJobs/')
       .pipe(map((response: Response) => response));
   }
 
   GetAppliedJobs(userId) {
     return this.http
-      .get('http://localhost:3000/api/getAppliedJobs/', {params: {userId: userId}})
+      .get('http://localhost:3000/api/job/getAppliedJobs/', {params: {userId: userId}})
       .pipe(map((response: Response) => response));
   }
 }

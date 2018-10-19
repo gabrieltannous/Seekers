@@ -10,13 +10,13 @@ export class CompanyService {
 
   signupCompany(company) {
     return this.http
-      .post('http://localhost:3000/api/signupCompany', company)
+      .post('http://localhost:3000/api/auth/signupCompany', company)
       .pipe(map((response: Response) => response));
   }
 
   signinCompany(company) {
     return this.http
-      .post('http://localhost:3000/api/signinCompany', company)
+      .post('http://localhost:3000/api/auth/signinCompany', company)
       .pipe(map((response: Response) => response));
   }
 
@@ -34,7 +34,7 @@ export class CompanyService {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
     return this.http
-      .post('http://localhost:3000/api/addCompanyJob', job, httpOptions)
+      .post('http://localhost:3000/api/job/addCompanyJob', job, httpOptions)
       .pipe(map((response: Response) => response));
   }
 
@@ -43,7 +43,7 @@ export class CompanyService {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
     return this.http
-      .get('http://localhost:3000/api/getAllCompanyJobs', httpOptions)
+      .get('http://localhost:3000/api/job/getAllCompanyJobs', httpOptions)
       .pipe(map((response: Response) => response));
   }
   // updateCompany(company) {

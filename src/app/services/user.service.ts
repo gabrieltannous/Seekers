@@ -9,13 +9,13 @@ export class UserService {
 
   signupUser(user) {
     return this.http
-      .post('http://localhost:3000/api/signupUser', user)
+      .post('http://localhost:3000/api/auth/signupUser', user)
       .pipe(map((response: Response) => response));
   }
 
   signinUser(user) {
     return this.http
-      .post('http://localhost:3000/api/signinUser', user)
+      .post('http://localhost:3000/api/auth/signinUser', user)
       .pipe(map((response: Response) => response));
   }
 
@@ -26,7 +26,7 @@ export class UserService {
       })
     };
     return this.http
-      .post('http://localhost:3000/api/updateUserProfile', user, httpOptions)
+      .post('http://localhost:3000/api/user/updateUserProfile', user, httpOptions)
       .pipe(map((response: Response) => response));
   }
 
@@ -37,7 +37,7 @@ export class UserService {
       })
     };
     return this.http
-      .get('http://localhost:3000/api/getJobs', httpOptions)
+      .get('http://localhost:3000/api/job/getJobs', httpOptions)
       .pipe(map((response: Response) => response));
   }
 
@@ -48,7 +48,7 @@ export class UserService {
       })
     };
     return this.http
-      .post('http://localhost:3000/api/applyToJob', job, httpOptions)
+      .post('http://localhost:3000/api/job/applyToJob', job, httpOptions)
       .pipe(map((response: Response) => response));
   }
 }

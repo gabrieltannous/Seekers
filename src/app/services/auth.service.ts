@@ -43,7 +43,7 @@ export class AuthService {
       })
     };
     return this.http
-      .get('http://localhost:3000/api/isCompany', httpOptions)
+      .get('http://localhost:3000/api/auth/isCompany', httpOptions)
       .pipe(map((response: Response) => response));
   }
 
@@ -54,7 +54,7 @@ export class AuthService {
       })
     };
     return this.http
-      .get('http://localhost:3000/api/isUser', httpOptions)
+      .get('http://localhost:3000/api/auth/isUser', httpOptions)
       .pipe(map((response: Response) => response));
   }
 

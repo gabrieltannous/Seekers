@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require('../app');
+var app = require('../backend/server');
 var debug = require('debug')('seekers:server');
 var http = require('http');
 
