@@ -21,6 +21,7 @@ Details of this project:
 ## How to run the app
 
 To run this app, using a command promt navigate inside the app folder and run 'ng s -o'.
+To run the backend, using a command promt run 'node backend/server.js'.
 
 ## Documenting Key Principles
 
