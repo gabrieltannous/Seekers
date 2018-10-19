@@ -1,23 +1,10 @@
 var express = require('express');
 var router = express.Router();
-const passport = require('passport');
-var app = express();
 const {
   body,
   query,
   validationResult
 } = require('express-validator/check');
-
-//passport, mongoose
-// var mongoose = require('mongoose');
-// var passport = require('passport');
-// var config = require('../config/database');
-
-var jwt = require('jsonwebtoken');
-
-//models
-//var Application = require("../models/application");
-//var Admin = require("../models/admin");
 
 //get user token from req headers
 getToken = function (headers) {

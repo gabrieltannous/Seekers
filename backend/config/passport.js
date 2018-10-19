@@ -2,8 +2,8 @@ var JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 
 // load up models
-var Company = require('../models/company');
-var User = require('../models/user');
+var Company = require('../models/Company');
+var User = require('../models/User');
 var Admin = require('../models/admin');
 var config = require('../config/database'); // get secret
 
