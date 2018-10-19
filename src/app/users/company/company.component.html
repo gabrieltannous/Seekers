@@ -14,9 +14,6 @@
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/applies">Applied Jobs</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link btn btn-outline-secondary" routerLink="/user/jobs">My Jobs</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link btn btn-outline-secondary" routerLink="/user/interviews">Interviews</a>
       </li>
       <li class="nav-item">
@@ -34,12 +31,12 @@
     <div class="col-sm-3">
       <!--left col-->
       <div class="text-center">
-        <img *ngIf="company.photo === ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+        <img *ngIf="company.photo === undefined" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
           alt="avatar">
-        <img *ngIf="company.photo !== ''" src="{{company.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
+        <img *ngIf="company.photo !== undefined" src="{{company.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
       </div>
       <hr><br>
-      <div class="card">
+      <div *ngIf="company.website !== undefined" class="card">
         <div class="card-header">
           Website <i class="fa fa-link fa-1x"></i>
         </div>

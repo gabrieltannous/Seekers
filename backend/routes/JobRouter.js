@@ -8,6 +8,8 @@ const {
 } = require('express-validator/check');
 
 const JobController = require('../controllers/JobController');
+const UserController = require('../controllers/UserController');
+const CompanyController = require('../controllers/CompanyController');
 
 // User Authentication Method
 const UserAuthenticateRoute = passport.authenticate('jwt-user', {
@@ -42,6 +44,22 @@ router.post('/addCompanyJob',
   ], 
   CompanyAuthenticateRoute, JobController.add_company_jobs);
 
+//apply to job - current user
 router.post('/applyToJob', UserAuthenticateRoute, JobController.apply_to_job);
+
+//get all applicants of one job
+router.post('/getApplicants', CompanyAuthenticateRoute, JobController.get_applicants);
+
+//get applicant profile
+router.post('/getApplicantProfile', CompanyAuthenticateRoute, UserController.get_applicant_profile);
+
+//user get all jobs
+router.get('/getAllJobs', UserAuthenticateRoute, JobController.get_all_jobs);
+
+//get user's applied jobs
+router.get('/getAppliedJobs', UserAuthenticateRoute, JobController.get_applied_jobs);
+
+//user get company profile
+router.post('/getAppliedCompanyProfile', UserAuthenticateRoute, CompanyController.get_applied_company_profile);
 
 module.exports = router;

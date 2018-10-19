@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { FirebaseService } from '../services/firebase.service';
 import { Job } from '../models/job';
-import { NgForm } from '@angular/forms';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Router } from '@angular/router';
 import { CompanyService } from 'src/app/services/company.service';
@@ -13,6 +11,7 @@ import { UserService } from '../services/user.service';
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
+
 export class HomeComponent implements OnInit {
   isUser: boolean;
   isCompany: boolean;
@@ -20,18 +19,16 @@ export class HomeComponent implements OnInit {
   job = new Job();
   jobs: any[];
   applied: boolean;
-  test1 = 12345678;
 
   userName: string;
   currentId: string;
 
   successMessage = null;
   errorMessage = null;
+
   constructor(
     private authServ: AuthService,
-    private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService,
-    private route: Router,
     private companyServ: CompanyService,
     private userServ: UserService
   ) {
@@ -96,6 +93,6 @@ export class HomeComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logOut();
+    this.authServ.logout();
   }
 }

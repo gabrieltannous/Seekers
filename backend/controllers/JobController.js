@@ -1,6 +1,7 @@
 var Company = require('../models/Company');
 var Application = require('../models/Application');
 var Job = require('../models/Job');
+var User = require('../models/User');
 
 module.exports.get_jobs = (req, res) => {
   Job.find({}, function (err, data) {
@@ -108,5 +109,128 @@ module.exports.apply_to_job = (res, req) => {
       success: true,
       msg: ['Successfuly applied to job']
     });
+  });
+}
+
+//find all applicants
+module.exports.get_applicants = (req, res) => {
+  Application.find({
+    jobId: req.body.jobId
+  }, function (err, records) {
+    if (err) throw err;
+
+    if (!records)
+      return res.status(400).json({
+        success: false
+      });
+
+    var app_ids = records.map(value => value.userId);
+
+    User.find()
+      .where('_id')
+      .in(app_ids)
+      .exec(function (err, records) {
+        if (err) throw err;
+        if (!records)
+          return res.json({
+            success: false
+          });
+
+        res.status(200).json({
+          success: true,
+          applicants: records
+        });
+      });
+  });
+}
+
+module.exports.get_all_jobs = (req, res) => {
+  var uid = req.user._id;
+  var allJobs;
+  Job.find({}, function (err, result) {
+    if (err) throw err;
+    if (!result)
+      return res.status(400).json({
+        success: false
+      });
+
+    //convert to javascript object to add applied property
+    allJobs = JSON.parse(JSON.stringify(result));
+
+    // find jobs that user already applied
+    Application.find({
+      userId: uid
+    }, function (error, records) {
+      if (error) throw error;
+
+      if (!records)
+        return res.status(200).json({
+          success: true,
+          jobs: allJobs
+        });
+
+      for (var i = 0; i < allJobs.length; i++) {
+        allJobs[i]["applied"] = false;
+        for (var j = 0; j < records.length; j++) {
+          if (allJobs[i]._id == records[j].jobId) {
+            allJobs[i]["applied"] = true;
+            break;
+          }
+        }
+      }
+
+      res.status(200).json({
+        success: true,
+        jobs: allJobs
+      });
+    });
+
+  });
+}
+
+module.exports.get_applied_jobs = (req, res, next) => {
+  var uid = req.user._id;
+
+  //find user applications
+  Application.find({
+    userId: uid
+  }, function (error, records) {
+    if (error) throw error;
+
+    if (!records)
+      res.status(400).json({
+        success: false
+      });
+
+    var job_ids = records.map(value => value.jobId);
+
+    Job.find()
+      .where('_id')
+      .in(job_ids)
+      .exec(function (error, records) {
+        if (error) throw error;
+
+        var com_ids = records.map(value => value.companyId);
+        var applied = JSON.parse(JSON.stringify(records));
+        Company.find()
+          .where('_id')
+          .in(com_ids)
+          .exec(function (error, records) {
+            if (error) throw error;
+
+            for (var i = 0; i < applied.length; i++) {
+              for (var j = 0; j < records.length; j++) {
+                if (applied[i].companyId == records[j]._id) {
+                  applied[i]["company"] = JSON.parse(JSON.stringify(records[j]));
+                  break;
+                }
+              }
+            }
+            res.status(200).json({
+              success: true,
+              applied: applied
+            });
+          });
+      });
   });
 }

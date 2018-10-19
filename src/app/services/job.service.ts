@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Apply } from '../models/apply';
 
@@ -19,7 +18,7 @@ export class JobService {
     apply.jobId = jobId;
     apply.userId = userId;
     return this.http
-      .post('http://localhost:3000/ap/jobi/applyToJob/', apply)
+      .post('http://localhost:3000/ap/job/applyToJob/', apply)
       .pipe(map((response: Response) => response));
   }
 

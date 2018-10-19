@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Router } from '@angular/router';
 import { UserService } from '../../services/user.service';
@@ -15,17 +14,17 @@ export class UserAppliesComponent implements OnInit {
 
   constructor(
     private authServ: AuthService,
-    private fireServ: FirebaseService,
     public loader: Ng4LoadingSpinnerService,
     private route: Router,
     private userServ: UserService
   ) {
-    this.userServ.getJobs().subscribe(res => {
-      this.appliedJobs = res['jobs'].map(a => {
-        if (a.applied) {
-          return a;
+    this.loader.show();
+    this.userServ.getAppliedJobs().subscribe(res => {
+      if (res['success']) {
+        if (res['applied'].length !== 0) {
+          this.appliedJobs = res['applied'];
         }
-      });
+      }
       this.loader.hide();
     });
   }
@@ -35,6 +34,7 @@ export class UserAppliesComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logOut();
+    this.authServ.logout();
+    this.route.navigate(['/user/login']);
   }
 }

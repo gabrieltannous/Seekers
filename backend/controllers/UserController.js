@@ -134,37 +134,55 @@ module.exports.sign_up = (req, res, next) => {
 }
 
 module.exports.update_profile = (req, res, next) => {
-    //validate request
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      var err_array = errors.array().map(value => {
-        return value.msg
-      });
-      return res.status(400).json({
-        success: false,
-        msg: err_array
-      });
-    }
-
-    var id = req.user._id;
-
-    User.findByIdAndUpdate(id, {
-        $set: req.body
-      },
-      function (err, result) {
-        if (err) throw err;
-
-        if (!result) {
-          res.status(400).json({
-            success: false,
-            msg: ['Problem occurs. Data cannot be saved']
-          });
-        } else {
-          res.status(201).json({
-            success: true,
-            msg: ['Profile updated successfuly']
-          });
-        }
-      });
-
+  //validate request
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    var err_array = errors.array().map(value => {
+      return value.msg
+    });
+    return res.status(400).json({
+      success: false,
+      msg: err_array
+    });
   }
+
+  var id = req.user._id;
+
+  User.findByIdAndUpdate(id, {
+      $set: req.body
+    },
+    function (err, result) {
+      if (err) throw err;
+
+      if (!result) {
+        res.status(400).json({
+          success: false,
+          msg: ['Problem occurs. Data cannot be saved']
+        });
+      } else {
+        res.status(201).json({
+          success: true,
+          msg: ['Profile updated successfuly']
+        });
+      }
+    });
+}
+
+//find all applicants
+module.exports.get_applicant_profile = (req, res, next) => {
+  User.findOne({
+    _id: req.body.userId
+  }, function (err, record) {
+    if (err) throw err;
+
+    if (!record)
+      return res.status(400).json({
+        success: false
+      });
+
+    res.status(200).json({
+      success: true,
+      user: record
+    });
+  });
+}

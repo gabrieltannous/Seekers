@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
 import { Router } from '@angular/router';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { FirebaseService } from '../../services/firebase.service';
 import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
@@ -18,10 +16,8 @@ export class CompanyLoginComponent implements OnInit {
   errorMessage: string = null;
 
   constructor(
-    private authServ: AuthService,
     private route: Router,
     private loader: Ng4LoadingSpinnerService,
-    private fireServ: FirebaseService,
     private companyServ: CompanyService
   ) {}
 
@@ -50,7 +46,7 @@ export class CompanyLoginComponent implements OnInit {
             this.loader.hide();
           }
         },
-        err => console.log(err)
+        err => console.error(err)
       );
     }
   }

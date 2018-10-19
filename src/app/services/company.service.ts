@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CompanyService {
-
   constructor(private http: HttpClient) {}
 
   signupCompany(company) {
@@ -22,16 +20,24 @@ export class CompanyService {
 
   updateCompanyProfile(company) {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
     };
     return this.http
-      .post('http://localhost:3000/api/updateCompanyProfile', company, httpOptions)
+      .post(
+        'http://localhost:3000/api/company/updateCompanyProfile',
+        company,
+        httpOptions
+      )
       .pipe(map((response: Response) => response));
   }
 
   addCompanyJob(job) {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
     };
     return this.http
       .post('http://localhost:3000/api/job/addCompanyJob', job, httpOptions)
@@ -40,41 +46,64 @@ export class CompanyService {
 
   getAllCompanyJobs() {
     const httpOptions = {
-      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
     };
     return this.http
       .get('http://localhost:3000/api/job/getAllCompanyJobs', httpOptions)
       .pipe(map((response: Response) => response));
   }
-  // updateCompany(company) {
-  //   return this.http
-  //     .post('http://localhost:3000/api/UpdateCompany/', company)
-  //     .pipe(map((response: Response) => response));
-  // }
 
-  // GetCompany(company) {
-  //   return this.http
-  //     .get('http://localhost:3000/api/getCompany', {
-  //       params: { email: company.email }
-  //     })
-  //     .pipe(map((response: Response) => response));
-  // }
+  getApplicants(jobId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
+    };
+    return this.http
+      .post(
+        'http://localhost:3000/api/job/getApplicants',
+        { jobId: jobId },
+        httpOptions
+      )
+      .pipe(map((response: Response) => response));
+  }
 
-  // isCompany(email) {
-  //   return this.http
-  //     .get('http://localhost:3000/api/isCompany', { params: { email: email } })
-  //     .pipe(map((response: Response) => response));
-  // }
+  getApplicantProfile(userId) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
+    };
+    return this.http
+      .post(
+        'http://localhost:3000/api/job/getApplicantProfile',
+        { userId: userId },
+        httpOptions
+      )
+      .pipe(map((response: Response) => response));
+  }
 
-  // GetAllCompanies() {
-  //   return this.http
-  //     .get('http://localhost:3000/api/getAllCompanies/')
-  //     .pipe(map((response: Response) => response));
-  // }
+  setInterview(interview) {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
+    };
+    return this.http
+      .post('http://localhost:3000/api/interview/setInterview', interview, httpOptions)
+      .pipe(map((response: Response) => response));
+  }
 
-  // deleteCompany(id) {
-  //   return this.http
-  //     .post('http://localhost:3000/api/deleteCompany/', { id: id })
-  //     .pipe(map((response: Response) => response));
-  // }
+  getCompanyInterviews() {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        Authorization: localStorage.getItem('jwtToken')
+      })
+    };
+    return this.http
+      .get('http://localhost:3000/api/interview/getCompanyInterviews', httpOptions)
+      .pipe(map((response: Response) => response));
+  }
 }

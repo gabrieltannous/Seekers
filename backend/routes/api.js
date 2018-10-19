@@ -30,6 +30,7 @@ const authRoutes = require('./AuthRouter');
 const companyRoutes = require('./CompanyRouter');
 const jobRoutes = require('./JobRouter');
 const userRoutes = require('./UserRouter');
+const interviewRoutes = require('./InterviewRouter');
 
 // Auth Routes
 router.use('/auth', authRoutes);
@@ -43,6 +44,8 @@ router.use('/job', jobRoutes);
 // User Routes
 router.use('/user', userRoutes);
 
+// Interview Routes
+router.use('/interview', interviewRoutes);
 
 router.use(function(req, res) {
   res.status(404).send("Page Not Found");

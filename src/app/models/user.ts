@@ -5,7 +5,6 @@ export class User {
   public phone: string;
   public mobile: string;
   public address: string;
-  public resume: string;
   public password: string;
   public cpassword: string;
   public photo: string;

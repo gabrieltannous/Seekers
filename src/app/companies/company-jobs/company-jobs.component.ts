@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
-import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
-import { Router } from '@angular/router';
 import { CompanyService } from 'src/app/services/company.service';
 
 @Component({
@@ -14,8 +12,7 @@ export class CompanyJobsComponent implements OnInit {
 
   companyJobs: any[];
 
-  constructor(private authServ: AuthService, private fireServ: FirebaseService,
-    public loader: Ng4LoadingSpinnerService, private route: Router, private companyServ: CompanyService) {
+  constructor(private authServ: AuthService, public loader: Ng4LoadingSpinnerService, private companyServ: CompanyService) {
       this.companyServ.getAllCompanyJobs().subscribe(
         res => {
           this.companyJobs = res['jobs'];
@@ -27,8 +24,7 @@ export class CompanyJobsComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logOut();
-    this.route.navigate(['/company/login']);
+    this.authServ.logout();
   }
 
 }

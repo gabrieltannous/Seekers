@@ -48,6 +48,7 @@ require('./models/User');
 require('./models/Company');
 require('./models/Job');
 require('./models/Application');
+require('./models/Interview');
 
 app.use('/api', api);
 

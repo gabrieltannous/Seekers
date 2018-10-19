@@ -2,7 +2,6 @@ import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { AuthService } from '../../services/auth.service';
 import { Company } from '../../models/company';
 import { NgForm } from '@angular/forms';
-import { FirebaseService } from '../../services/firebase.service';
 import { Ng4LoadingSpinnerService } from 'ng4-loading-spinner';
 import { Router } from '@angular/router';
 import { CompanyService } from 'src/app/services/company.service';
@@ -18,8 +17,6 @@ export class CompanyRegisterComponent implements OnInit {
   errorMessage: string = null;
 
   constructor(
-    private authService: AuthService,
-    private firebaseService: FirebaseService,
     private loader: Ng4LoadingSpinnerService,
     private route: Router,
     private companyServ: CompanyService
@@ -49,7 +46,7 @@ export class CompanyRegisterComponent implements OnInit {
             if (res['success']) {
               this.companyServ.signinCompany(company.value).subscribe(
                 res2 => {
-                  if (res2['success']) {
+                  if (res['success']) {
                     localStorage.setItem('jwtToken', res2['token']);
                     this.loader.hide();
                     this.route.navigate(['/home']);
@@ -58,14 +55,14 @@ export class CompanyRegisterComponent implements OnInit {
                     this.loader.hide();
                   }
                 },
-                err => console.log(err)
+                err => console.error(err)
               );
             } else {
               this.errorMessage = res['msg'][0];
               this.loader.hide();
             }
           },
-          err => console.log(err)
+          err => console.error(err)
         );
       } else {
         this.errorMessage = 'Passwords do not match';

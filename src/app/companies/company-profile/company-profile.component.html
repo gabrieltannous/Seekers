@@ -26,17 +26,14 @@
 <div class="container bootstrap snippet">
   <div class="row">
     <div class="col-sm-3">
-      <!--left col-->
       <div class="text-center">
-          <img *ngIf="company.photo === undefined || company.photo !== ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
+        <img *ngIf="company.photo === undefined || company.photo === ''" src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail"
           alt="avatar">
         <img *ngIf="company.photo !== undefined && company.photo !== ''" src="{{company.photo}}" class="avatar img-circle img-thumbnail" alt="avatar">
-        <h6>Upload a different photo...</h6>
-        <input type="file" name="resume" id="resume" class="text-center center-block file-upload" (change)="upload($event)"
-          accept=".png, .jpeg, .jpg">
+        
       </div>
       <hr><br>
-      <div class="card" *ngIf="company.website !== undefined && company.photo !== ''">
+      <div class="card">
         <div class="card-header">
           Website <i class="fa fa-link fa-1x"></i>
         </div>
@@ -44,14 +41,7 @@
           <li *ngIf="company.website !== null" class="list-group-item"><a href="http://bootnipets.com">{{company.website}}</a></li>
         </ul>
       </div>
-      <!-- <ul class="list-group">
-        <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Jobs</strong></span> 125</li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Applicants</strong></span> 13</li>
-        <li class="list-group-item text-right"><span class="pull-left"><strong>Interviews</strong></span> 37</li>
-      </ul> -->
     </div>
-    <!--/col-3-->
     <div class="col-sm-9">
       <div class="tab-content">
         <div class="tab-pane active" id="home">
