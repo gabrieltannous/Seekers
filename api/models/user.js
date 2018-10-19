@@ -2,13 +2,13 @@ var mongoose = require( 'mongoose' );
 var bcrypt = require('bcrypt-nodejs');
 
 //Schema for company
-var companySchema = new mongoose.Schema({
+var userSchema = new mongoose.Schema({
   email: {
     type: String,
     unique: true,
     required: true
   },
-  name: {
+  fullName: {
     type: String,
     required: true
   },
@@ -17,15 +17,16 @@ var companySchema = new mongoose.Schema({
     required: true
   },
   phone: String,
+  mobile: String,
   photo: String,
   address: String,
-  website: String
+  resume: String
 });
 
 
 //encrypt password using bcrypt
-companySchema.methods.setPassword = function(password,callback){
-    var company = this;
+userSchema.methods.setPassword = function(password,callback){
+    var user = this;
     bcrypt.genSalt(10, function (err, salt) {
         if (err) {
             return callback(err,false);
@@ -34,16 +35,16 @@ companySchema.methods.setPassword = function(password,callback){
           if (err) {
               return callback(err,false);
           }
-          company.hash = hash;
+          user.hash = hash;
           callback(null, true);
       });
     });
 };
 
 //compare password with hash
-companySchema.methods.comparePassword = function (password, callback) {
-    var company = this;
-    bcrypt.compare(password, company.hash, function (err, isMatch) {
+userSchema.methods.comparePassword = function (password, callback) {
+    var user = this;
+    bcrypt.compare(password, user.hash, function (err, isMatch) {
         if (err) {
             return callback(err,false);
         }
@@ -51,4 +52,4 @@ companySchema.methods.comparePassword = function (password, callback) {
     });
 };
 
-module.exports = mongoose.model('Company', companySchema);
+module.exports = mongoose.model('User', userSchema);

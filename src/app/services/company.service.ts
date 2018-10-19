@@ -28,6 +28,24 @@ export class CompanyService {
       .post('http://localhost:3000/api/updateCompanyProfile', company,httpOptions)
       .pipe(map((response: Response) => response));
   }
+
+  addCompanyJob(job) {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .post('http://localhost:3000/api/addCompanyJob', job,httpOptions)
+      .pipe(map((response: Response) => response));
+  }
+
+  getAllCompanyJobs() {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http
+      .get('http://localhost:3000/api/getAllCompanyJobs',httpOptions)
+      .pipe(map((response: Response) => response));
+  }
   // updateCompany(company) {
   //   return this.http
   //     .post('http://localhost:3000/api/UpdateCompany/', company)

@@ -8,6 +8,7 @@ import { Observable } from 'rxjs';
 import { AngularFireUploadTask, AngularFireStorageReference, AngularFireStorage } from 'angularfire2/storage';
 import { map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-user-profile',
@@ -21,13 +22,17 @@ export class UserProfileComponent implements OnInit {
   errorMessage: string = null;
   appliedJobs: any[];
   numberOfApplies: number;
+  isUser: boolean;
 
   constructor(private authServ: AuthService, public fireServ: FirebaseService, private route: Router,
-    private loader: Ng4LoadingSpinnerService) {
-    this.fireServ.getUser(this.authServ.currentUserId).then(
-      res => {
-        this.user = res;
-        this.loader.hide();
+    private loader: Ng4LoadingSpinnerService,private userServ: UserService) {
+    this.loader.show()
+    this.authServ.isUser().subscribe(res => {
+         this.isUser = res["isUser"];
+         if(this.isUser){
+             this.loader.hide();
+             this.user = res["user"];
+         }
       });
   }
 
@@ -36,17 +41,18 @@ export class UserProfileComponent implements OnInit {
 
   updateProfile(profileForm: NgForm) {
     this.loader.show();
-    this.fireServ.updateUser(profileForm.value).then(
+    this.userServ.updateUserProfile(profileForm.value).subscribe(
       res => {
-        this.errorMessage = null;
-        this.successMessage = 'Profile has been updated';
         this.loader.hide();
+        if (res["success"]) {
+          this.successMessage = res["msg"][0];
+          this.errorMessage = null;
+        }else{
+          this.errorMessage = res["msg"][0];
+          this.successMessage = null;
+        }
       }
-    )
-    .catch(err => {
-      this.successMessage = null;
-      this.errorMessage = err;
-    });
+    );
   }
 
   upload(event, type) {
@@ -70,8 +76,10 @@ export class UserProfileComponent implements OnInit {
               this.successMessage = 'Profile photo uploaded succesfully';
             }
             this.errorMessage = null;
-            this.fireServ.updateUser(this.user);
-            this.loader.hide();
+            this.userServ.updateUserProfile(this.user).subscribe(
+              res3 => {                       
+                  this.loader.hide();
+            });         
           }
         );
       }
@@ -84,7 +92,8 @@ export class UserProfileComponent implements OnInit {
   }
 
   logout() {
-    this.authServ.logout().then(() => this.route.navigate(['/user/login']));
+    this.authServ.logOut();
+    this.route.navigate(['/user/login']);
   }
 
 }

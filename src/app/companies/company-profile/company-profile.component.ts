@@ -41,7 +41,6 @@ export class CompanyProfileComponent implements OnInit {
 
     this.loader.show();
     const path = 'Company-Photos/';
-    alert(JSON.stringify(this.company));
     this.fireServ.upload(event, path + this.company.name + filename.substring(filename.lastIndexOf('.'))).then(
       res => {
         res.ref.getDownloadURL().then(
@@ -60,7 +59,7 @@ export class CompanyProfileComponent implements OnInit {
     .catch(err => {
       this.loader.hide();
       this.successMessage = null;
-      this.errorMessage = err;
+      this.errorMessage = err.message_;
     });
   }
 

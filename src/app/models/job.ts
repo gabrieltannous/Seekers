@@ -7,4 +7,5 @@ export class Job {
   public title: string;
   public type: string;
   public salary: string;
+  public applicants: string[];
 }

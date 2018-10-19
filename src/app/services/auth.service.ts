@@ -35,11 +35,19 @@ export class AuthService {
     return true;
   }
 
-  isCompany(){
+  isCompany() {
     let httpOptions = {
       headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
     };
     return this.http.get('http://localhost:3000/api/isCompany',httpOptions)
+                                     .pipe(map((response: Response) => response));
+  }
+
+  isUser() {
+    let httpOptions = {
+      headers: new HttpHeaders({ 'Authorization': localStorage.getItem('jwtToken') })
+    };
+    return this.http.get('http://localhost:3000/api/isUser',httpOptions)
                                      .pipe(map((response: Response) => response));
   }
 
@@ -70,10 +78,10 @@ export class AuthService {
     return this.authState['displayName'];
   }
 
-  async isUser(): Promise<boolean> {
-    const user = await this.fireServ.getUser(this.currentUserId);
-    return (user !== undefined);
-  }
+  // async isUser(): Promise<boolean> {
+  //   const user = await this.fireServ.getUser(this.currentUserId);
+  //   return (user !== undefined);
+  // }
 
   // async isCompany(): Promise<boolean> {
   //   const company = await this.fireServ.getCompany(this.currentUserId);

@@ -40,6 +40,7 @@ import { JobSearchComponent } from './users/job-search/job-search.component';
 import { UsersJobsComponent } from './users/users-jobs/users-jobs.component';
 import { UserPComponent } from './users/user/user.component';
 import { CompanyService } from './services/company.service';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -86,7 +87,8 @@ import { CompanyService } from './services/company.service';
   providers: [
     AuthService,
     AuthGuard,
-    CompanyService
+    CompanyService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
